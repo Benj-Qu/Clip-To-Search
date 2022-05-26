@@ -9,4 +9,4 @@ $( document ).on( "mouseup", function( event ) {
 });
 
 var objects = [];
-objects = inBox("li", mouseDownX, mouseDownY, mouseUpX, mouseUpY);
+objects = rectangleSelect(mouseDownX, mouseDownY, mouseUpX, mouseUpY);
