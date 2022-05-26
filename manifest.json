@@ -1,10 +1,10 @@
 {
   "name": "Clip to Search",
   "description": "A chrome extention that enable users to search by the underlying html codes",
-  "version": "1.0",
+  "version": "0.0.1",
   "manifest_version": 3,
 
-  "permissions": ["storage"],
+  "permissions": [ "https://*/*", "http://*/*", "https://www.google-analytics.com/", "downloads", "contextMenus", "tabs", "storage", "unlimitedStorage", "activeTab", "\u003Call_urls>", "background", "chrome://favicon/", "clipboardRead", "clipboardWrite" ],
   
   "action": {
     "default_popup": "popup.html",
@@ -21,4 +21,44 @@
     "48": "/images/get_started48.png",
     "128": "/images/get_started128.png"
   }
+}
+
+{
+  "background": {
+     "page": "background.html",
+     "persistent": true
+  },
+  "browser_action": {
+     "default_icon": "icon-128.png",
+     "default_popup": "browserTooltip.html"
+  },
+  "commands": {
+     "_execute_browser_action": {
+        "suggested_key": {
+           "chromeos": "Ctrl+Shift+K",
+           "linux": "Ctrl+Shift+K",
+           "mac": "Command+Shift+K",
+           "windows": "Ctrl+Shift+K"
+        }
+     }
+  },
+  "content_scripts": [ {
+     "css": [ "content.styles.css" ],
+     "exclude_matches": [ "*://localhost/*", "*://*.facebook.com/*", "*://*.qualtrics.com/*", "*://*.overleaf.com/*", "*://*.google.com/signin/oauth/*", "*://kap-project-nsh-2504.firebaseapp.com/*", "*://unakite-v2.firebaseapp.com/*" ],
+     "js": [ "contentAnnotation.bundle.js" ],
+     "matches": [ "http://*/*", "https://*/*", "\u003Call_urls>" ]
+  } ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval' http://localhost:3000 http://localhost:3001 http://localhost:3002 https://gstatic.com https://*.google.com https://*.firebaseio.com https://cdn.firebase.com https://kap-project-nsh-2504.firebaseapp.com  https://project-kap-dev.firebaseapp.com https://ssl.google-analytics.com; object-src 'self'",
+  "description": "Help developers organize and structure information related to programming decisions.",
+  "icons": {
+     "128": "icon-128.png"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoKT+gdJ2p51k/Hz+EdDAFqm2W6DQIQTq8UurRmg8tWC92j5GkPt1Qz806i/VKks2nGigQDR/rtJmKIeMF695nKc/IRleXYRgE62cLPaBRvu5ni9wQ85IpNNCuHQeC+vJtUGdJTyvDa5rx6Wqz0SFDEVgVgn1o4pvZS3mlwHcmhCF7YlucakQoAF2Uo2LQKj+uXChDED/Tjg++fWveNlv5pfa0QvtNMX8UciK5EuElooqr9NYzb2yX+DP7+7IesIr8bcuVptVJWMqzNz2DXUh1ys4QN5CaIbDiqnGK96JcDKMosd7AWzIa3yXIReoOWN1CXBoO0UOv42G7L8P+/Ia9QIDAQAB",
+  "manifest_version": 2,
+  "name": "Unakite",
+  "options_page": "options.html",
+  "permissions": [ "https://*/*", "http://*/*", "https://www.google-analytics.com/", "downloads", "contextMenus", "tabs", "storage", "unlimitedStorage", "activeTab", "\u003Call_urls>", "background", "chrome://favicon/", "clipboardRead", "clipboardWrite" ],
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "version": "2.2.1",
+  "web_accessible_resources": [ "popup.html", "inject.js", "content.styles.css", "info-100.png", "thumb-down-100.png", "thumb-up-100.png", "icon-128.png", "icon-34.png", "icon-inactive-128.png" ]
 }
