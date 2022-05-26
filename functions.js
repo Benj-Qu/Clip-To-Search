@@ -10,5 +10,5 @@ function rectangleSelect(x1, y1, x2, y2) {
         }
     }
 
-    return ElementInternals;
+    return objects;
 }
