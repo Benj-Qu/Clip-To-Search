@@ -1,6 +1,24 @@
 {
-    "name": "Clip to Search",
-    "description": "description",
-    "version": "1.0",
-    "manifest_version": 3
+  "name": "Clip to Search",
+  "description": "A chrome extention that enable users to search by the underlying html codes",
+  "version": "1.0",
+  "manifest_version": 3,
+
+  "permissions": ["storage"],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/images/get_started16.png",
+      "32": "/images/get_started32.png",
+      "48": "/images/get_started48.png",
+      "128": "/images/get_started128.png"
+    }
+  },
+  "icons": {
+    "16": "/images/get_started16.png",
+    "32": "/images/get_started32.png",
+    "48": "/images/get_started48.png",
+    "128": "/images/get_started128.png"
   }
+}
