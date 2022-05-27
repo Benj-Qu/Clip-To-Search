@@ -1,4 +1,3 @@
-
 console.log("Clip to Search, Start");
 var mouseDownX = 0;
 var mouseDownY = 0;
