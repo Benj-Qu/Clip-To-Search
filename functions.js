@@ -15,22 +15,3 @@ function rectangleSelect(x1, y1, x2, y2) {
 
     return objects;
 }
-<<<<<<< HEAD
-
-//TODO: if wrong position appears, consider changing clientX to pageX
-function mouseDown(event){
-    let x = event.pageX,
-        y = event.pageY;
-    return {x, y};
-}
-
-function mouseUp(event){
-    let x = event.pageX,
-        y = event.pageY;
-    return {x, y};
-}
-
-window.addEventListener('mousemove', mouseDown);
-window.addEventListener('mousemove', mouseUp);
-=======
->>>>>>> 8e9024218ad28674f12a8c85fcad4c8210028f60
