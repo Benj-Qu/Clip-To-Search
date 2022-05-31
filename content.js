@@ -8,12 +8,12 @@ $(document).ready(function(){
     
     $(document).on("mousedown", function(event){
 
-        mouseDownX = event.pageX;
-        mouseDownY = event.pageY;
+        mouseDownX = event.clientX;
+        mouseDownY = event.clientY;
 
         $(document).on("mouseup", function(event){
-            mouseUpX = event.pageX;
-            mouseUpY = event.pageY;
+            mouseUpX = event.clientX;
+            mouseUpY = event.clientY;
 
             console.log("downX: ", mouseDownX, ", downY: ", mouseDownY, ", upX: ", mouseUpX, ", upY: ", mouseUpY);        
             
