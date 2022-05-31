@@ -22,9 +22,6 @@ $(document).ready(function(){
             
             console.log("length: ", objects.length)
             
-            for(elt in objects){
-                console.log(elt.html())
-            }
         });
     });  
 });
