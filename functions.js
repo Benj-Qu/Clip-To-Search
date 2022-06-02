@@ -1,7 +1,7 @@
+// In: four coordinates corresponding to four vertices of the bounding box
+// Out: an array of DOM elements in this bounding box
 function rectangleSelect(x1, y1, x2, y2) {
-
     console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
-
     const allElements = document.getElementsByTagName('*');
     var objects = [];
 
@@ -16,9 +16,14 @@ function rectangleSelect(x1, y1, x2, y2) {
                 console.log("find rect!")
                 console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
                 objects.push(element);
+                
+                console.log("html: ", element.innerHTML)
+
             }
         }
     }
-
     return objects;
 }
+
+// In: an array of DOM elements
+// Out: Search the one which is of class "selected" 

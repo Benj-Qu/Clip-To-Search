@@ -15,7 +15,7 @@
       "matches": [
         "<all_urls>"
       ],
-      "js": [ "jquery.js", "functions.js", "content.js"]
+      "js": [ "jquery.js", "rectangle.js","functions.js", "content.js"]
     }
   ]
   
