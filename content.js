@@ -1,4 +1,6 @@
 console.log("Clip to Search, Start");
+disableTextSelection()
+
 var mouseDownX = 0;
 var mouseDownY = 0;
 var mouseUpX = 0;

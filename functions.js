@@ -1,3 +1,11 @@
+// Disables text selection on the current page
+function disableTextSelection(){
+    document.querySelector('*').addEventListener('selectstart', (e) => {
+        e.preventDefault();
+    });
+}
+
+
 // In: four coordinates corresponding to four vertices of the bounding box
 // Out: an array of DOM elements in this bounding box
 function rectangleSelect(x1, y1, x2, y2) {
