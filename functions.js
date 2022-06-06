@@ -22,10 +22,9 @@ function rectangleSelect(x1, y1, x2, y2) {
         if (x_l >= x1 && x_r <= x2 && y_t >= y1 && y_d <= y2) {
             if (x_l != x_r && y_t != y_d) {
                 console.log("find rect!")
-                console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
+                //console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
                 objects.push(element);
-                
-                console.log("html: ", element.innerHTML)
+                //console.log("html: ", element.outerHTML)
 
             }
         }
@@ -35,3 +34,16 @@ function rectangleSelect(x1, y1, x2, y2) {
 
 // In: an array of DOM elements
 // Out: Search the one which is of class "selected" 
+function searchelement(elementhtml){
+    console.log("html to search: ", elementhtml);
+    [document.querySelectorAll("*")].forEach((ele)=>{
+      if(ele.outerHTML == elementhtml){
+        console.log("searched!");
+        //console.log(ele);
+        //
+        //console.log("html searched: ", ele.outerHTML);
+        ele.classList.add("mystyle");
+      }
+    });
+   }
+   

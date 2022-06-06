@@ -22,8 +22,14 @@ $(document).ready(function(){
             var objects = [];
             objects = rectangleSelect(mouseDownX, mouseDownY, mouseUpX, mouseUpY);
             
-            console.log("length: ", objects.length)
+            console.log("length: ", objects.length);
+            console.log(objects); // the objects array works fine 
             
+            for (element in objects){
+                //console.log("begin searching");
+                //console.log("html to search: (out) ", element.outerHTML);
+                searchelement(element.outerHTML);
+            }
         });
     });  
 });
