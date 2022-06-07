@@ -19,16 +19,16 @@ $(document).ready(function(){
 
             console.log("downX: ", mouseDownX, ", downY: ", mouseDownY, ", upX: ", mouseUpX, ", upY: ", mouseUpY);        
             
-            var objects = [];
-            objects = rectangleSelect(mouseDownX, mouseDownY, mouseUpX, mouseUpY);
+            var objectsHTML = [];
+            objectsHTML = rectangleSelect(mouseDownX, mouseDownY, mouseUpX, mouseUpY);
             
-            console.log("length: ", objects.length);
-            console.log(objects); // the objects array works fine 
+            console.log("length: ", objectsHTML.length);
+            console.log(objectsHTML); // the objects array works fine 
             
-            for (element in objects){
+            for (let elementHTML of objectsHTML){
                 //console.log("begin searching");
-                //console.log("html to search: (out) ", element.outerHTML);
-                searchelement(element.outerHTML);
+                console.log("elementHTML is: ", elementHTML);
+                searchelement(elementHTML);
             }
         });
     });  
