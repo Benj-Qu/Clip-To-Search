@@ -1,49 +1,32 @@
-function initDraw(canvas) {
 
-    var mouse = {
-        x: 0,
-        y: 0,
-        startX: 0,
-        startY: 0
-    };
-    
-    function setMousePosition(e) {
-        var ev = e || window.event; //Moz || IE
-        if (ev.pageX) { //Moz
-            mouse.x = ev.pageX + window.pageXOffset;
-            mouse.y = ev.pageY + window.pageYOffset;
-        } else if (ev.clientX) { //IE
-            mouse.x = ev.clientX + document.body.scrollLeft;
-            mouse.y = ev.clientY + document.body.scrollTop;
+    window.addEventListener("mousedown", (e) => {
+        const [startX, startY] = [e.clientX, e.clientY]
+        const divDom = document.createElement("div")
+        divDom.id = 'screenshot'
+        divDom.width = '1px'
+        divDom.height = '1px'
+        divDom.style.position = "absolute"
+        divDom.style.top = startY + "px"
+        divDom.style.left = startX + "px"
+        document.body.appendChild(divDom)
+        const moveEvent = (e) => {
+            const moveX = e.clientX - startX
+            const moveY = e.clientY - startY
+            if (moveX > 0) {
+                divDom.style.width = moveX + 'px'
+            } else {
+                divDom.style.width = -moveX + 'px'
+                divDom.style.left = e.clientX + 'px'
+            }
+            if (moveY > 0) {
+                divDom.style.height = moveY + 'px'
+            } else {
+                divDom.style.height = -moveY + 'px'
+                divDom.style.top = e.clientY + 'px'
+            }
         }
-    };
-
-    var element = null;    
-    canvas.onmousemove = function (e) {
-        setMousePosition(e);
-        if (element !== null) {
-            element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
-            element.style.height = Math.abs(mouse.y - mouse.startY) + 'px';
-            element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
-            element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
-        }
-    }
-
-    canvas.onclick = function (e) {
-        if (element !== null) {
-            element = null;
-            canvas.style.cursor = "default";
-            console.log("finsihed.");
-        } else {
-            console.log("begun.");
-            mouse.startX = mouse.x;
-            mouse.startY = mouse.y;
-            element = document.createElement('div');
-            element.className = 'rectangle'
-            element.style.left = mouse.x + 'px';
-            element.style.top = mouse.y + 'px';
-            canvas.appendChild(element)
-            canvas.style.cursor = "crosshair";
-        }
-    }
-}
+        window.addEventListener("mousemove", moveEvent)
+        window.addEventListener("mouseup", () => {
+            window.removeEventListener("mousemove", moveEvent)
+        })
+    })
