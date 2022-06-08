@@ -38,9 +38,9 @@ function searchelement(elementhtml){
     console.log("html to search: ", elementhtml);
     [...document.querySelectorAll("*")].forEach((ele)=>{
       if(ele.outerHTML == elementhtml){
+          found = true;
         console.log("searched!");
         //console.log(ele);
-        //
         //console.log("html searched: ", ele.outerHTML);
         ele.classList.add("mystyle");
       }
