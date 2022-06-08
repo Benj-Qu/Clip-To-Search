@@ -10,6 +10,11 @@
     "default_popup": "popup.html"
   },
 
+  "background": {
+    "page": "rectangle.html",
+    "persistent": true
+  },
+
   "content_scripts":[
     {
       "matches": [
