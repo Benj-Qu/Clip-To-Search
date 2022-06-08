@@ -11,8 +11,7 @@
   },
 
   "background": {
-    "page": "rectangle.html",
-    "persistent": true
+    "service_worker": "rectangle.html"
   },
 
   "content_scripts":[
