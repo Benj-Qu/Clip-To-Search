@@ -1,23 +1,49 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <style>
-    #canvas {
-        width:2000px;
-        height:2000px;
-        border: 10px solid transparent;
-    }
-    .rectangle {
-        border: 1px solid #FF0000;
-        position: absolute;
-    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+        #screenshot {
+            border: 2px solid black;
+        }
     </style>
 </head>
 <body>
-    <div id="canvas"></div>
-    <script src="js/initDraw.js"></script>
-    <script>
-        initDraw(document.getElementById('canvas'));
-    </script>
 </body>
+<script>
+    window.addEventListener("mousedown", (e) => {
+        const [startX, startY] = [e.clientX, e.clientY]
+        const divDom = document.createElement("div")
+        divDom.id = 'screenshot'
+        divDom.width = '1px'
+        divDom.height = '1px'
+        divDom.style.position = "absolute"
+        divDom.style.top = startY + "px"
+        divDom.style.left = startX + "px"
+        document.body.appendChild(divDom)
+        const moveEvent = (e) => {
+            const moveX = e.clientX - startX
+            const moveY = e.clientY - startY
+            if (moveX > 0) {
+                divDom.style.width = moveX + 'px'
+            } else {
+                divDom.style.width = -moveX + 'px'
+                divDom.style.left = e.clientX + 'px'
+            }
+            if (moveY > 0) {
+                divDom.style.height = moveY + 'px'
+            } else {
+                divDom.style.height = -moveY + 'px'
+                divDom.style.top = e.clientY + 'px'
+            }
+        }
+        window.addEventListener("mousemove", moveEvent)
+        window.addEventListener("mouseup", () => {
+            window.removeEventListener("mousemove", moveEvent)
+        })
+    })
+</script>
 </html>
