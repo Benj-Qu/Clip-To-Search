@@ -4,6 +4,33 @@
     <link rel="stylesheet" href="button.css">
   </head>
   <body>
-    <button id="changeColor"></button>
+    <button id="clr_btn">Clear</button>
+    <script src="popup.js"></script>
   </body>
+
+  <style>
+    #clr_btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 20px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      outline: none;
+      color: #fff;
+      background-color: lightblue;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 9px lightcyan;
+    }
+    
+    #clr_btn:hover {background-color: lightskyblue}
+    
+    #clr_btn:active {
+      background-color: rgb(91, 155, 195);
+      box-shadow: 0 5px lightblue;
+      transform: translateY(1px);
+    }
+    </style>
+
 </html>

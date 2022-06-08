@@ -6,6 +6,18 @@ var mouseDownY = 0;
 var mouseUpX = 0;
 var mouseUpY = 0;
 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if( request.message === "clear" ) {
+            clr_class();
+        }
+    }
+  );
+
+  function clr_class(){
+      $("*").removeClass("mystyle")
+  }
+
 $(document).ready(function(){
     
     $(document).on("mousedown", function(event){
