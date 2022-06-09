@@ -1,18 +1,10 @@
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.executeScript(
         tab.id, 
-        { file: "selectionRectangle.js" }, 
-        function() {
-            if (chrome.runtime.lastError) {
-                alert(chrome.i18n.getMessage("launch_error"));
-            }
-        }
+        { file: "rectangle.js" }, 
     );
     chrome.tabs.insertCSS(
         tab.id, 
-        { file: "selectionRectangle.css" }, 
-        function() { 
-            if (chrome.runtime.lastError) { } 
-        }
+        { file: "rectangle.css" }, 
     );
 });
