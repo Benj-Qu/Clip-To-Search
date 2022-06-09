@@ -204,16 +204,16 @@
     text-decoration: none;
     outline: none;
     color: #fff;
-    background-color: lightblue;
+    background-color: rgb(255, 255, 255);
     border: none;
     border-radius: 5px;
-    box-shadow: 0 3px lightcyan;
+    box-shadow: 0 3px rgb(255, 255, 255);
 }
 
 .cts_clr_btn:hover {background-color: lightskyblue}
 
 .cts_clr_btn:active {
-    background-color: rgb(91, 155, 195);
-    box-shadow: 0 2px lightblue;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 2px rgb(255, 255, 255);
     transform: translateY(1px);
 }
