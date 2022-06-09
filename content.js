@@ -7,7 +7,7 @@ var mouseUpX = 0;
 var mouseUpY = 0;
 
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+    function(request) {
         if( request.message === "clear" ) {
             clr_class();
         }
