@@ -11,12 +11,11 @@ chrome.runtime.onMessage.addListener(
         if( request.message === "clear" ) {
             clr_class();
         }
-    }
-  );
+});
 
-  function clr_class(){
-      $("*").removeClass("mystyle")
-  }
+function clr_class(){
+    $("*").removeClass("mystyle")
+}
 
 $(document).ready(function(){
     

@@ -25,21 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.executeScript(
             tabs[0].id, 
-            { file: "selectionRectangle.js" }, 
-            function() {
-                if (chrome.runtime.lastError) {
-                    window.close();
-                    alert("Sorry, this extension cannot be used on chrome:// URLs or on the Chrome Web Store. Please try again on a different page.");
-                }
-            });
+            { file: "selectionRectangle.js" },);
     });
 
-    let colors = ['yellow', 'blue', 'green', 'red', 'white', 'black'];
-
-    for (let color of colors) {
-        document.getElementById('color_'+color).addEventListener('click', () => enableSelectionRectangle(color));
-    }
-
-    document.getElementById('disable').addEventListener('click', disableSelectionRectangle);
-
+    enableSelectionRectangle(color)
 });
