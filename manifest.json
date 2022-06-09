@@ -14,7 +14,7 @@
         "<all_urls>"
       ],
       "css": ["searchStyle.css", "rectangle.css"],
-      "js": ["jquery.js", "rectangle.js", "functions.js", "content.js"]
+      "js": ["jquery.js", "rectangle.js", "functions.js"]
     }
   ]
   

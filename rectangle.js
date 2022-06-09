@@ -13,7 +13,7 @@ if (!selectionRectangle) {
             this.activeColor = null;
             this.canvas = null;
             this.startX = null, this.startY = null, this.isDraw = false;
-
+            this.enabled = false;
         }
 
         setColor (color) {
@@ -103,21 +103,27 @@ if (!selectionRectangle) {
         }
 
         mouseEvent (eventType, event) {
-            let x = event.clientX;
-            let y = event.clientY;
-            if (eventType == 'down') {
-                this.startX = x;
-                this.startY = y;
-                this.isDraw = true;
-            } else if (eventType == 'move') {
-                if (this.isDraw) {
+            if (this.enabled) {
+                let x = event.clientX;
+                let y = event.clientY;
+                if (eventType == 'down') {
+                    this.startX = x;
+                    this.startY = y;
+                    this.isDraw = true;
+                } else if (eventType == 'move') {
+                    if (this.isDraw) {
+                        this.clearCanvas();
+                        this.drawBox(this.startX, this.startY, x, y, 
+                            this.rectangleBackgroundColor, this.rectangleBorderColor);
+                    }
+                } else if (eventType == 'up' || eventType == 'out') {
+                    var objectsHTML = rectangleSelect(this.startX, this.startY, x, y);
+                    for (let elementHTML of objectsHTML){
+                        searchelement(elementHTML);
+                    }
+                    this.isDraw = false;
                     this.clearCanvas();
-                    this.drawBox(this.startX, this.startY, x, y, 
-                        this.rectangleBackgroundColor, this.rectangleBorderColor);
                 }
-            } else if (eventType == 'up' || eventType == 'out') {
-                this.isDraw = false;
-                this.clearCanvas();
             }
         }
 
@@ -249,7 +255,7 @@ if (!selectionRectangle) {
                 if (!this.canvas) return;      
                 document.body.removeChild(this.canvas);
                 this.canvas = null;
-                enabled = false;
+                this.enabled = false;
             } else {
                 this.enable();
                 
@@ -270,7 +276,7 @@ if (!selectionRectangle) {
                 this.createOptions();
             }
             this.setColor("yellow");
-            enabled = true;
+            this.enabled = true;
         }
 
         init () {
@@ -287,7 +293,7 @@ if (!selectionRectangle) {
             document.body.removeChild(this.options);
             this.canvas = null;
             this.options = null;
-            enabled = false;
+            this.enabled = false;
         }
 
         isEnabled () {
