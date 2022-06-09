@@ -19,7 +19,7 @@
       "matches": [
         "<all_urls>"
       ],
-      "css": ["searchStyle.css"],
+      "css": ["searchStyle.css", "rectangle.css"],
       "js": [ "jquery.js", "rectangle.js","functions.js", "content.js"]
     }
   ]
