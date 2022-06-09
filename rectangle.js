@@ -164,7 +164,7 @@ if (!selectionRectangle) {
             }
 
             document.getElementById("clr_btn").addEventListener("click", () => {
-                $("*").removeClass("mystyle")
+                $("*").removeClass("mystyle");
             });
 
             document.getElementById('srh_active').addEventListener("click", () => {
@@ -294,6 +294,7 @@ if (!selectionRectangle) {
                 this.options = null;
             }
             this.enabled = false;
+            $("*").removeClass("mystyle");
         }
 
         isEnabled () {
