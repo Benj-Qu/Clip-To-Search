@@ -144,6 +144,65 @@ if (!selectionRectangle) {
             }
         }
 
+        setColor(color)
+        createOptions () {
+            let options = document.createElement('div');
+            options.id = this.optionsElementId;
+            options.setAttribute('class', 'srh_options');
+            options.innerHTML = SelectionRectangle.optionsHtml;
+
+            document.body.appendChild(options);
+            this.options = options;
+
+            let colors = ['yellow', 'blue', 'green', 'red', 'white', 'black'];
+            for (let color of colors) {
+                document.getElementById('srh_color_'+color).addEventListener('click', 
+                    () => this.setColor(color));
+            }
+            document.getElementById('srh_close').addEventListener("click", 
+                () => this.remove());
+
+            document.getElementById('srh_maximize').addEventListener("click", () => {
+                    document.getElementById("srh_minimized").setAttribute('style', 'display: none');
+                    document.getElementById("srh_maximized").setAttribute('style', 'display: block');
+                });
+            document.getElementById('srh_minimize').addEventListener("click", () => {
+                    document.getElementById("srh_maximized").setAttribute('style', 'display: none');
+                    document.getElementById("srh_minimized").setAttribute('style', 'display: block');
+                });
+
+            document.getElementById('srh_permanent').addEventListener('click', 
+                () => this.switchPermanentMode(false));
+
+            document.getElementById('srh_help').addEventListener('click', () => {
+                    let helpModal = document.createElement("div");
+                    helpModal.id = "srh_modal";
+                    helpModal.setAttribute('class', 'srh_modal');
+                    helpModal.innerHTML = SelectionRectangle.helpHtml;
+                    document.body.appendChild(helpModal);
+                    document.getElementById('srh_modal_text').innerHTML = chrome.i18n.getMessage("help_text");
+                    let removeModal = () => document.body.removeChild(document.getElementById('srh_modal'));
+                    document.getElementById('srh_modal_close').addEventListener("click", removeModal);
+                });
+
+            this.options.addEventListener("mousedown", e => this.optionsDrag(e));
+            document.addEventListener("mouseup", e => this.optionsDrop(e));
+            document.addEventListener("mousemove", e => this.optionsMove(e));
+            this.optionsDragData = { isDragged: false, sX: 0, sY: 0 };
+
+            // i18n
+            let translateInnerHtml = ["options_heading", "permanent_mode"];
+            for (let t of translateInnerHtml) {
+                document.getElementById('srh_'+t).innerHTML = chrome.i18n.getMessage(t);
+            }
+
+            let translateTitle = ["minimize", "maximize", "help", "color_yellow", "color_blue", "color_green", "color_red", "color_white", "color_black"];
+            for (let t of translateTitle) {
+                document.getElementById('srh_'+t).setAttribute("title", chrome.i18n.getMessage(t));
+            }
+
+        }
+
         optionsDrag (e) {
             this.optionsDragData.isDragged = true;
             this.optionsDragData.sX = e.clientX;
