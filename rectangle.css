@@ -74,30 +74,6 @@
     margin: 0 !important;
 }
 
-/** Thanks to boolie.org for this simple way of styling a checkbox */
-.srh_flags input[type="checkbox"] {
-    display: none;
-}
-.srh_flags input[type="checkbox"]+label::before {
-    box-sizing: content-box !important;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #D3D3D3;
-    border-radius: 4px;
-    background-color: #E3E3E3;
-    display: block !important;
-    content: "";
-    float: left;
-    margin-right: 6px;
-    margin-left: 5px;
-    cursor: pointer;
-}
-.srh_flags input[type="checkbox"]:checked+label::before {
-    box-shadow: inset 0px 0px 0px 3px #E3E3E3;
-    background-color: #888 !important;
-    border-color: #888 !important;
-}
-
 .srh_control_button {
     font-size: 13px !important;
     font-weight: bold !important;
@@ -194,4 +170,27 @@
     float: right !important;
     font-weight: bold !important;
     cursor: pointer !important;
+}
+
+.cts_clr_btn {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: lightblue;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 3px lightcyan;
+}
+
+.cts_clr_btn:hover {background-color: lightskyblue}
+
+.cts_clr_btn:active {
+    background-color: rgb(91, 155, 195);
+    box-shadow: 0 2px lightblue;
+    transform: translateY(1px);
 }

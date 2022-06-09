@@ -127,10 +127,7 @@ if (!selectionRectangle) {
             <div class="srh_colors">
                 <div class="srh_color_button srh_yellow" id="srh_color_yellow"> </div><div class="srh_color_button srh_blue" id="srh_color_blue"></div><div class="srh_color_button srh_green" id="srh_color_green"></div><div class="srh_color_button srh_red" id="srh_color_red"></div><div class="srh_color_button srh_white" id="srh_color_white"></div><div class="srh_color_button srh_black" id="srh_color_black"></div>
             </div>
-            <div class="srh_flags">
-                <input type="checkbox" id="srh_permanent" name="permanent"/>
-                <label id="srh_permanent_mode" for="srh_permanent">Permanent mode</label> 
-            </div>
+            <div class="cts_clr_btn" id="clr_btn">Clear<></div>
             <div class="srh_control_button srh_control_minmax" id="srh_minimize" title="Minimize">▲</div>
         </div>
         <div id="srh_minimized" style="display: none">

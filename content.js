@@ -28,28 +28,29 @@ function clr_class(){
 $(document).ready(function(){
     
     $(document).on("mousedown", function(event){
+        if (enabled) {
 
+            mouseDownX = event.clientX;
+            mouseDownY = event.clientY;
 
-        mouseDownX = event.clientX;
-        mouseDownY = event.clientY;
+            $(document).on("mouseup", function(event){
+                mouseUpX = event.clientX;
+                mouseUpY = event.clientY;
 
-        $(document).on("mouseup", function(event){
-            mouseUpX = event.clientX;
-            mouseUpY = event.clientY;
-
-            console.log("downX: ", mouseDownX, ", downY: ", mouseDownY, ", upX: ", mouseUpX, ", upY: ", mouseUpY);        
+                console.log("downX: ", mouseDownX, ", downY: ", mouseDownY, ", upX: ", mouseUpX, ", upY: ", mouseUpY);        
             
-            var objectsHTML = [];
-            objectsHTML = rectangleSelect(mouseDownX, mouseDownY, mouseUpX, mouseUpY);
+                var objectsHTML = [];
+                objectsHTML = rectangleSelect(mouseDownX, mouseDownY, mouseUpX, mouseUpY);
             
-            console.log("length: ", objectsHTML.length);
-            console.log(objectsHTML); // the objects array works fine 
-            
-            for (let elementHTML of objectsHTML){
-                //console.log("begin searching");
-                console.log("elementHTML is: ", elementHTML);
-                searchelement(elementHTML);
-            }
-        });
+                console.log("length: ", objectsHTML.length);
+                console.log(objectsHTML); // the objects array works fine 
+                
+                for (let elementHTML of objectsHTML){
+                    //console.log("begin searching");
+                    console.log("elementHTML is: ", elementHTML);
+                    searchelement(elementHTML);
+                }
+            });
+        }
     });  
 });
