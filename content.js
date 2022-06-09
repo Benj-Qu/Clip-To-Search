@@ -36,7 +36,5 @@ $(document).ready (function(){
         }
     });  
 
-    document.getElementById("clr_btn").addEventListener("click", () => {
-        $("*").removeClass("mystyle")
-    });
+    
 });
