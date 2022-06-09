@@ -1,3 +1,8 @@
+/* Selection Rectangle Highlighting v2.0
+ * Main JS file
+ * Author: Martin Huber (mjh.at)
+ */
+
 var selectionRectangle;
 
 if (!selectionRectangle) {
@@ -144,7 +149,28 @@ if (!selectionRectangle) {
             }
         }
 
-        setColor(color)
+        static optionsHtml = `
+        
+        <div id="srh_maximized">
+            <div id="srh_options_heading" class="srh_h1">Options</div>
+            <div class="srh_colors">
+                <div class="srh_color_button srh_yellow" id="srh_color_yellow"> </div><div class="srh_color_button srh_blue" id="srh_color_blue"></div><div class="srh_color_button srh_green" id="srh_color_green"></div><div class="srh_color_button srh_red" id="srh_color_red"></div><div class="srh_color_button srh_white" id="srh_color_white"></div><div class="srh_color_button srh_black" id="srh_color_black"></div>
+            </div>
+            <div class="srh_flags">
+                <input type="checkbox" id="srh_permanent" name="permanent"/>
+                <label id="srh_permanent_mode" for="srh_permanent">Permanent mode</label> 
+            </div>
+            <div class="srh_control_button srh_control_minmax" id="srh_minimize" title="Minimize">▲</div>
+        </div>
+        <div id="srh_minimized" style="display: none">
+            <div id="srh_options_heading_minimized" class="srh_h1">Options</div>
+            <div class="srh_control_button srh_control_minmax" id="srh_maximize" title="Maximize">▼</div>
+        </div>
+        <div class="srh_control_button srh_control_help" id="srh_help" title="Help">?</div>
+        <div class="srh_control_button srh_control_close" id="srh_close" title="Close (or press ESC)">&times;</div>`;
+
+        static helpHtml = `<div class="srh_modal_content"><span id="srh_modal_close" class="srh_modal_close">&times;</span><p id="srh_modal_text">...</p></div>`;
+
         createOptions () {
             let options = document.createElement('div');
             options.id = this.optionsElementId;
