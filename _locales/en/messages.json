@@ -54,13 +54,5 @@
    "options_heading": {
       "description": "Options window title.",
       "message": "Options"
-   },
-   "permanent_mode": {
-      "description": "Permanent mode checkbox label.",
-      "message": "Permanent mode"
-   },
-   "permanent_mode_short": {
-      "description": "Permanent mode short name. Used when the options window is minimized.",
-      "message": "perm"
    }
 }

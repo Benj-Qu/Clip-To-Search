@@ -12,7 +12,7 @@ if (!selectionRectangle) {
             this.activeColor = null;
             this.canvas = null;
             this.startX = null, this.startY = null, this.isDraw = false;
-            this.permanentSelectionBoxes = [];
+
         }
 
         setColor (color) {
@@ -72,15 +72,6 @@ if (!selectionRectangle) {
 
             let context = this.canvas.getContext("2d");
             context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.drawPermanentSelectionBoxes();
-        }
-
-        drawPermanentSelectionBoxes () {
-            let scrollLeft = document.documentElement.scrollLeft;
-            let scrollTop = document.documentElement.scrollTop;            
-            for (let box of this.permanentSelectionBoxes) {
-                this.drawBox(box.sX - scrollLeft, box.sY - scrollTop, box.eX - scrollLeft, box.eY - scrollTop, box.bgColor, box.borderColor);
-            }
         }
 
         drawBox (sX, sY, eX, eY, bgColor, borderColor) {
@@ -124,22 +115,6 @@ if (!selectionRectangle) {
                         this.rectangleBackgroundColor, this.rectangleBorderColor);
                 }
             } else if (eventType == 'up' || eventType == 'out') {
-                if (this.isDraw && this.isPermanentMode()) {
-                    let scrollLeft = document.documentElement.scrollLeft;
-                    let scrollTop = document.documentElement.scrollTop;
-                    if (Math.abs(this.startX - x) <= 2 && 
-                        Math.abs(this.startY - y) <= 2) {
-                            // interpret this as a click rather than drawing
-                            this.removePermanentBox(scrollLeft + x, scrollTop + y);
-                    } else {
-                        this.permanentSelectionBoxes.push({ 
-                            sX: scrollLeft + this.startX, sY: scrollTop + this.startY, 
-                            eX: scrollLeft + x, eY: scrollTop + y,
-                            bgColor: this.rectangleBackgroundColor,
-                            borderColor: this.rectangleBorderColor
-                        });
-                    }
-                }
                 this.isDraw = false;
                 this.clearCanvas();
             }
@@ -193,9 +168,6 @@ if (!selectionRectangle) {
                     document.getElementById("srh_minimized").setAttribute('style', 'display: block');
                 });
 
-            document.getElementById('srh_permanent').addEventListener('click', 
-                () => this.switchPermanentMode(false));
-
             document.getElementById('srh_help').addEventListener('click', () => {
                     let helpModal = document.createElement("div");
                     helpModal.id = "srh_modal";
@@ -213,7 +185,7 @@ if (!selectionRectangle) {
             this.optionsDragData = { isDragged: false, sX: 0, sY: 0 };
 
             // i18n
-            let translateInnerHtml = ["options_heading", "permanent_mode"];
+            let translateInnerHtml = ["options_heading"];
             for (let t of translateInnerHtml) {
                 document.getElementById('srh_'+t).innerHTML = chrome.i18n.getMessage(t);
             }
@@ -248,49 +220,9 @@ if (!selectionRectangle) {
             this.optionsDragData.isDragged = false;
         }
 
-        removePermanentBox (x, y) {
-            for (let i = this.permanentSelectionBoxes.length - 1; i >= 0; --i) {
-                let box = this.permanentSelectionBoxes[i];
-
-                let minX = Math.min(box.sX, box.eX);
-                let minY = Math.min(box.sY, box.eY);
-                let maxX = Math.max(box.sX, box.eX);
-                let maxY = Math.max(box.sY, box.eY);
-
-                if (minX <= x && minY <= y && maxX >= x && maxY >= y) {
-                    this.permanentSelectionBoxes.splice(i, 1);
-                    break;
-                }
-            }
-        }
-
-        removeAllPermanentBoxes () {
-            this.permanentSelectionBoxes = [];
-            this.clearCanvas();
-        }
-
-        switchPermanentMode (changeCheckedStatus) {
-            if (changeCheckedStatus) {
-                let checkbox = document.getElementById("srh_permanent");
-                checkbox.checked = !checkbox.checked;
-            }
-            if (!this.isPermanentMode()) {
-                this.removeAllPermanentBoxes();
-            }
-            this.updateMinimizedOptionsTitle();
-        }
-
-        isPermanentMode () {
-            let checkBox = document.getElementById("srh_permanent");
-            return checkBox && checkBox.checked;
-        }
-
         updateMinimizedOptionsTitle () {
             if (this.isEnabled() && this.activeColor) {
                 let title =  chrome.i18n.getMessage("color_"+this.activeColor);
-                if (this.isPermanentMode()) {
-                    title += " ("+chrome.i18n.getMessage("permanent_mode_short")+")";
-                }
                 document.getElementById("srh_options_heading_minimized").innerHTML = title;
             }
         }
@@ -310,7 +242,6 @@ if (!selectionRectangle) {
             
             document.body.removeChild(this.canvas);
             document.body.removeChild(this.options);
-            this.permanentSelectionBoxes = [];
             this.canvas = null;
             this.options = null;
         }
@@ -324,38 +255,6 @@ if (!selectionRectangle) {
     selectionRectangle = new SelectionRectangle('selectionRectangle_canvas','selectionRectangle_options');
 
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
-    document.addEventListener("scroll", () => selectionRectangle.clearCanvas());
-    document.addEventListener("keydown", (e) => {
-        if (selectionRectangle.isEnabled()) {
-            if (e.key === "Escape") {
-                selectionRectangle.remove();
-                e.stopPropagation();
-            } else if (e.key === "c") {
-                selectionRectangle.removeAllPermanentBoxes();
-                e.stopPropagation();
-            } else if (e.key === "p") {
-                selectionRectangle.switchPermanentMode(true);
-                e.stopPropagation();
-            }
-
-            let colorKeys = {
-                "1" : "yellow",
-                "2" : "blue",
-                "3" : "green",
-                "4" : "red",
-                "5" : "white",
-                "6" : "black"
-            };
-
-            for (let key in colorKeys) {
-                if (e.key === key) {
-                    selectionRectangle.setColor(colorKeys[key]);
-                    e.stopPropagation();
-                    break;
-                }
-            }
-        }
-    });
 
     selectionRectangle.enable();
 
