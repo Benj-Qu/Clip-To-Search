@@ -243,6 +243,8 @@ if (!selectionRectangle) {
                 if (!this.canvas) return;      
                 document.body.removeChild(this.canvas);
                 this.canvas = null;
+            } else {
+                this.enable();
             }
             this.updateMinimizedOptionsTitle();
         }
@@ -259,7 +261,7 @@ if (!selectionRectangle) {
             if (!document.getElementById(this.optionsElementId)) {
                 this.createOptions();
             }
-            this.setColor("yellow");    // IMPROVEMENT: Take from storage
+            this.setColor("yellow");
         }
 
         remove () {
