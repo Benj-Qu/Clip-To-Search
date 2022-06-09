@@ -294,7 +294,10 @@ if (!selectionRectangle) {
     if (selectionRectangle.isEnabled()) {
         selectionRectangle.remove();
     } else {
-        selectionRectangle.enable();
+        if (!document.getElementById(this.optionsElementId)) {
+            this.createOptions();
+        }
+        this.setColor("yellow");
     }
 
 }
