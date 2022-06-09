@@ -101,7 +101,6 @@ if (!selectionRectangle) {
         }
 
         mouseEvent (eventType, event) {
-            if (this.enabled) {
                 let x = event.clientX;
                 let y = event.clientY;
                 if (eventType == 'down') {
@@ -115,7 +114,7 @@ if (!selectionRectangle) {
                             this.rectangleBackgroundColor, this.rectangleBorderColor);
                     }
                 } else if (eventType == 'up' || eventType == 'out') {
-                    if (eventType == 'up') {
+                    if (eventType == 'up' && this.enabled) {
                         var objectsHTML = rectangleSelect(this.startX, this.startY, x, y);
                         for (let elementHTML of objectsHTML){
                             searchelement(elementHTML);
@@ -124,7 +123,6 @@ if (!selectionRectangle) {
                     this.isDraw = false;
                     this.clearCanvas();
                 }
-            }
         }
 
         static optionsHtml = `
