@@ -295,7 +295,7 @@ if (!selectionRectangle) {
         }
 
         isEnabled () {
-            return this.canvas && this.options ? true : false;
+            return this.options ? true : false;
         }
 
     }
