@@ -9,6 +9,11 @@ function disableTextSelection(){
 // In: four coordinates corresponding to four vertices of the bounding box
 // Out: an array of DOM elements in this bounding box
 function rectangleSelect(x1, y1, x2, y2) {
+    let x_large = x1 > x2 ? x1 : x2,
+        x_small = x1 < x2 ? x1 : x2,
+        y_large = y1 > y2 ? y1 : y2,
+        y_small = y1 < y2 ? y1 : y2;
+
     console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
     const allElements = document.getElementsByTagName('*');
     var objects = [];
@@ -19,7 +24,7 @@ function rectangleSelect(x1, y1, x2, y2) {
             x_r = rect.right + parseInt(getComputedStyle(element).paddingRight),
             y_t = rect.top + parseInt(getComputedStyle(element).paddingTop),
             y_d = rect.bottom + parseInt(getComputedStyle(element).paddingBottom);
-        if (x_l >= x1 && x_r <= x2 && y_t >= y1 && y_d <= y2) {
+        if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
             if (x_l != x_r && y_t != y_d) {
                 console.log("find rect!")
                 //console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
