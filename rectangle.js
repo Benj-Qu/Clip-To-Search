@@ -268,6 +268,13 @@ if (!selectionRectangle) {
             this.setColor("yellow");
         }
 
+        init () {
+            if (!document.getElementById(this.optionsElementId)) {
+                this.createOptions();
+            }
+            this.setColor("yellow");
+        }
+
         remove () {
             if (!this.canvas && !this.options) return;
             
@@ -287,17 +294,14 @@ if (!selectionRectangle) {
 
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
 
-    selectionRectangle.enable();
+    selectionRectangle.init();
 
 } else {
 
     if (selectionRectangle.isEnabled()) {
         selectionRectangle.remove();
     } else {
-        if (!document.getElementById(this.optionsElementId)) {
-            this.createOptions();
-        }
-        this.setColor("yellow");
+        selectionRectangle.init();
     }
 
 }
