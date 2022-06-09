@@ -11,7 +11,7 @@
   },
 
   "background": {
-    "service_worker": "rectangle.html"
+    "service_worker": "background.js"
   },
 
   "content_scripts":[
