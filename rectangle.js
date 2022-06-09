@@ -115,10 +115,12 @@ if (!selectionRectangle) {
                             this.rectangleBackgroundColor, this.rectangleBorderColor);
                     }
                 } else if (eventType == 'up' || eventType == 'out') {
-                    var objectsHTML = rectangleSelect(this.startX, this.startY, x, y);
-                    for (let elementHTML of objectsHTML){
-                        searchelement(elementHTML);
-                    }
+                    if (eventType == 'up') {
+                        var objectsHTML = rectangleSelect(this.startX, this.startY, x, y);
+                        for (let elementHTML of objectsHTML){
+                            searchelement(elementHTML);
+                        }
+                    } 
                     this.isDraw = false;
                     this.clearCanvas();
                 }
