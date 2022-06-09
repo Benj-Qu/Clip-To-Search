@@ -7,7 +7,7 @@ var mouseUpY = 0;
 
 var enabled = true;
 
-$(document) (function(){
+$(document).ready (function(){
     
     $(document).on("mousedown", function(event){
         if (enabled) {
