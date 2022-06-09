@@ -285,12 +285,14 @@ if (!selectionRectangle) {
         }
 
         remove () {
-            if (!this.canvas && !this.options) return;
-            
-            document.body.removeChild(this.canvas);
-            document.body.removeChild(this.options);
-            this.canvas = null;
-            this.options = null;
+            if (this.canvas) {
+                document.body.removeChild(this.canvas);
+                this.canvas = null;
+            }
+            if (this.options) {
+                document.body.removeChild(this.options);
+                this.options = null;
+            }
             this.enabled = false;
         }
 
