@@ -117,7 +117,7 @@ if (!selectionRectangle) {
                     if (eventType == 'up' && this.enabled) {
                         var objectsHTML = rectangleSelect(this.startX, this.startY, x, y);
                         for (let elementHTML of objectsHTML){
-                            searchelement(elementHTML);
+                            searchelement(elementHTML[0]);
                         }
                     } 
                     this.isDraw = false;

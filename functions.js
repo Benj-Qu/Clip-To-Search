@@ -14,9 +14,12 @@ function rectangleSelect(x1, y1, x2, y2) {
         y_large = y1 > y2 ? y1 : y2,
         y_small = y1 < y2 ? y1 : y2;
 
-    console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
+    // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
     const allElements = document.getElementsByTagName('*');
     var objects = [];
+
+    var x_origin = 0, 
+        y_origin = 0;
 
     for (const element of allElements) {
         let rect = element.getBoundingClientRect();
@@ -28,7 +31,14 @@ function rectangleSelect(x1, y1, x2, y2) {
             if (x_l != x_r && y_t != y_d) {
                 console.log("find rect!")
                 //console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
-                objects.push(element.outerHTML);
+                if (objects.length == 0) {
+                    objects.push([element.outerHTML, 0, 0]);
+                    x_origin = x_l;
+                    y_origin = y_t;
+                } else {
+                    objects.push([element.outerHTML, x_l - x_origin, y_t - y_origin]);
+                }
+                
                 //console.log("html: ", element.outerHTML)
 
             }
@@ -42,13 +52,13 @@ function rectangleSelect(x1, y1, x2, y2) {
 function searchelement(elementhtml){
     console.log("html to search: ", elementhtml);
     [...document.querySelectorAll("*")].forEach((ele)=>{
-      if(ele.outerHTML == elementhtml){
-          found = true;
-        console.log("searched!");
-        //console.log(ele);
-        //console.log("html searched: ", ele.outerHTML);
-        ele.classList.add("mystyle");
-      }
+        if(ele.outerHTML == elementhtml){
+            found = true;
+            console.log("searched!");
+            //console.log(ele);
+            //console.log("html searched: ", ele.outerHTML);
+            ele.classList.add("mystyle");
+        }
     });
-   }
+}
    
