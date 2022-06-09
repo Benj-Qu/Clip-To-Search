@@ -157,6 +157,10 @@ if (!selectionRectangle) {
                     () => this.setColor(color));
             }
 
+            document.getElementById("clr_btn").addEventListener("click", () => {
+                $("*").removeClass("mystyle")
+            });
+
             document.getElementById('srh_active').addEventListener("click", () => {
                 this.switchActiveMode(false);
             });
