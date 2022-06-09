@@ -1,7 +1,3 @@
-/* Selection Rectangle Highlighting v2.0
- * Main JS file
- * Author: Martin Huber (mjh.at)
- */
 
 var selectionRectangle;
 
