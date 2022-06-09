@@ -1,43 +1,3 @@
-console.log("Clip to Search, Start");
-disableTextSelection()
-
-var mouseDownX = 0;
-var mouseDownY = 0;
-var mouseUpX = 0;
-var mouseUpY = 0;
-
-var enabled = true;
-
-$(document) (function(){
-    
-    $(document).on("mousedown", function(event){
-        if (enabled) {
-
-            mouseDownX = event.clientX;
-            mouseDownY = event.clientY;
-
-            $(document).on("mouseup", function(event){
-                mouseUpX = event.clientX;
-                mouseUpY = event.clientY;
-
-                console.log("downX: ", mouseDownX, ", downY: ", mouseDownY, ", upX: ", mouseUpX, ", upY: ", mouseUpY);        
-            
-                var objectsHTML = [];
-                objectsHTML = rectangleSelect(mouseDownX, mouseDownY, mouseUpX, mouseUpY);
-            
-                console.log("length: ", objectsHTML.length);
-                console.log(objectsHTML); // the objects array works fine 
-                
-                for (let elementHTML of objectsHTML){
-                    //console.log("begin searching");
-                    console.log("elementHTML is: ", elementHTML);
-                    searchelement(elementHTML);
-                }
-            });
-        }
-    });  
-});
-
 var selectionRectangle;
 
 if (!selectionRectangle) {
@@ -92,7 +52,6 @@ if (!selectionRectangle) {
         }
 
         createCanvas () {
-            enabled = true;
             let canvas = document.createElement('canvas');
             canvas.id = this.canvasElementId;
             canvas.className = 'srh_canvas';
@@ -168,6 +127,10 @@ if (!selectionRectangle) {
                 <div class="srh_color_button srh_yellow" id="srh_color_yellow"> </div><div class="srh_color_button srh_blue" id="srh_color_blue"></div><div class="srh_color_button srh_green" id="srh_color_green"></div><div class="srh_color_button srh_red" id="srh_color_red"></div><div class="srh_color_button srh_white" id="srh_color_white"></div><div class="srh_color_button srh_black" id="srh_color_black"></div>
             </div>
             <div class="cts_clr_btn" id="clr_btn">Clear</div>
+            <div class="srh_flags">
+                <input type="checkbox" id="srh_active" name="active"/>
+                <label id="srh_active" for="srh_active">Active</label> 
+            </div>
             <div class="srh_control_button srh_control_minmax" id="srh_minimize" title="Minimize">▲</div>
         </div>
         <div id="srh_minimized" style="display: none">
@@ -194,13 +157,13 @@ if (!selectionRectangle) {
                     () => this.setColor(color));
             }
 
-            document.getElementById("clr_btn").addEventListener("click", () => {
-                $("*").removeClass("mystyle")
-                });
+            document.getElementById('srh_active').addEventListener("click", () => {
+                this.switchActiveMode(false);
+            });
+
 
             document.getElementById('srh_close').addEventListener("click", () => {
                     this.remove();
-                    enabled = false;
                 });
 
             document.getElementById('srh_maximize').addEventListener("click", () => {
@@ -269,6 +232,24 @@ if (!selectionRectangle) {
                 let title =  chrome.i18n.getMessage("color_"+this.activeColor);
                 document.getElementById("srh_options_heading_minimized").innerHTML = title;
             }
+        }
+
+        switchActiveMode (changeCheckedStatus) {
+            if (changeCheckedStatus) {
+                let checkbox = document.getElementById("srh_active");
+                checkbox.checked = !checkbox.checked;
+            }
+            if (!this.isActiveMode()) {
+                if (!this.canvas) return;      
+                document.body.removeChild(this.canvas);
+                this.canvas = null;
+            }
+            this.updateMinimizedOptionsTitle();
+        }
+
+        isActiveMode () {
+            let checkBox = document.getElementById("srh_active");
+            return checkBox && checkBox.checked;
         }
 
         enable () {
