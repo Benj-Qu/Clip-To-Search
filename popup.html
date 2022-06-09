@@ -1,37 +1,109 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="button.css">
-  </head>
-  <body>
+<head>
+  <link rel="stylesheet" href="button.css">
+    <title>Clip To Search popup window</title>
+    <style>
+        body {
+            overflow: hidden;
+            margin: 10px;
+            padding: 0px;
+            background: #FFF;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: #000;
+            min-width: 275px;
+        }
+        /*
+        button {
+            background-color: #CCC;
+            border: none;
+            padding: 5px 8px;
+            margin: 1px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: bold;
+            width: 100%;
+        }
+        */
+        h1 {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1em;
+            margin: 10px 0 4px 0;
+        }
+
+        .yellow {
+            background-color: #FFC107;
+            border-color: #FFC107;
+            color: #222;
+        }
+        .blue {
+            background-color: #007BFF;
+            border-color: #007BFF;
+            color: #FFF;
+        }
+        .green {
+            background-color: #28A745;
+            border-color: #28A745;
+            color: #FFF;
+        }
+        .red {
+            background-color: #DC3545;
+            border-color: #DC3545;
+            color: #FFF;
+        }
+        .white {
+            background-color: #FFF;
+            color: #222;
+            border-color: #666;
+        }
+
+        button {
+            border: 0;
+            border-radius: 4px;
+            border: 1px #343A40 solid;
+            background-color: #343A40;
+            color: #FFF;
+            padding: 6px 10px;
+            margin: 2px;
+        }
+
+        #clr_btn {
+          display: inline-block;
+          padding: 10px 20px;
+          font-size: 20px;
+          cursor: pointer;
+          text-align: center;
+          text-decoration: none;
+          outline: none;
+          color: #fff;
+          background-color: lightblue;
+          border: none;
+          border-radius: 10px;
+          box-shadow: 0 9px lightcyan;
+        }
+        #clr_btn:hover {background-color: lightskyblue}
+    
+        #clr_btn:active {
+          background-color: rgb(91, 155, 195);
+          box-shadow: 0 5px lightblue;
+          transform: translateY(1px);
+        }
+    </style>
+    <script src="popup.js"></script>
+</head>
+<body>
+    <h1>Selection rectangle highlighting</h1>
+    <p>Select color to enable:</p>
+    <button id="color_yellow" class="yellow">Yellow</button><button id="color_blue" class="blue">Blue</button><button id="color_green" class="green">Green</button><button id="color_red" class="red">Red</button><button id="color_white" class="white">White</button><button id="color_black">Black</button>
+    <p>Disable selection mode:</p>
+    <button id="disable">Disable</button> (or press ESC)
     <button id="clr_btn">Clear</button>
     <script src="popup.js"></script>
-  </body>
-
-  <style>
-    #clr_btn {
-      display: inline-block;
-      padding: 10px 20px;
-      font-size: 20px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      outline: none;
-      color: #fff;
-      background-color: lightblue;
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0 9px lightcyan;
-    }
-    
-    #clr_btn:hover {background-color: lightskyblue}
-    
-    #clr_btn:active {
-      background-color: rgb(91, 155, 195);
-      box-shadow: 0 5px lightblue;
-      transform: translateY(1px);
-    }
-    </style>
-
+</body>
 </html>
 
