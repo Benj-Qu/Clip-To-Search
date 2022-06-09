@@ -6,25 +6,6 @@ var mouseDownY = 0;
 var mouseUpX = 0;
 var mouseUpY = 0;
 
-var enabled = true;
-
-chrome.runtime.onMessage.addListener(
-    function(request) {
-        if( request.message === "clear" ) {
-            clr_class();
-        }
-        if (request.message === "disable search") {
-            enabled = false;
-        }
-        if (request.message === "enable search") {
-            enabled = true;
-        }
-});
-
-function clr_class(){
-    $("*").removeClass("mystyle")
-}
-
 $(document).ready(function(){
     
     $(document).on("mousedown", function(event){

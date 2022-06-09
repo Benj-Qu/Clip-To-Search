@@ -53,6 +53,7 @@ if (!selectionRectangle) {
         }
 
         createCanvas () {
+            enabled = true;
             let canvas = document.createElement('canvas');
             canvas.id = this.canvasElementId;
             canvas.className = 'srh_canvas';
@@ -155,14 +156,12 @@ if (!selectionRectangle) {
             }
 
             document.getElementById("clr_btn").addEventListener("click", () => {
-                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                        chrome.tabs.sendMessage(tabs[0].id, {"message": "clear"});
-                    });
+                $("*").removeClass("mystyle")
                 });
 
             document.getElementById('srh_close').addEventListener("click", () => {
                     this.remove();
-                    
+                    enabled = false;
                 });
 
             document.getElementById('srh_maximize').addEventListener("click", () => {
