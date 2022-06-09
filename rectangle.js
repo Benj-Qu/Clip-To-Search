@@ -1,7 +1,5 @@
 var selectionRectangle;
 
-import { enabled } from 'content.js'
-
 if (!selectionRectangle) {
 
     class SelectionRectangle {
