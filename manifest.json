@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "manifest_version": 3,
 
-  "permissions": [ "https://*/*", "http://*/*", "https://www.google-analytics.com/", "downloads", "contextMenus", "tabs", "activeTab", "storage", "unlimitedStorage", "activeTab", "\u003Call_urls>", "background", "chrome://favicon/", "clipboardRead", "clipboardWrite" ],
+  "permissions": [ "activeTab" ],
   
   "background": {
     "service_worker": "background.js"
