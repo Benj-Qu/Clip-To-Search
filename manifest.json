@@ -6,10 +6,6 @@
 
   "permissions": [ "https://*/*", "http://*/*", "https://www.google-analytics.com/", "downloads", "contextMenus", "tabs", "storage", "unlimitedStorage", "activeTab", "\u003Call_urls>", "background", "chrome://favicon/", "clipboardRead", "clipboardWrite" ],
   
-  "background": {
-    "service_worker": "background.js"
-  },
-
   "default_locale": "en",
 
   "content_scripts":[

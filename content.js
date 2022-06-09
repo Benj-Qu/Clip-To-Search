@@ -5,7 +5,7 @@ var mouseDownY = 0;
 var mouseUpX = 0;
 var mouseUpY = 0;
 
-var enabled = true;
+var enabled = false;
 
 $(document).ready (function(){
     
@@ -35,7 +35,6 @@ $(document).ready (function(){
             });
         }
     });  
-
-    
-    
 });
+
+export { enabled };

@@ -1,5 +1,7 @@
 var selectionRectangle;
 
+import { enabled } from 'content.js'
+
 if (!selectionRectangle) {
 
     class SelectionRectangle {
@@ -247,8 +249,10 @@ if (!selectionRectangle) {
                 if (!this.canvas) return;      
                 document.body.removeChild(this.canvas);
                 this.canvas = null;
+                enabled = false;
             } else {
                 this.enable();
+                
             }
             this.updateMinimizedOptionsTitle();
         }
@@ -266,6 +270,7 @@ if (!selectionRectangle) {
                 this.createOptions();
             }
             this.setColor("yellow");
+            enabled = true;
         }
 
         init () {
@@ -282,6 +287,7 @@ if (!selectionRectangle) {
             document.body.removeChild(this.options);
             this.canvas = null;
             this.options = null;
+            enabled = false;
         }
 
         isEnabled () {
