@@ -318,6 +318,10 @@ if (!selectionRectangle) {
                 console.log("Clear request received.");
                 $("*").removeClass("mystyle");
                 break;
+            case "delete":
+                console.log("Delete request received.");
+                // TODO: implement
+                break;
             default:
                 console.log("No command received.");
                 break;
