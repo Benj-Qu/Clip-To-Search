@@ -247,7 +247,14 @@ if (!selectionRectangle) {
         switchActiveMode (changeCheckedStatus) {
             if (changeCheckedStatus) {
                 let checkbox = document.getElementById("srh_active");
-                checkbox.checked = !checkbox.checked;
+                checkbox.checked = !ch
+                
+                
+                
+                
+                
+                
+                eckbox.checked;
             }
             if (!this.isActiveMode()) {
                 if (!this.canvas) return;      
@@ -304,6 +311,15 @@ if (!selectionRectangle) {
     }
 
     selectionRectangle = new SelectionRectangle('selectionRectangle_canvas','selectionRectangle_options');
+
+    chrome.runtime.onMessage.addListener(function(request, sender, response){
+        //console.log("onMessge");
+        
+        if (request == "activate extension") 
+            selectionRectangle.enable();
+            //console.log(selectionRectangle.enabled)
+        
+    });
 
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
 
