@@ -23,14 +23,20 @@
   },
 
   "commands": {
-    "activate": {
+    "switch": {
       "suggested_key": {
-        "default": "Ctrl+A",
-        "mac": "Command+A"
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
       },
-      "description": "Activate the extension"
+      "description": "Switch on and off the extension."
+    },
+    "clear": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+X",
+        "mac": "Command+Shift+X"
+      },
+      "description": "Clear current search result."
     }
+    
   }
-
-
 }

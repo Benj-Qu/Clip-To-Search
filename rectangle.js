@@ -247,14 +247,7 @@ if (!selectionRectangle) {
         switchActiveMode (changeCheckedStatus) {
             if (changeCheckedStatus) {
                 let checkbox = document.getElementById("srh_active");
-                checkbox.checked = !ch
-                
-                
-                
-                
-                
-                
-                eckbox.checked;
+                checkbox.checked = !checkbox.checked;
             }
             if (!this.isActiveMode()) {
                 if (!this.canvas) return;      
@@ -314,10 +307,22 @@ if (!selectionRectangle) {
 
     chrome.runtime.onMessage.addListener(function(request, sender, response){
         //console.log("onMessge");
-        
-        if (request == "activate extension") 
-            selectionRectangle.enable();
-            //console.log(selectionRectangle.enabled)
+        console.log("request received: ", request);
+        switch(request){
+            case "switch":
+                console.log("Switch request received.");
+                selectionRectangle.switchActiveMode(true);
+                break;
+            case "clear":
+                // should implement a clear function
+                console.log("Clear request received.");
+                $("*").removeClass("mystyle");
+                break;
+            default:
+                console.log("No command received.");
+                break;
+        }
+
         
     });
 
