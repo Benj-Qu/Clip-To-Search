@@ -33,10 +33,10 @@ function rectangleSelect(x1, y1, x2, y2) {
                 //console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
                 if (objects.length == 0) {
                     objects.push([element.outerHTML, 0, 0]);
-                    x_origin = x_l;
-                    y_origin = y_t;
+                    x_origin = x_l + Window.scrollX;
+                    y_origin = y_t + Window.scrollY;
                 } else {
-                    objects.push([element.outerHTML, x_l - x_origin, y_t - y_origin]);
+                    objects.push([element.outerHTML, x_l + Window.scrollX - x_origin, y_t + Window.scrollY - y_origin]);
                 }
                 
                 //console.log("html: ", element.outerHTML)
