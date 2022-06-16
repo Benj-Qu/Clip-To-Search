@@ -30,6 +30,13 @@
       },
       "description": "Switch on and off the extension."
     },
+    "delete":{
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "Delete the last element in the object queue."
+    },
     "clear": {
       "suggested_key": {
         "default": "Ctrl+Shift+X",

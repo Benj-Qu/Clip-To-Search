@@ -13,6 +13,7 @@ if (!selectionRectangle) {
             this.canvas = null;
             this.startX = null, this.startY = null, this.isDraw = false;
             this.enabled = false;
+            this.objectToSearch = [];
         }
 
         setColor (color) {
@@ -116,11 +117,13 @@ if (!selectionRectangle) {
                     }//need to change
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
-                        var objectsHTML = rectangleSelect(this.startX, this.startY, x, y);
-                        for (let elementHTML of objectsHTML){
+                        var selectionResult = rectangleSelect(this.startX, this.startY, x, y);
+                        this.objectToSearch = this.objectToSearch.concat(selectionResult);
+                        for (let elementHTML of this.objectToSearch) {
                             searchelement(elementHTML[0]);
                         }
                     } 
+
                     this.isDraw = false;
                     this.clearCanvas();
                 }
@@ -165,6 +168,7 @@ if (!selectionRectangle) {
             }
 
             document.getElementById("clr_btn").addEventListener("click", () => {
+                // TODO: replace with a clear function
                 $("*").removeClass("mystyle");
             });
 
@@ -328,9 +332,9 @@ if (!selectionRectangle) {
                 break;
         }
 
-        
     });
 
+    
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
 
     selectionRectangle.init();

@@ -29,7 +29,7 @@ function rectangleSelect(x1, y1, x2, y2) {
             y_d = rect.bottom + parseInt(getComputedStyle(element).paddingBottom);
         if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
             if (x_l != x_r && y_t != y_d) {
-                console.log("find rect!")
+                //console.log("find rect!")
                 //console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
                 if (objects.length == 0) {
                     objects.push([element.outerHTML, 0, 0]);
@@ -50,11 +50,11 @@ function rectangleSelect(x1, y1, x2, y2) {
 // In: an array of DOM elements
 // Out: Search the one which is of class "selected" 
 function searchelement(elementhtml){
-    console.log("html to search: ", elementhtml);
+    //console.log("html to search: ", elementhtml);
     [...document.querySelectorAll("*")].forEach((ele)=>{
         if(ele.outerHTML == elementhtml){
             found = true;
-            console.log("searched!");
+            //console.log("searched!");
             //console.log(ele);
             //console.log("html searched: ", ele.outerHTML);
             ele.classList.add("mystyle");
