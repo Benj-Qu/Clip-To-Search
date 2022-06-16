@@ -1,2 +1,5 @@
 # Clip-To-Search
-A chrome extention that enable users to search by the underlying html codes
+It's common for browser users to use `Ctrl+F` or `Cmd+F` (for Mac users) to search for keywords on a webpage. These search functions are mostly implemented based on strings. Users cannot search for images or checkboxes, for example.<br/><br/>
+Therefore, we are delveloping the Clip-To-Search chrome extension to allow users to search for a wider range of objects on the webpage. With this chrome extension, users can draw a bounding box with their mouse on the webpage. Then the extension reads the DOM elements inside the bounding box and search for them in the current webpage.<br/><br/>
+This chrome extension is currently under construction. Basic functionalities as described above are implemented. We are currently adding new, exciting features to the extension.<br/><br/>
+This project is a part of research projects at the Human-AI Laboratory (*HAIL*) at the Computer Science and Engneering (*CSE*) Division at University of Michigan (*UM*), Ann Arbor. The developers of this project are undergraduate students at UM, working at HAIL. This Project is supervised by Professor Anhong Guo at the CSE Division at the University of Michigan, Ann Arbor.<br/><br/>
