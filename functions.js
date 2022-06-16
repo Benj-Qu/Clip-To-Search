@@ -5,10 +5,9 @@ function disableTextSelection(){
     });
 }
 
-
 // In: four coordinates corresponding to four vertices of the bounding box
 // Out: an array of DOM elements in this bounding box
-function rectangleSelect(x1, y1, x2, y2) {
+function rectangleSelect(x1, y1, x2, y2, objects) {
     let x_large = x1 > x2 ? x1 : x2,
         x_small = x1 < x2 ? x1 : x2,
         y_large = y1 > y2 ? y1 : y2,
@@ -16,7 +15,6 @@ function rectangleSelect(x1, y1, x2, y2) {
 
     // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
     const allElements = document.getElementsByTagName('*');
-    var objects = [];
 
     var x_origin = 0, 
         y_origin = 0;
@@ -31,13 +29,9 @@ function rectangleSelect(x1, y1, x2, y2) {
             if (x_l != x_r && y_t != y_d) {
                 //console.log("find rect!")
                 //console.log("rect: ", x_l, " ", x_r, " ", y_t, " ", y_d);
-                if (objects.length == 0) {
-                    objects.push([element.outerHTML, 0, 0]);
-                    x_origin = x_l + Window.scrollX;
-                    y_origin = y_t + Window.scrollY;
-                } else {
-                    objects.push([element.outerHTML, x_l + Window.scrollX - x_origin, y_t + Window.scrollY - y_origin]);
-                }
+                x_origin = x_l + Window.scrollX;
+                y_origin = y_t + Window.scrollY;
+                objects.push([element.outerHTML, x_origin, y_origin]);
                 
                 //console.log("html: ", element.outerHTML)
 
