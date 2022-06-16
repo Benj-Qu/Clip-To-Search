@@ -326,12 +326,12 @@ if (!selectionRectangle) {
                 selectionRectangle.switchActiveMode(true);
                 break;
             case "clear":
-                // should implement a clear function
                 selectionRectangle.clearResults();
                 break;
             case "delete":
-                console.log("Delete request received.");
-                // TODO: implement
+                //console.log("Delete request received.");
+                selectionRectangle.objectToSearch.pop();
+                //console.log(selectionRectangle.objectToSearch);
                 break;
             default:
                 console.log("No command received.");
