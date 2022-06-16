@@ -1,4 +1,4 @@
-var selectionRectangle;
+var selectionRectangle; //
 
 if (!selectionRectangle) {
 
