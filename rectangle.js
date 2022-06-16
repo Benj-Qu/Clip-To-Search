@@ -124,9 +124,16 @@ if (!selectionRectangle) {
                         }
                     } 
 
+                    //console.log(this.objectToSearch);
+
                     this.isDraw = false;
                     this.clearCanvas();
                 }
+        }
+
+        clearResults(){
+            this.objectToSearch = [];
+            $("*").removeClass("mystyle");
         }
 
         static optionsHtml = `
@@ -169,7 +176,7 @@ if (!selectionRectangle) {
 
             document.getElementById("clr_btn").addEventListener("click", () => {
                 // TODO: replace with a clear function
-                $("*").removeClass("mystyle");
+                selectionRectangle.clearResults();
             });
 
             document.getElementById('srh_active').addEventListener("click", () => {
@@ -320,8 +327,7 @@ if (!selectionRectangle) {
                 break;
             case "clear":
                 // should implement a clear function
-                console.log("Clear request received.");
-                $("*").removeClass("mystyle");
+                selectionRectangle.clearResults();
                 break;
             case "delete":
                 console.log("Delete request received.");
