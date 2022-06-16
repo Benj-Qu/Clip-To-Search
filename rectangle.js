@@ -118,9 +118,7 @@ if (!selectionRectangle) {
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
                         this.objectToSearch = rectangleSelect(this.startX, this.startY, x, y, this.objectToSearch);
-                        for (let elementHTML of this.objectToSearch) {
-                            searchelement(elementHTML[0]);
-                        }
+                        searchelement(this.objectToSearch)
                     } 
 
                     //console.log(this.objectToSearch);
