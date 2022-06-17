@@ -4,7 +4,7 @@ function disableTextSelection(){
         e.preventDefault();
     });
 }
-
+// Get the coordinates of "element"
 function getPos(element) {
     let rect = element.getBoundingClientRect();
     let x_l = rect.left + parseInt(getComputedStyle(element).paddingLeft),
@@ -39,6 +39,7 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
             y_d = pos[3];
         if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
             if (x_l != x_r && y_t != y_d) {
+                // The absolute coordinate of the top-right coner
                 x_origin = x_l + Window.scrollX;
                 y_origin = y_t + Window.scrollY;
                 objects.push([element, x_origin, y_origin]);
@@ -48,27 +49,29 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
     return objects;
 }
 
-// In: an array of DOM elements
-// Out: Search the one which is of class "selected" 
+// In: searchList is an array whose elements are arrays in this form: [DOM object, x_origin, y_origin]
+// You are supposed to pass in this.objectToSearch
+// Out: 
 function searchelement(searchList){
     let singleSearchResult = [];
 
     for(var i = 0; i < searchList.length; i++) {
         let emptyList = [];
         singleSearchResult.push(emptyList);
+        // singleSearchResult looks like [[], [], [], [], [], [], [], []]
     }
 
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
             if (ele.outerHTML == searchList[i][0].outerHTML) {
-                singleSearchResult[i].push([ele,-1]);
+                singleSearchResult[i].push([ele,-1]); // if you want to append two arrays, you should .push(...[ele,-1]) instead
             }
         }
     });
 
     for (var i = 0; i < singleSearchResult.length - 1; i++) {
         for (var j = 0; j < singleSearchResult[i].length; j++) {
-            if ((i == 0) || (singleSearchResult[i][j][1] != -1)) {
+            if ((i == 0) || (singleSearchResult[i][j][1] != -1)) { // ? I think singleSearchResult is 2D?
                 let pos = getPos(singleSearchResult[i][j][0]);
                 let x_l = pos[0],
                     y_t = pos[2];
