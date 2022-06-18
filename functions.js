@@ -39,8 +39,8 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
             y_d = pos[3];
         if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
             if (x_l != x_r && y_t != y_d) {
-                x_origin = x_l + Window.scrollX;
-                y_origin = y_t + Window.scrollY;
+                x_origin = x_l;// + Window.scrollX;
+                y_origin = y_t;// + Window.scrollY;
                 objects.push([element, x_origin, y_origin]);
             }
         }
@@ -91,6 +91,8 @@ function searchelement(searchList){
         }
     }
 
+    console.log(singleSearchResult);
+
     // bottom-up
     for (var i = 0; i < singleSearchResult[singleSearchResult.length - 1].length; i++) {
         if (singleSearchResult[singleSearchResult.length - 1][i][1] != -1) {
@@ -99,6 +101,12 @@ function searchelement(searchList){
                 singleSearchResult[j][idx][0].classList.add("mystyle");
                 idx = singleSearchResult[j][idx][1];
             }
+        }
+    }
+
+    if (singleSearchResult.length == 1) {
+        for (var j = 0; j < singleSearchResult[0].length; j++) {
+            singleSearchResult[1][j][0].classList.add("mystyle");
         }
     }
 }
