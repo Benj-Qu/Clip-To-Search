@@ -39,9 +39,14 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
             y_d = pos[3];
         if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
             if (x_l != x_r && y_t != y_d) {
+<<<<<<< HEAD
                 // The absolute coordinate of the top-right coner
                 x_origin = x_l + Window.scrollX;
                 y_origin = y_t + Window.scrollY;
+=======
+                x_origin = x_l;// + Window.scrollX;
+                y_origin = y_t;// + Window.scrollY;
+>>>>>>> c910f62b8284d373fa458a8b3895b19021d8d290
                 objects.push([element, x_origin, y_origin]);
             }
         }
@@ -53,22 +58,32 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
 // You are supposed to pass in this.objectToSearch
 // Out: 
 function searchelement(searchList){
+    // Result of seasrching by each element
+    // 2D array
     let singleSearchResult = [];
 
+    // Initialization of SSR
     for(var i = 0; i < searchList.length; i++) {
         let emptyList = [];
         singleSearchResult.push(emptyList);
         // singleSearchResult looks like [[], [], [], [], [], [], [], []]
     }
 
+    // Fill in the 2D array, each element with ele([0]) and parent([1])
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
             if (ele.outerHTML == searchList[i][0].outerHTML) {
+<<<<<<< HEAD
                 singleSearchResult[i].push([ele,-1]); // if you want to append two arrays, you should .push(...[ele,-1]) instead
+=======
+                // parent init as -1
+                singleSearchResult[i].push([ele,-1]);
+>>>>>>> c910f62b8284d373fa458a8b3895b19021d8d290
             }
         }
     });
 
+    // top-down
     for (var i = 0; i < singleSearchResult.length - 1; i++) {
         for (var j = 0; j < singleSearchResult[i].length; j++) {
             if ((i == 0) || (singleSearchResult[i][j][1] != -1)) { // ? I think singleSearchResult is 2D?
@@ -88,6 +103,9 @@ function searchelement(searchList){
         }
     }
 
+    console.log(singleSearchResult);
+
+    // bottom-up
     for (var i = 0; i < singleSearchResult[singleSearchResult.length - 1].length; i++) {
         if (singleSearchResult[singleSearchResult.length - 1][i][1] != -1) {
             var idx = i;
@@ -95,6 +113,12 @@ function searchelement(searchList){
                 singleSearchResult[j][idx][0].classList.add("mystyle");
                 idx = singleSearchResult[j][idx][1];
             }
+        }
+    }
+
+    if (singleSearchResult.length == 1) {
+        for (var j = 0; j < singleSearchResult[0].length; j++) {
+            singleSearchResult[1][j][0].classList.add("mystyle");
         }
     }
 }
