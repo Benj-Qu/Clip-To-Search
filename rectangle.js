@@ -1,5 +1,5 @@
 var selectionRectangle; //
-//
+// test
 
 if (!selectionRectangle) {
 
