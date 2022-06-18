@@ -51,21 +51,27 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
 // In: an array of DOM elements
 // Out: Search the one which is of class "selected" 
 function searchelement(searchList){
+    // Result of seasrching by each element
+    // 2D array
     let singleSearchResult = [];
 
+    // Initialization of SSR
     for(var i = 0; i < searchList.length; i++) {
         let emptyList = [];
         singleSearchResult.push(emptyList);
     }
 
+    // Fill in the 2D array, each element with ele([0]) and parent([1])
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
             if (ele.outerHTML == searchList[i][0].outerHTML) {
+                // parent init as -1
                 singleSearchResult[i].push([ele,-1]);
             }
         }
     });
 
+    // top-down
     for (var i = 0; i < singleSearchResult.length - 1; i++) {
         for (var j = 0; j < singleSearchResult[i].length; j++) {
             if ((i == 0) || (singleSearchResult[i][j][1] != -1)) {
@@ -85,6 +91,7 @@ function searchelement(searchList){
         }
     }
 
+    // bottom-up
     for (var i = 0; i < singleSearchResult[singleSearchResult.length - 1].length; i++) {
         if (singleSearchResult[singleSearchResult.length - 1][i][1] != -1) {
             var idx = i;
