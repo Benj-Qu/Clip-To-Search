@@ -15,6 +15,15 @@ function getPos(element) {
     return pos;
 }
 
+function checkExisted(element, elementList) {
+    for (const ele of elementList) {
+        if (ele == element) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 
 // In: four coordinates corresponding to four vertices of the bounding box
@@ -28,9 +37,6 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
     // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
     const allElements = document.getElementsByTagName('*');
 
-    let x_origin = 0, 
-        y_origin = 0;
-
     for (const element of allElements) {
         let pos = getPos(element);
         let x_l = pos[0],
@@ -38,10 +44,8 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
             y_t = pos[2],
             y_d = pos[3];
         if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-            if (x_l != x_r && y_t != y_d) {
-                x_origin = x_l;// + Window.scrollX;
-                y_origin = y_t;// + Window.scrollY;
-                objects.push([element, x_origin, y_origin]);
+            if (x_l != x_r && y_t != y_d && !checkExisted(element,objects)) {
+                objects.push(element);
             }
         }
     }

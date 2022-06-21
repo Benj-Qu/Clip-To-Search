@@ -105,11 +105,11 @@ if (!selectionRectangle) {
         mouseEvent (eventType, event) {
                 let x = event.clientX;
                 let y = event.clientY;
-                if (eventType == 'down') {
+                if (eventType == 'down' && this.enabled) {
                     this.startX = x;
                     this.startY = y;
                     this.isDraw = true;
-                } else if (eventType == 'move') {
+                } else if (eventType == 'move' && this.enabled) {
                     if (this.isDraw) {
                         this.clearCanvas();
                         this.drawBox(this.startX, this.startY, x, y, 
