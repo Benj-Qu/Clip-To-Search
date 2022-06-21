@@ -15,6 +15,15 @@ function getPos(element) {
     return pos;
 }
 
+function checkExisted(element, elementList) {
+    for (const ele of elementList) {
+        if (ele == element) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 
 // In: four coordinates corresponding to four vertices of the bounding box
@@ -28,9 +37,6 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
     // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
     const allElements = document.getElementsByTagName('*');
 
-    let x_origin = 0, 
-        y_origin = 0;
-
     for (const element of allElements) {
         let pos = getPos(element);
         let x_l = pos[0],
@@ -38,16 +44,8 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
             y_t = pos[2],
             y_d = pos[3];
         if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-            if (x_l != x_r && y_t != y_d) {
-<<<<<<< HEAD
-                // The absolute coordinate of the top-right coner
-                x_origin = x_l + Window.scrollX;
-                y_origin = y_t + Window.scrollY;
-=======
-                x_origin = x_l;// + Window.scrollX;
-                y_origin = y_t;// + Window.scrollY;
->>>>>>> c910f62b8284d373fa458a8b3895b19021d8d290
-                objects.push([element, x_origin, y_origin]);
+            if (x_l != x_r && y_t != y_d && !checkExisted(element,objects)) {
+                objects.push(element);
             }
         }
     }
@@ -73,12 +71,8 @@ function searchelement(searchList){
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
             if (ele.outerHTML == searchList[i][0].outerHTML) {
-<<<<<<< HEAD
                 singleSearchResult[i].push([ele,-1]); // if you want to append two arrays, you should .push(...[ele,-1]) instead
-=======
                 // parent init as -1
-                singleSearchResult[i].push([ele,-1]);
->>>>>>> c910f62b8284d373fa458a8b3895b19021d8d290
             }
         }
     });
@@ -90,20 +84,24 @@ function searchelement(searchList){
                 let pos = getPos(singleSearchResult[i][j][0]);
                 let x_l = pos[0],
                     y_t = pos[2];
+                let searchPos = getPos(searchList[i]);
+                let x_l_s = searchPos[0],
+                    y_t_s = searchPos[2];
+                let _searchPos = getPos(searchList[i+1]);
+                let _x_l_s = searchPos[0],
+                    _y_t_s = searchPos[2];
                 for (var k = 0; k < singleSearchResult[i+1].length; k++) {
                     let _pos = getPos(singleSearchResult[i+1][k][0]);
                     let _x_l = _pos[0],
                         _y_t = _pos[2];
-                    if ((_x_l - x_l == searchList[i+1][1] - searchList[i][1]) && 
-                        (_y_t - y_t == searchList[i+1][2] - searchList[i][2])) {
+                    if ((_x_l - x_l == _x_l_s - x_l_s) && 
+                        (_y_t - y_t == _y_t_s - y_t_s)) {
                             singleSearchResult[i+1][k][1] = j;
                         }
                 }
             }
         }
     }
-
-    console.log(singleSearchResult);
 
     // bottom-up
     for (var i = 0; i < singleSearchResult[singleSearchResult.length - 1].length; i++) {
