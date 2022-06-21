@@ -82,20 +82,24 @@ function searchelement(searchList){
                 let pos = getPos(singleSearchResult[i][j][0]);
                 let x_l = pos[0],
                     y_t = pos[2];
+                let searchPos = getPos(searchList[i]);
+                let x_l_s = searchPos[0],
+                    y_t_s = searchPos[2];
+                let _searchPos = getPos(searchList[i+1]);
+                let _x_l_s = searchPos[0],
+                    _y_t_s = searchPos[2];
                 for (var k = 0; k < singleSearchResult[i+1].length; k++) {
                     let _pos = getPos(singleSearchResult[i+1][k][0]);
                     let _x_l = _pos[0],
                         _y_t = _pos[2];
-                    if ((_x_l - x_l == searchList[i+1][1] - searchList[i][1]) && 
-                        (_y_t - y_t == searchList[i+1][2] - searchList[i][2])) {
+                    if ((_x_l - x_l == _x_l_s - x_l_s) && 
+                        (_y_t - y_t == _y_t_s - y_t_s)) {
                             singleSearchResult[i+1][k][1] = j;
                         }
                 }
             }
         }
     }
-
-    console.log(singleSearchResult);
 
     // bottom-up
     for (var i = 0; i < singleSearchResult[singleSearchResult.length - 1].length; i++) {
