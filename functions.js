@@ -68,7 +68,7 @@ function searchelement(searchList){
     // Fill in the 2D array, each element with ele([0]) and parent([1])
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
-            if (ele.outerHTML == searchList[i][0].outerHTML) {
+            if (ele.outerHTML == searchList[i].outerHTML) {
                 // parent init as -1
                 singleSearchResult[i].push([ele,-1]);
             }
@@ -82,18 +82,16 @@ function searchelement(searchList){
                 let pos = getPos(singleSearchResult[i][j][0]);
                 let x_l = pos[0],
                     y_t = pos[2];
-                let searchPos = getPos(searchList[i]);
-                let x_l_s = searchPos[0],
-                    y_t_s = searchPos[2];
-                let _searchPos = getPos(searchList[i+1]);
-                let _x_l_s = searchPos[0],
-                    _y_t_s = searchPos[2];
+                let searchPos = getPos(searchList[i]),
+                    _searchPos = getPos(searchList[i+1]);
+                let x_dist = _searchPos[0] - searchPos[0],
+                    y_dist = _searchPos[2] - searchPos[2];
                 for (var k = 0; k < singleSearchResult[i+1].length; k++) {
                     let _pos = getPos(singleSearchResult[i+1][k][0]);
                     let _x_l = _pos[0],
                         _y_t = _pos[2];
-                    if ((_x_l - x_l == _x_l_s - x_l_s) && 
-                        (_y_t - y_t == _y_t_s - y_t_s)) {
+                    if ((_x_l - x_l == x_dist) && 
+                        (_y_t - y_t == y_dist)) {
                             singleSearchResult[i+1][k][1] = j;
                         }
                 }
@@ -102,19 +100,19 @@ function searchelement(searchList){
     }
 
     // bottom-up
-    for (var i = 0; i < singleSearchResult[singleSearchResult.length - 1].length; i++) {
-        if (singleSearchResult[singleSearchResult.length - 1][i][1] != -1) {
-            var idx = i;
-            for (var j = singleSearchResult.length - 1; j >= 0; j--) {
-                singleSearchResult[j][idx][0].classList.add("mystyle");
-                idx = singleSearchResult[j][idx][1];
-            }
-        }
-    }
-
     if (singleSearchResult.length == 1) {
         for (var j = 0; j < singleSearchResult[0].length; j++) {
-            singleSearchResult[1][j][0].classList.add("mystyle");
+            singleSearchResult[0][j][0].classList.add("mystyle");
+        }
+    } else if (singleSearchResult.length > 1) {
+        for (var i = 0; i < singleSearchResult[singleSearchResult.length - 1].length; i++) {
+            if (singleSearchResult[singleSearchResult.length - 1][i][1] != -1) {
+                var idx = i;
+                for (var j = singleSearchResult.length - 1; j >= 0; j--) {
+                    singleSearchResult[j][idx][0].classList.add("mystyle");
+                    idx = singleSearchResult[j][idx][1];
+                }
+            }
         }
     }
 }
