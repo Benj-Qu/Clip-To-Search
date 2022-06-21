@@ -4,7 +4,7 @@ function disableTextSelection(){
         e.preventDefault();
     });
 }
-
+// Get the coordinates of "element"
 function getPos(element) {
     let rect = element.getBoundingClientRect();
     let x_l = rect.left + parseInt(getComputedStyle(element).paddingLeft),
@@ -52,8 +52,9 @@ function rectangleSelect(x1, y1, x2, y2, objects) {
     return objects;
 }
 
-// In: an array of DOM elements
-// Out: Search the one which is of class "selected" 
+// In: searchList is an array whose elements are arrays in this form: [DOM object, x_origin, y_origin]
+// You are supposed to pass in this.objectToSearch
+// Out: 
 function searchelement(searchList){
     // Result of seasrching by each element
     // 2D array
@@ -63,14 +64,15 @@ function searchelement(searchList){
     for(var i = 0; i < searchList.length; i++) {
         let emptyList = [];
         singleSearchResult.push(emptyList);
+        // singleSearchResult looks like [[], [], [], [], [], [], [], []]
     }
 
     // Fill in the 2D array, each element with ele([0]) and parent([1])
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
-            if (ele.outerHTML == searchList[i].outerHTML) {
+            if (ele.outerHTML == searchList[i][0].outerHTML) {
+                singleSearchResult[i].push([ele,-1]); // if you want to append two arrays, you should .push(...[ele,-1]) instead
                 // parent init as -1
-                singleSearchResult[i].push([ele,-1]);
             }
         }
     });
@@ -78,7 +80,7 @@ function searchelement(searchList){
     // top-down
     for (var i = 0; i < singleSearchResult.length - 1; i++) {
         for (var j = 0; j < singleSearchResult[i].length; j++) {
-            if ((i == 0) || (singleSearchResult[i][j][1] != -1)) {
+            if ((i == 0) || (singleSearchResult[i][j][1] != -1)) { // ? I think singleSearchResult is 2D?
                 let pos = getPos(singleSearchResult[i][j][0]);
                 let x_l = pos[0],
                     y_t = pos[2];
