@@ -71,7 +71,7 @@ function searchelement(searchList){
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
             if (ele.outerHTML == searchList[i][0].outerHTML) {
-                singleSearchResult[i].push([ele,-1]); // if you want to append two arrays, you should .push(...[ele,-1]) instead
+                singleSearchResult[i].push([ele,-1]);
                 // parent init as -1
             }
         }
@@ -80,7 +80,7 @@ function searchelement(searchList){
     // top-down
     for (var i = 0; i < singleSearchResult.length - 1; i++) {
         for (var j = 0; j < singleSearchResult[i].length; j++) {
-            if ((i == 0) || (singleSearchResult[i][j][1] != -1)) { // ? I think singleSearchResult is 2D?
+            if ((i == 0) || (singleSearchResult[i][j][1] != -1)) {
                 let pos = getPos(singleSearchResult[i][j][0]);
                 let x_l = pos[0],
                     y_t = pos[2];
