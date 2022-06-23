@@ -387,6 +387,9 @@ if (!selectionRectangle) {
             case "delete":
                 //console.log("Delete request received.");
                 selectionRectangle.objectToSearch.pop();
+                this.rectangleSelect(this.startX, this.startY, x, y);
+                $("*").removeClass("mystyle");
+                searchelement(this.objectToSearch)
                 //console.log(selectionRectangle.objectToSearch);
                 break;
             default:
