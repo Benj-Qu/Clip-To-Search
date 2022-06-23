@@ -70,7 +70,7 @@ function searchelement(searchList){
     // Fill in the 2D array, each element with ele([0]) and parent([1])
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
-            if (ele.outerHTML == searchList[i][0].outerHTML) {
+            if (ele.outerHTML == searchList[i].outerHTML) {
                 singleSearchResult[i].push([ele,-1]);
                 // parent init as -1
             }
