@@ -114,7 +114,7 @@ if (!selectionRectangle) {
                         this.clearCanvas();
                         this.drawBox(this.startX, this.startY, x, y, 
                             this.rectangleBackgroundColor, this.rectangleBorderColor);
-                    }//need to change
+                    }
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
                         this.objectToSearch = rectangleSelect(this.startX, this.startY, x, y, this.objectToSearch);
