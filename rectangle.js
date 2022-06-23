@@ -16,6 +16,35 @@ if (!selectionRectangle) {
             this.objectToSearch = [];
         }
 
+        rectangleSelect(x1, y1, x2, y2) {
+            let x_large = x1 > x2 ? x1 : x2,
+                x_small = x1 < x2 ? x1 : x2,
+                y_large = y1 > y2 ? y1 : y2,
+                y_small = y1 < y2 ? y1 : y2;
+        
+            // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
+            const allElements = document.getElementsByTagName('*');
+        
+            optionsHtml -= "</ul>"
+            for (const element of allElements) {
+                let pos = getPos(element);
+                let x_l = pos[0],
+                    x_r = pos[1],
+                    y_t = pos[2],
+                    y_d = pos[3];
+                if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
+                    if (x_l != x_r && y_t != y_d && !checkExisted(element, this.objectToSearch)) {
+                       this.objectToSearch.push(element);
+                       optionsHTML += `
+                       `;
+                    }
+                }
+            }
+
+            optionsHtml
+            
+        }
+
         setColor (color) {
             switch (color) {
                 case 'blue':
@@ -153,7 +182,12 @@ if (!selectionRectangle) {
             <div class="srh_control_button srh_control_minmax" id="srh_maximize" title="Maximize">▼</div>
         </div>
         <div class="srh_control_button srh_control_help" id="srh_help" title="Help">?</div>
-        <div class="srh_control_button srh_control_close" id="srh_close" title="Close (or press ESC)">&times;</div>`;
+        <div class="srh_control_button srh_control_close" id="srh_close" title="Close (or press ESC)">&times;</div>
+        <div>Search items:</div>
+        <ul>
+
+        </ul>
+        `;
 
         static helpHtml = `<div class="srh_modal_content"><span id="srh_modal_close" class="srh_modal_close">&times;</span><p id="srh_modal_text">...</p></div>`;
 

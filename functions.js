@@ -26,31 +26,9 @@ function checkExisted(element, elementList) {
 
 
 
-// In: four coordinates corresponding to four vertices of the bounding box
+// Params: four coordinates corresponding to four vertices of the bounding box
 // Out: an array of DOM elements in this bounding box
-function rectangleSelect(x1, y1, x2, y2, objects) {
-    let x_large = x1 > x2 ? x1 : x2,
-        x_small = x1 < x2 ? x1 : x2,
-        y_large = y1 > y2 ? y1 : y2,
-        y_small = y1 < y2 ? y1 : y2;
 
-    // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
-    const allElements = document.getElementsByTagName('*');
-
-    for (const element of allElements) {
-        let pos = getPos(element);
-        let x_l = pos[0],
-            x_r = pos[1],
-            y_t = pos[2],
-            y_d = pos[3];
-        if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-            if (x_l != x_r && y_t != y_d && !checkExisted(element,objects)) {
-                objects.push(element);
-            }
-        }
-    }
-    return objects;
-}
 
 // In: searchList is an array whose elements are arrays in this form: [DOM object, x_origin, y_origin]
 // You are supposed to pass in this.objectToSearch
