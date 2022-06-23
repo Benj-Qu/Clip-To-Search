@@ -146,7 +146,7 @@ if (!selectionRectangle) {
                     }
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
-                        this.objectToSearch = rectangleSelect(this.startX, this.startY, x, y, this.objectToSearch);
+                        this.objectToSearch = rectangleSelect(this.startX, this.startY, x, y);
                         $("*").removeClass("mystyle");
                         searchelement(this.objectToSearch)
                     } 
