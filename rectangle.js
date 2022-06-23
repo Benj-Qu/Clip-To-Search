@@ -83,7 +83,7 @@ if (!selectionRectangle) {
             document.body.removeChild(this.options);
             this.options = null;
             this.createOptions();
-
+            this.enabled = true;
         }
 
         setColor (color) {
@@ -214,8 +214,6 @@ if (!selectionRectangle) {
         static helpHtml = `<div class="srh_modal_content"><span id="srh_modal_close" class="srh_modal_close">&times;</span><p id="srh_modal_text">...</p></div>`;
 
         createOptions () {
-            this.enabled = true;
-
             let options = document.createElement('div');
             options.id = this.optionsElementId;
             options.setAttribute('class', 'srh_options');
