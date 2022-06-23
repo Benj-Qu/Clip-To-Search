@@ -14,7 +14,7 @@ if (!selectionRectangle) {
             this.startX = null, this.startY = null, this.isDraw = false;
             this.enabled = false;
             this.objectToSearch = [];
-            this.optionsHtml = `
+            this.optionsBasicHtml = `
                 <div id="srh_maximized">
                     <div id="srh_options_heading" class="srh_h1">Options</div>
                     <div class="srh_colors">
@@ -35,9 +35,13 @@ if (!selectionRectangle) {
                 <div class="srh_control_button srh_control_close" id="srh_close" title="Close (or press ESC)">&times;</div>
                 <div>Search items:</div>
                 <ul>
-
-                </ul>
                 `;
+                this.listHtml = "</ul>";
+                this.optionsHtml = this.optionsBasicHtml + this.listHtml;
+        }
+
+        putTogetherOptionsHtml(){
+            this.optionsHtml = this.optionsBasicHtml + this.listHtml;
         }
 
         rectangleSelect(x1, y1, x2, y2) {
@@ -49,9 +53,13 @@ if (!selectionRectangle) {
             // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
             const allElements = document.getElementsByTagName('*');
             
-            console.log("optionsHtml at first: ", this.optionsHtml);
-            this.optionsHtml = this.optionsHtml.replace("</ul>", " ");
-            console.log("optionsHtml before: ", this.optionsHtml);
+            //console.log("optionsHtml at first: ", this.optionsHtml);
+            
+            this.optionsHtml = this.listHtml.replace("</ul>", " ");
+
+            this.putTogetherOptionsHtml();
+            //console.log("optionsHtml before: ", this.optionsHtml);
+            
             for (const element of allElements) {
                 let pos = getPos(element);
                 let x_l = pos[0],
@@ -62,13 +70,15 @@ if (!selectionRectangle) {
                     if (x_l != x_r && y_t != y_d && !checkExisted(element, this.objectToSearch)) {
                        this.objectToSearch.push(element);
                        console.log("push");
-                       this.optionsHtml += ` <li>lalala</li>\n`;//test
-                       console.log("optionsHtml: ", this.optionsHtml);
+                       this.listHtml += ` <li>lalala</li>\n`;//test
+                       //console.log("optionsHtml: ", this.optionsHtml);
                     }
                 }
             }
-            this.optionsHtml += "\n </ul>";
-            console.log("optionsHtml after: ", this.optionsHtml);
+            this.listHtml += "\n </ul>";
+            this.putTogetherOptionsHtml();
+            //console.log("optionsHtml after: ", this.optionsHtml);
+            console.log(this.objectToSearch);
 
             document.body.removeChild(this.options);
             this.options = null;
@@ -191,6 +201,11 @@ if (!selectionRectangle) {
 
         clearResults(){
             this.objectToSearch = [];
+            this.listHtml = "</ul>";
+            this.putTogetherOptionsHtml();
+            document.body.removeChild(this.options);
+            this.options = null;
+            this.createOptions();
             $("*").removeClass("mystyle");
         }
 
