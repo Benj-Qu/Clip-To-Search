@@ -84,6 +84,8 @@ if (!selectionRectangle) {
             this.options = null;
             this.createOptions();
             this.enabled = true;
+            let checkbox = document.getElementById("srh_active");
+            checkbox.checked = true;
         }
 
         setColor (color) {
