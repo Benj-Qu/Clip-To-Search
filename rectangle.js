@@ -399,7 +399,21 @@ if (!selectionRectangle) {
 
     });
 
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key == "Shift") {
+            selectionRectangle.enable();
+            document.getElementsByTagName("body")[0].style.cursor = "crosshair";
+        }
+    });
+    document.addEventListener("keyup", (event) => {
+        if (event.key == "Shift") {
+            selectionRectangle.switchActiveMode(true);
+            document.getElementsByTagName("body")[0].style.cursor = "default";
+        }
+    });        
     
+
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
 
     selectionRectangle.init();
