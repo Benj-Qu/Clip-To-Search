@@ -69,6 +69,9 @@ if (!selectionRectangle) {
             }
             this.optionsHtml += "\n </ul>";
             console.log("optionsHtml after: ", this.optionsHtml);
+
+            document.body.removeChild(this.options);
+            this.options = null;
             this.createOptions();
 
         }
