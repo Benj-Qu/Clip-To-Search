@@ -14,6 +14,30 @@ if (!selectionRectangle) {
             this.startX = null, this.startY = null, this.isDraw = false;
             this.enabled = false;
             this.objectToSearch = [];
+            this.optionsHtml = `
+                <div id="srh_maximized">
+                    <div id="srh_options_heading" class="srh_h1">Options</div>
+                    <div class="srh_colors">
+                        <div class="srh_color_button srh_yellow" id="srh_color_yellow"> </div><div class="srh_color_button srh_blue" id="srh_color_blue"></div><div class="srh_color_button srh_green" id="srh_color_green"></div><div class="srh_color_button srh_red" id="srh_color_red"></div><div class="srh_color_button srh_white" id="srh_color_white"></div><div class="srh_color_button srh_black" id="srh_color_black"></div>
+                    </div>
+                    <div class="cts_clr_btn" id="clr_btn">Clear</div>
+                    <div class="srh_flags">
+                        <input type="checkbox" id="srh_active" name="active"/>
+                        <label id="srh_active" for="srh_active">Active</label> 
+                    </div>
+                    <div class="srh_control_button srh_control_minmax" id="srh_minimize" title="Minimize">▲</div>
+                </div>
+                <div id="srh_minimized" style="display: none">
+                    <div id="srh_options_heading_minimized" class="srh_h1">Options</div>
+                    <div class="srh_control_button srh_control_minmax" id="srh_maximize" title="Maximize">▼</div>
+                </div>
+                <div class="srh_control_button srh_control_help" id="srh_help" title="Help">?</div>
+                <div class="srh_control_button srh_control_close" id="srh_close" title="Close (or press ESC)">&times;</div>
+                <div>Search items:</div>
+                <ul>
+
+                </ul>
+                `;
         }
 
         rectangleSelect(x1, y1, x2, y2) {
@@ -24,8 +48,10 @@ if (!selectionRectangle) {
         
             // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
             const allElements = document.getElementsByTagName('*');
-        
-            optionsHtml -= "</ul>"
+            
+            console.log("optionsHtml at first: ", this.optionsHtml);
+            this.optionsHtml = this.optionsHtml.replace("</ul>", " ");
+            console.log("optionsHtml before: ", this.optionsHtml);
             for (const element of allElements) {
                 let pos = getPos(element);
                 let x_l = pos[0],
@@ -35,14 +61,16 @@ if (!selectionRectangle) {
                 if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
                     if (x_l != x_r && y_t != y_d && !checkExisted(element, this.objectToSearch)) {
                        this.objectToSearch.push(element);
-                       optionsHTML += `
-                       `;
+                       console.log("push");
+                       this.optionsHtml += ` <li>lalala</li>\n`;//test
+                       console.log("optionsHtml: ", this.optionsHtml);
                     }
                 }
             }
+            this.optionsHtml += "\n </ul>";
+            console.log("optionsHtml after: ", this.optionsHtml);
+            this.createOptions();
 
-            optionsHtml
-            
         }
 
         setColor (color) {
@@ -146,7 +174,7 @@ if (!selectionRectangle) {
                     }//need to change
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
-                        this.objectToSearch = rectangleSelect(this.startX, this.startY, x, y, this.objectToSearch);
+                        this.rectangleSelect(this.startX, this.startY, x, y);
                         $("*").removeClass("mystyle");
                         searchelement(this.objectToSearch)
                     } 
@@ -163,31 +191,7 @@ if (!selectionRectangle) {
             $("*").removeClass("mystyle");
         }
 
-        static optionsHtml = `
         
-        <div id="srh_maximized">
-            <div id="srh_options_heading" class="srh_h1">Options</div>
-            <div class="srh_colors">
-                <div class="srh_color_button srh_yellow" id="srh_color_yellow"> </div><div class="srh_color_button srh_blue" id="srh_color_blue"></div><div class="srh_color_button srh_green" id="srh_color_green"></div><div class="srh_color_button srh_red" id="srh_color_red"></div><div class="srh_color_button srh_white" id="srh_color_white"></div><div class="srh_color_button srh_black" id="srh_color_black"></div>
-            </div>
-            <div class="cts_clr_btn" id="clr_btn">Clear</div>
-            <div class="srh_flags">
-                <input type="checkbox" id="srh_active" name="active"/>
-                <label id="srh_active" for="srh_active">Active</label> 
-            </div>
-            <div class="srh_control_button srh_control_minmax" id="srh_minimize" title="Minimize">▲</div>
-        </div>
-        <div id="srh_minimized" style="display: none">
-            <div id="srh_options_heading_minimized" class="srh_h1">Options</div>
-            <div class="srh_control_button srh_control_minmax" id="srh_maximize" title="Maximize">▼</div>
-        </div>
-        <div class="srh_control_button srh_control_help" id="srh_help" title="Help">?</div>
-        <div class="srh_control_button srh_control_close" id="srh_close" title="Close (or press ESC)">&times;</div>
-        <div>Search items:</div>
-        <ul>
-
-        </ul>
-        `;
 
         static helpHtml = `<div class="srh_modal_content"><span id="srh_modal_close" class="srh_modal_close">&times;</span><p id="srh_modal_text">...</p></div>`;
 
@@ -195,7 +199,7 @@ if (!selectionRectangle) {
             let options = document.createElement('div');
             options.id = this.optionsElementId;
             options.setAttribute('class', 'srh_options');
-            options.innerHTML = SelectionRectangle.optionsHtml;
+            options.innerHTML = this.optionsHtml;
 
             document.body.appendChild(options);
             this.options = options;

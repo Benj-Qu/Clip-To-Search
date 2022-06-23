@@ -25,11 +25,6 @@ function checkExisted(element, elementList) {
 }
 
 
-
-// Params: four coordinates corresponding to four vertices of the bounding box
-// Out: an array of DOM elements in this bounding box
-
-
 // In: searchList is an array whose elements are arrays in this form: [DOM object, x_origin, y_origin]
 // You are supposed to pass in this.objectToSearch
 // Out: 
@@ -48,8 +43,9 @@ function searchelement(searchList){
     // Fill in the 2D array, each element with ele([0]) and parent([1])
     [...document.querySelectorAll("*")].forEach((ele)=>{
         for (var i = 0; i < searchList.length; i++) {
+            console.log(ele.outerHTML);
             if (ele.outerHTML == searchList[i][0].outerHTML) {
-                singleSearchResult[i].push([ele,-1]); // if you want to append two arrays, you should .push(...[ele,-1]) instead
+                singleSearchResult[i].push([ele,-1]); 
                 // parent init as -1
             }
         }
