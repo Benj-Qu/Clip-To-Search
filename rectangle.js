@@ -71,8 +71,16 @@ if (!selectionRectangle) {
             this.sidebar.append(div);
             //console.log(div);
         }
+        
         clearSiderbar(){
-            this.sidebar = $("<div id='sidebar'></div>");
+            console.log("clear sidebar");
+            this.sidebar.empty();
+            let title = $('<p>Sidebar</p>');
+            title.css({
+                'font-size': '60px',
+                'font-weight': 'bold',
+            });
+            this.sidebar.append(title);
         }
 
         putTogetherOptionsHtml(){
