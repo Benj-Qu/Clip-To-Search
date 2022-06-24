@@ -38,6 +38,37 @@ if (!selectionRectangle) {
                 `;
                 this.listHtml = "</ul>";
                 this.optionsHtml = this.optionsBasicHtml + this.listHtml;
+                this.sidebar = $("<div id='sidebar'></div>");
+
+        }
+
+        sidebarInit() {
+            $('body').css({
+                'padding-right': '600px'
+            });
+            this.sidebar.css({
+                'position': 'fixed',
+                'right': '0px',
+                'top': '0px',
+                'z-index': 9999,
+                'width': '500px',
+                'height': '100%',
+                'background-color': 'GhostWhite',
+            });
+            $('body').append(this.sidebar);
+            let title = $('<p>Sidebar</p>');
+            title.css({
+                'font-size': '60px',
+                'font-weight': 'bold',
+            });
+            this.sidebar.append(title);
+        }
+
+        appendToSidebar(html){
+            let div = $('<div></div>');
+            div.append(html);
+            this.sidebar.append(div);
+            //console.log(div);
         }
 
         putTogetherOptionsHtml(){
@@ -71,6 +102,7 @@ if (!selectionRectangle) {
                        this.objectToSearch.push(element);
                        console.log("push");
                        this.listHtml += ` <li>lalala</li>\n`;//test
+                       this.appendToSidebar(element.outerHTML)
                        //console.log("optionsHtml: ", this.optionsHtml);
                     }
                 }
@@ -349,6 +381,7 @@ if (!selectionRectangle) {
             if (!document.getElementById(this.optionsElementId)) {
                 this.createOptions();
             }
+            this.sidebarInit();
             this.setColor("yellow");
         }
 
@@ -411,8 +444,12 @@ if (!selectionRectangle) {
             selectionRectangle.switchActiveMode(true);
             document.getElementsByTagName("body")[0].style.cursor = "default";
         }
-    });        
+    });
     
+    
+    
+    //Split('body', 'sidebar');
+  
 
     window.addEventListener("resize", () => selectionRectangle.canvasResize());
 
