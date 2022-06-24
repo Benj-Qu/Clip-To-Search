@@ -64,7 +64,12 @@ if (!selectionRectangle) {
             this.sidebar.append(title);
         }
 
-   
+        appendToSidebar(html){
+            let div = $('<div></div>');
+            div.append(html);
+            this.sidebar.append(div);
+            //console.log(div);
+        }
 
         putTogetherOptionsHtml(){
             this.optionsHtml = this.optionsBasicHtml + this.listHtml;
@@ -97,6 +102,7 @@ if (!selectionRectangle) {
                        this.objectToSearch.push(element);
                        console.log("push");
                        this.listHtml += ` <li>lalala</li>\n`;//test
+                       this.appendToSidebar(element.outerHTML)
                        //console.log("optionsHtml: ", this.optionsHtml);
                     }
                 }
