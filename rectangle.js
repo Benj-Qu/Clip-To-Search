@@ -53,6 +53,7 @@ if (!selectionRectangle) {
                 'z-index': 9999,
                 'width': '500px',
                 'height': '100%',
+                'overflow-y': 'scroll',
                 'background-color': 'GhostWhite',
             });
             $('body').append(this.sidebar);
@@ -69,6 +70,17 @@ if (!selectionRectangle) {
             div.append(html);
             this.sidebar.append(div);
             //console.log(div);
+        }
+        
+        clearSiderbar(){
+            console.log("clear sidebar");
+            this.sidebar.empty();
+            let title = $('<p>Sidebar</p>');
+            title.css({
+                'font-size': '60px',
+                'font-weight': 'bold',
+            });
+            this.sidebar.append(title);
         }
 
         putTogetherOptionsHtml(){
@@ -240,6 +252,7 @@ if (!selectionRectangle) {
             document.body.removeChild(this.options);
             this.options = null;
             this.createOptions();
+            this.clearSiderbar();
             $("*").removeClass("mystyle");
         }
 
