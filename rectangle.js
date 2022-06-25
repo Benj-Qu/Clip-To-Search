@@ -80,6 +80,25 @@ if (!selectionRectangle) {
             console.log("append");
             let div = $('<li></li>');
             div.append(html);
+
+            let btn_group = $('<div></div>');
+            btn_group.css({
+                'display': 'inline-block',
+                'vertical-align': 'middle',
+            });
+            let raw_btn = $('<button>Raw</button>');
+            let rendered_btn = $('<button>Rendered</button>');
+            raw_btn.css({
+                'border': '1px solid white',
+            });
+            rendered_btn.css({
+                'border': '5px solid white',
+            });
+
+            btn_group.append(raw_btn);
+            btn_group.append(rendered_btn);
+            div.append(btn_group);
+
             $("#repo").append(div);
             $("#repo").append($('<hr class="dashed">'));
             //console.log(div);
