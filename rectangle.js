@@ -47,6 +47,7 @@ if (!selectionRectangle) {
                 'padding-right': '600px'
             });
             this.sidebar.css({
+                'all': 'initial',
                 'position': 'fixed',
                 'right': '0px',
                 'top': '0px',
@@ -57,18 +58,49 @@ if (!selectionRectangle) {
                 'background-color': 'GhostWhite',
             });
             $('body').append(this.sidebar);
-            let title = $('<p>Sidebar</p>');
+            let title = $('<h1>Sidebar</h1>');
             title.css({
                 'font-size': '60px',
                 'font-weight': 'bold',
             });
+            let repo_head = $('<h1>Repository</h1>');
+            repo_head.css({
+                'font-size': '40=30px',
+                'font-weight': 'bold',
+            });
+            let repo = $('<ul id="repo"></ul>');
+            repo_head.append($('<hr class="solid">'));
+            repo_head.append(repo);
             this.sidebar.append(title);
+            this.sidebar.append($('<hr class="solid">'));
+            this.sidebar.append(repo_head);
         }
 
         appendToSidebar(html){
-            let div = $('<div></div>');
+            console.log("append");
+            let div = $('<li></li>');
             div.append(html);
-            this.sidebar.append(div);
+
+            let btn_group = $('<div></div>');
+            btn_group.css({
+                'display': 'inline-block',
+                'vertical-align': 'middle',
+            });
+            let raw_btn = $('<button>Raw</button>');
+            let rendered_btn = $('<button>Rendered</button>');
+            raw_btn.css({
+                'border': '1px solid white',
+            });
+            rendered_btn.css({
+                'border': '5px solid white',
+            });
+
+            btn_group.append(raw_btn);
+            btn_group.append(rendered_btn);
+            div.append(btn_group);
+
+            $("#repo").append(div);
+            $("#repo").append($('<hr class="dashed">'));
             //console.log(div);
         }
         
