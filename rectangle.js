@@ -78,8 +78,8 @@ if (!selectionRectangle) {
 
         appendToSidebar(html){
             console.log("append");
-            let div = $('<li></li>');
-            div.append(html);
+            let li = $('<li></li>');
+            li.append(html);
 
             let btn_group = $('<div></div>');
             btn_group.css({
@@ -89,18 +89,33 @@ if (!selectionRectangle) {
             let raw_btn = $('<button>Raw</button>');
             let rendered_btn = $('<button>Rendered</button>');
             raw_btn.css({
-                'border': '1px solid white',
+                'border': '1px solid black',
+                'padding': '10px',
             });
             rendered_btn.css({
-                'border': '5px solid white',
+                'border': '1px solid black',
+                'padding': '10px',
             });
-
-            btn_group.append(raw_btn);
-            btn_group.append(rendered_btn);
-            div.append(btn_group);
-
-            $("#repo").append(div);
+            btn_group.append(raw_btn); 
+            li.append(btn_group);
+            $("#repo").append(li);
             $("#repo").append($('<hr class="dashed">'));
+            
+            let raw_html = html.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            var new_p = $('<p />').append(raw_html);
+            
+            raw_btn.click(function(){
+                console.log('raw_btn clicked');
+                li.replaceWith(function(){
+                    new_p.append(rendered_btn);
+                    return new_p;
+                });
+            });
+            rendered_btn.click(function(){
+                console.log('rendered_btn clicked');
+                new_p.replaceWith(li);
+            });
+            
             //console.log(div);
         }
         
