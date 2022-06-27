@@ -5,5 +5,4 @@ chrome.commands.onCommand.addListener((cmd) => {
       console.log(cmd, " request sent.");
     });
   });
-        
 });
