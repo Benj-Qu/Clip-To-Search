@@ -4,8 +4,14 @@
   "version": "1.0.1",
   "manifest_version": 3,
 
-  "permissions": [ "https://*/*", "http://*/*", "https://www.google-analytics.com/", "downloads", "contextMenus", "tabs", "storage", "unlimitedStorage", "activeTab", "\u003Call_urls>", "background", "chrome://favicon/", "clipboardRead", "clipboardWrite" ],
-  
+  "permissions": [ 
+    "downloads", "contextMenus", "tabs", "storage", "unlimitedStorage", "activeTab", "background", "clipboardRead", "clipboardWrite" 
+  ],
+
+  "optional_host_permissions": [
+    "https://*/*", "http://*/*", "\u003Call_urls>"
+  ],
+
   "default_locale": "en",
 
   "content_scripts":[
@@ -13,10 +19,12 @@
       "matches": [
         "<all_urls>"
       ],
-      "css": ["searchStyle.css", "rectangle.css"],
-      "js": ["jquery.js", "rectangle.js", "functions.js"]
+      "css": ["searchStyle.css", "search.css"],
+      "js": ["jquery.js", "search.js", "helper.js", "sidebar.js"]
     }
   ],
+
+
 
   "background":{
     "service_worker": "background.js"
