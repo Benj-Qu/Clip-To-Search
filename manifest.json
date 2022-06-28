@@ -24,7 +24,10 @@
     }
   ],
 
-
+  "web_accessible_resources": [{
+    "resources": ["options.html"],
+    "matches": [ "https://*/*", "http://*/*", "\u003Call_urls>" ]
+  }],
 
   "background":{
     "service_worker": "background.js"
