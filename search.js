@@ -13,7 +13,7 @@ if (!clipSearch) {
             this.startX = null, this.startY = null, this.isDraw = false;
             this.enabled = false;
             this.objectToSearch = [];
-            this.optionsBasicHtml = `
+            this.optionsHtml = `
                 <div id="cs_maximized">
                     <div id="cs_options_heading" class="cs_h1">Options</div>
                     <div class="cs_colors">
@@ -32,11 +32,7 @@ if (!clipSearch) {
                 </div>
                 <div class="cs_control_button cs_control_help" id="cs_help" title="Help">?</div>
                 <div class="cs_control_button cs_control_close" id="cs_close" title="Close (or press ESC)">&times;</div>
-                <div>Search items:</div>
-                <ul>
                 `;
-            this.listHtml = "</ul>";
-            this.optionsHtml = this.optionsBasicHtml + this.listHtml;
             this.sidebar = $("<div id='sidebar'></div>");
 
         }
@@ -129,9 +125,6 @@ if (!clipSearch) {
             this.sidebar.append(title);
         }
 
-        putTogetherOptionsHtml(){
-            this.optionsHtml = this.optionsBasicHtml + this.listHtml;
-        }
 
         rectangleSelect(x1, y1, x2, y2) {
             let x_large = x1 > x2 ? x1 : x2,
@@ -141,13 +134,6 @@ if (!clipSearch) {
         
             // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
             const allElements = document.getElementsByTagName('*');
-            
-            //console.log("optionsHtml at first: ", this.optionsHtml);
-            
-            this.optionsHtml = this.listHtml.replace("</ul>", " ");
-
-            this.putTogetherOptionsHtml();
-            //console.log("optionsHtml before: ", this.optionsHtml);
             
             for (const element of allElements) {
                 let pos = getPos(element);
@@ -159,15 +145,10 @@ if (!clipSearch) {
                     if (x_l != x_r && y_t != y_d && !checkExisted(element, this.objectToSearch)) {
                        this.objectToSearch.push(element);
                        console.log("push");
-                       this.listHtml += ` <li>lalala</li>\n`;//test
                        this.appendToSidebar(element.outerHTML)
-                       //console.log("optionsHtml: ", this.optionsHtml);
                     }
                 }
             }
-            this.listHtml += "\n </ul>";
-            this.putTogetherOptionsHtml();
-            //console.log("optionsHtml after: ", this.optionsHtml);
             console.log(this.objectToSearch);
 
             document.body.removeChild(this.options);
@@ -293,8 +274,6 @@ if (!clipSearch) {
 
         clearResults(){
             this.objectToSearch = [];
-            this.listHtml = "</ul>";
-            this.putTogetherOptionsHtml();
             document.body.removeChild(this.options);
             this.options = null;
             this.createOptions();
