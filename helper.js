@@ -69,7 +69,7 @@ function searchelement(searchList){
                     if ((_x_l - x_l == x_dist) && 
                         (_y_t - y_t == y_dist)) {
                             singleSearchResult[i+1][k][1] = j;
-                        }
+                    }
                 }
             }
         }

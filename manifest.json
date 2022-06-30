@@ -32,7 +32,7 @@
   "background":{
     "service_worker": "background.js"
   },
-
+  
   "commands": {
     "switch": {
       "suggested_key": {
