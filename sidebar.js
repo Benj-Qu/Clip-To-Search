@@ -1,40 +1,23 @@
 class Sidebar {
     constructor () {
-        innerhtml = $("<div id='sidebar'></div>");
+        this.sidebar = $("<div id='sidebar'></div>");
+        this.repo = $('<ul id="repo"></ul>');
     }
 
     sidebarInit() {
-        $('body').css({
-            'padding-right': '600px'
-        });
-        this.sidebar.css({
-            'all': 'initial',
-            'position': 'fixed',
-            'right': '0px',
-            'top': '0px',
-            'z-index': 9999,
-            'width': '500px',
-            'height': '100%',
-            'overflow-y': 'scroll',
-            'background-color': 'GhostWhite',
-        });
         $('body').append(this.sidebar);
         let title = $('<h1>Sidebar</h1>');
-        title.css({
-            'font-size': '60px',
-            'font-weight': 'bold',
-        });
-        let repo_head = $('<h1>Repository</h1>');
-        repo_head.css({
-            'font-size': '40=30px',
-            'font-weight': 'bold',
-        });
-        let repo = $('<ul id="repo"></ul>');
+        let repo_head = $('<h1 id="repo_head">Repository</h1>');
         repo_head.append($('<hr class="solid">'));
-        repo_head.append(repo);
-        this.sidebar.append(title);
-        this.sidebar.append($('<hr class="solid">'));
-        this.sidebar.append(repo_head);
+        repo_head.append(this.repo);
+        
+        $('body').addClass('cs_bd');
+        title.addClass('cs_sb_title');
+        repo_head.addClass('cs_sb_repo_head');
+        this.sidebar.addClass("cs_sb");
+    }
+    repoInit(){
+        
     }
 
     appendToSidebar(html){
