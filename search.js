@@ -13,6 +13,26 @@ if (!clipSearch) {
             this.startX = null, this.startY = null, this.isDraw = false;
             this.enabled = false;
             this.objectToSearch = [];
+            this.optionsHtml = `
+                <div id="cs_maximized">
+                    <div id="cs_options_heading" class="cs_h1">Options</div>
+                    <div class="cs_colors">
+                        <div class="cs_color_button cs_yellow" id="cs_color_yellow"> </div><div class="cs_color_button cs_blue" id="cs_color_blue"></div><div class="cs_color_button cs_green" id="cs_color_green"></div><div class="cs_color_button cs_red" id="cs_color_red"></div><div class="cs_color_button cs_white" id="cs_color_white"></div><div class="cs_color_button cs_black" id="cs_color_black"></div>
+                    </div>
+                    <div class="cts_clr_btn" id="clr_btn">Clear</div>
+                    <div class="cs_flags">
+                        <input type="checkbox" id="cs_active" name="active"/>
+                        <label id="cs_active" for="cs_active">Active</label> 
+                    </div>
+                    <div class="cs_control_button cs_control_minmax" id="cs_minimize" title="Minimize">▲</div>
+                </div>
+                <div id="cs_minimized" style="display: none">
+                    <div id="cs_options_heading_minimized" class="cs_h1">Options</div>
+                    <div class="cs_control_button cs_control_minmax" id="cs_maximize" title="Maximize">▼</div>
+                </div>
+                <div class="cs_control_button cs_control_help" id="cs_help" title="Help">?</div>
+                <div class="cs_control_button cs_control_close" id="cs_close" title="Close (or press ESC)">&times;</div>
+                `;
             this.sidebar = $("<div id='sidebar'></div>");
 
         }
@@ -111,7 +131,7 @@ if (!clipSearch) {
                 x_small = x1 < x2 ? x1 : x2,
                 y_large = y1 > y2 ? y1 : y2,
                 y_small = y1 < y2 ? y1 : y2;
-                
+        
             // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
             const allElements = document.getElementsByTagName('*');
             
@@ -269,36 +289,10 @@ if (!clipSearch) {
             let options = document.createElement('div');
             options.id = this.optionsElementId;
             options.setAttribute('class', 'cs_options');
-            options.innerHTML = `
-            <div id="cs_maximized">
-                <div id="cs_options_heading" class="cs_h1">Options</div>
-                <div class="cs_colors">
-                    <div class="cs_color_button cs_yellow" id="cs_color_yellow"> </div><div class="cs_color_button cs_blue" id="cs_color_blue"></div><div class="cs_color_button cs_green" id="cs_color_green"></div><div class="cs_color_button cs_red" id="cs_color_red"></div><div class="cs_color_button cs_white" id="cs_color_white"></div><div class="cs_color_button cs_black" id="cs_color_black"></div>
-                </div>
-                <div class="cts_clr_btn" id="clr_btn">Clear</div>
-                <div class="cs_flags">
-                    <input type="checkbox" id="cs_active" name="active"/>
-                    <label id="cs_active" for="cs_active">Active</label> 
-                </div>
-                <div class="cs_control_button cs_control_minmax" id="cs_minimize" title="Minimize">▲</div>
-            </div>
-            <div id="cs_minimized" style="display: none">
-                <div id="cs_options_heading_minimized" class="cs_h1">Options</div>
-                <div class="cs_control_button cs_control_minmax" id="cs_maximize" title="Maximize">▼</div>
-            </div>
-            <div class="cs_control_button cs_control_help" id="cs_help" title="Help">?</div>
-            <div class="cs_control_button cs_control_close" id="cs_close" title="Close (or press ESC)">&times;</div>
-            `;
+            options.innerHTML = this.optionsHtml;
 
-            // $.ajax({
-            //     url: 'options.html',
-            //     async: false,
-            //     success: function(data) {
-            //         options.innerHTML = $.parseHTML(data.response);
-            //     }
-            //   });
-            
             document.body.appendChild(options);
+            this.options = options;
 
             let colors = ['yellow', 'blue', 'green', 'red', 'white', 'black'];
             for (let color of colors) {
@@ -307,7 +301,8 @@ if (!clipSearch) {
             }
 
             document.getElementById("clr_btn").addEventListener("click", () => {
-                this.clearResults();
+                // TODO: replace with a clear function
+                clipSearch.clearResults();
             });
 
             document.getElementById('cs_active').addEventListener("click", () => {
