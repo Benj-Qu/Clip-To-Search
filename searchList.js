@@ -4,9 +4,12 @@ const Mode = {
     Original : 1
 }
 
+var counter = 0;
+
 class SearchElement {
 
     constructor(ele) {
+        this.id = counter++;
         this.element = ele;
         this.mode = Mode.Rendered;
         this.elementHTML = ele.outerHTML;
@@ -48,44 +51,92 @@ class SearchElement {
 class SearchList {
 
     constructor() {
+        this.lca = null;
         this.elements = [];
+        this.pathtree = [];
     }
 
     // append element to search list
     append(ele) {
         let searchElement = new SearchElement(ele);
         this.elements.push(searchElement);
+        if (this.elements.length == 1) {
+            this.LCA = ele;
+        }
+        else {
+            this.updateLCA();
+        }
+        this.setPathTree();
     }
 
     // delete element from a certain position in the search list
     delete(pos) {
         this.elements.splice(pos, 1);
+        this.setLCA();
+        this.setPathTree();
     }
 
     // insert element into a certain position in the search list
     insert(ele, pos) {
         let searchElement = new SearchElement(ele);
         this.elements.splice(pos, 0, searchElement);
+        if (this.elements.length == 1) {
+            this.LCA = ele;
+        }
+        else {
+            this.updateLCA();
+        }
+        this.setPathTree();
+    }
+
+    // move an element
+    move(from, to) {
+        let moveElement = elements[from];
+        if (from > to) {
+            this.elements.splice(from, 1);
+            this.elements.splice(to, 0, moveElement);
+        }
+        else if (from < to) {
+            this.elements.splice(to, 0, moveElement);
+            this.elements.splice(from, 1);
+        } 
     }
 
     // clear up the search list
     clear() {
+        this.lca = null;
         this.elements = [];
+        this.pathtree = [];
     }
 
-    // get the LCA DOM element of the elements in search list
-    lowestCommonAncestor() {
-        let root = getElementsByTagName('html');
-        let currLCA = elements[0];
+    // set the LCA node of the elements in search list (after some element is deleted)
+    setLCA() {
+        this.lca = elements[0];
 
         this.elements.forEach(function(val, idx, arr) {
             // get the parent array of two elements
-            let parentArr1 = getParentArr(val),
-                parentArr2 = getParentArr(currLCA);
-            
+            if (this.lca != null) {
+                this.lca = findlca(val, this.lca);
+            }
         });
 
-        return currLCA;
+        return this.lca;
+    }
+
+    // update the LCA node after an element is appended (after some node is appended or inserted)
+    updateLCA() {
+        if (this.lca != null) {
+            this.lca = findlca(val, this.lca);
+        }
+    }
+
+    setPathTree() {
+        let lca = this.lowestCommonAncestor();
+        let pathArr = [];
+        this.elements.forEach(function(val, idx, arr) {
+            pathArr.push(findPath(val, lca));
+        });
+        return pathArr;
     }
 
     // update the sidebar HTML codes
@@ -97,17 +148,81 @@ class SearchList {
             sbHTML += val.getHTML();
         });
 
-        
-
         return sbHTML;
+    }
+
+    isSameStructure(ele) {
+        let isSame = true;
+        this.pathtree.forEach(function(val, idx, arr) {
+            let node = findNode(ele, val);
+            if ((node == null) || (node.outerHTML != elements[idx].outerHTML)) {
+                isSame = false;
+            }
+        });
+        return isSame;
     }
 }
 
-function getParentArr(node) {
-    let pArr = [node];
+function parents(node, root) {
+    let pArr = [];
     let pNode = node;
-    while (pNode != getElementsByTagName('html')) {
+    while (pNode != root) {
+        pArr.unshift(pNode);
         pNode = pNode.parentNode;
-        pArr.push(pNode);
     }
+}
+
+function findPath(element, ancestor) {
+    let pNode = ancestor;
+    let pArr = parents(element, ancestor);
+    let path = [];
+
+    pArr.forEach(function(val, idx, arr) {
+        let child = pNode.firstChild;
+        let j = 0;
+        while (child != val) {
+            child = child.nextSibling;
+            j++;
+        }
+        pNode = val;
+        path.push(j);
+    });
+    return path;
+}
+
+function findNode(root, path) {
+    let node = root;
+    path.forEach(function(val, idx, arr) {
+        if (node != null) {
+            node = node.firstChild;
+            for (let i = 0; i < val; i++) {
+                if (node == null) {
+                    break;
+                }
+                node = node.nextSibling;
+            }
+        }
+    });
+    return node;
+}
+
+function findlca(ele1, ele2) {
+    let pArr1 = parents(ele1, null),
+        pArr2 = parents(ele2, null);
+    if (pArr1[0] != pArr2[0]) {
+        return null;
+    }
+    else {
+        let i = 0;
+        while (i < pArr1.length && i < pArr2.length && pArr[i] == pArr[2]) {
+            i++;
+        }
+        return pArr1[i-1];
+    }
+}
+
+// TODO
+// The standard for similar Elements
+function similarElements() {
+    return [];
 }
