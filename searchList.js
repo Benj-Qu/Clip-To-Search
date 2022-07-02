@@ -144,11 +144,10 @@ class SearchList {
         let id = ele.id;
         let id_str = id.toString();
         let btn_id = id + '_btn';
-        let btn = document.createElement("button");
-        btn.innerHTML = "Switch Raw/Rendered HTML";
-        btn.classList.add("cs_sb_btn");
-        btn.id = btn_id;
-        btn.addEventListener("click", function(){
+        let btn = $("<button>Switch Raw/Rendered HTML</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', btn_id);
+        btn.click(function() {
             ele.switchMode();
             console.log('Switch Raw/Rendered');
             sl.updateSidebar();
@@ -180,6 +179,7 @@ class SearchList {
             }
             li.append(btn);
             repo.append(li);
+            repo.append($('<hr class="solid">'));
         }
     }
 
