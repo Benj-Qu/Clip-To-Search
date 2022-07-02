@@ -19,8 +19,8 @@
       "matches": [
         "<all_urls>"
       ],
-      "css": ["searchStyle.css", "search.css"],
-      "js": ["jquery.js", "search.js", "helper.js", "sidebar.js"]
+      "css": ["searchStyle.css", "search.css", "sidebar.css"],
+      "js": ["jquery.js", "searchList.js", "search.js", "helper.js", "sidebar.js"]
     }
   ],
 

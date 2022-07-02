@@ -18,21 +18,21 @@ class SearchElement {
     // return the HTML code of the element for sidebar in original mode 
     originalHTML() {
         let oHTML = this.elementHTML.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        return (elementHead + oHTML + oTail);
+        return oHTML;
     }
 
     // return the HTML code of the element for sidebar in rendered mode 
     renderedHTML() {
         let rHTML = this.elementHTML;
-        return (elementHead + rHTML + rTail);
+        return rHTML;
     }
 
     getHTML() {
         switch(this.mode) {
             case Mode.Rendered:
-                return this.originalHTML();
-            case Mode.Original:
                 return this.renderedHTML();
+            case Mode.Original:
+                return this.originalHTML();
         }
     }
 
@@ -139,16 +139,47 @@ class SearchList {
         return pathArr;
     }
 
+    make_button(ele){
+        let id = ele.id;
+        let id_str = id.toString();
+        let btn_id = id + 'b';
+        let btn = document.createElement("button");
+        btn.innerHTML = "Switch Raw/Rendered HTML";
+        btn.classList.add("cs_sb_btn");
+        btn.id = btn_id;
+        btn.addEventListener("click", function(){
+            ele.switchMode();
+            console.log('Switch Raw/Rendered');
+            this.updateSidebar();
+        });
+        
+        return btn;
+    }
     // update the sidebar HTML codes
     // always update sidebar HTML when searchList is modified, or display mode is switched
     updateSidebar() {
-        let sbHTML = ``;
+        console.log('update sidebar');
 
-        this.elements.forEach(function(val, idx, arr) {
-            sbHTML += val.getHTML();
-        });
-
-        return sbHTML;
+        let repo = $('#repo');
+        repo.empty();
+        for (let ele of this.elements){
+            let li = $('<li></li>');
+            let btn = this.make_button(ele);
+           
+            if(ele.mode == Mode.Original){
+                let p_node = $('<p />');
+                li.append(p_node);
+                p_node.append(ele.getHTML());
+            }
+            else{
+                let div_node = $('<div />');
+                li.append(div_node);
+                console.log(ele.getHTML());
+                div_node.append(ele.getHTML());
+            }
+            li.append(btn);
+            repo.append(li);
+        }
     }
 
     isSameStructure(ele) {
@@ -162,6 +193,8 @@ class SearchList {
         return isSame;
     }
 }
+
+ 
 
 function parents(node, root) {
     let pArr = [];
