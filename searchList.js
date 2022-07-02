@@ -223,6 +223,6 @@ function findlca(ele1, ele2) {
 
 // TODO
 // The standard for similar Elements
-function similarElements() {
+function similarElements(ele) {
     return [];
 }
