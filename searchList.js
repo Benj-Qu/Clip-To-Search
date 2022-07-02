@@ -151,7 +151,7 @@ class SearchList {
         btn.addEventListener("click", function(){
             ele.switchMode();
             console.log('Switch Raw/Rendered');
-            this.updateSidebar();
+            sl.updateSidebar();
         });
         
         return btn;
