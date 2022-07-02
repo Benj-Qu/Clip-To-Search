@@ -15,15 +15,6 @@ function getPos(element) {
     return pos;
 }
 
-function checkExisted(element, elementList) {
-    for (const ele of elementList) {
-        if (ele == element) {
-            return true;
-        }
-    }
-    return false;
-}
-
 
 // In: searchList is an array whose elements are arrays in this form: [DOM object, x_origin, y_origin]
 // You are supposed to pass in this.objectToSearch

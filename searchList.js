@@ -52,71 +52,89 @@ class SearchList {
 
     constructor() {
         this.lca = null;
-        this.elements = [];
+        this.searchElements = [];
         this.pathtree = [];
     }
 
     // append element to search list
     append(ele) {
         let searchElement = new SearchElement(ele);
-        this.elements.push(searchElement);
-        if (this.elements.length == 1) {
-            this.LCA = ele;
+        this.searchElements.push(searchElement);
+
+        if (this.searchElements.length == 1) {
+            this.lca = ele;
         }
         else {
             this.updateLCA();
         }
+
         this.setPathTree();
     }
 
     // delete element from a certain position in the search list
     delete(pos) {
-        this.elements.splice(pos, 1);
+        this.searchElements.splice(pos, 1);
+
         this.setLCA();
+
         this.setPathTree();
     }
 
     // insert element into a certain position in the search list
     insert(ele, pos) {
         let searchElement = new SearchElement(ele);
-        this.elements.splice(pos, 0, searchElement);
-        if (this.elements.length == 1) {
-            this.LCA = ele;
+        this.searchElements.splice(pos, 0, searchElement);
+
+        if (this.searchElements.length == 1) {
+            this.lca = ele;
         }
         else {
-            this.updateLCA();
+            this.updateLCA(ele);
         }
+
         this.setPathTree();
     }
 
     // move an element
     move(from, to) {
-        let moveElement = elements[from];
+        let moveElement = searchElements[from];
+
         if (from > to) {
-            this.elements.splice(from, 1);
-            this.elements.splice(to, 0, moveElement);
+            this.searchElements.splice(from, 1);
+            this.searchElements.splice(to, 0, moveElement);
         }
         else if (from < to) {
-            this.elements.splice(to, 0, moveElement);
-            this.elements.splice(from, 1);
+            this.searchElements.splice(to, 0, moveElement);
+            this.searchElements.splice(from, 1);
         } 
     }
 
     // clear up the search list
     clear() {
         this.lca = null;
-        this.elements = [];
+        this.searchElements = [];
         this.pathtree = [];
     }
 
-    // set the LCA node of the elements in search list (after some element is deleted)
-    setLCA() {
-        this.lca = elements[0];
+    isDuplicate(ele) {
+        let isDup = false;
+        this.searchElements.forEach(function(val, idx, arr) {
+            if (ele == val.element) {
+                isDup = true;
+            }
+        })
+        return isDup;
+    }
 
-        this.elements.forEach(function(val, idx, arr) {
-            // get the parent array of two elements
+    // set the LCA node of the searchElements in search list (after some element is deleted)
+    setLCA() {
+        this.lca = searchElements[0].element;
+        let sl = this;
+
+        this.searchElements.forEach(function(val, idx, arr) {
+            // get the parent array of two searchElements
             if (this.lca != null) {
-                this.lca = findlca(val, this.lca);
+                this.lca = findlca(val.element, sl.lca);
             }
         });
 
@@ -124,30 +142,31 @@ class SearchList {
     }
 
     // update the LCA node after an element is appended (after some node is appended or inserted)
-    updateLCA() {
+    updateLCA(ele) {
         if (this.lca != null) {
-            this.lca = findlca(val, this.lca);
+            this.lca = findlca(ele, this.lca);
         }
     }
 
     setPathTree() {
-        let lca = this.lowestCommonAncestor();
         let pathArr = [];
-        this.elements.forEach(function(val, idx, arr) {
-            pathArr.push(findPath(val, lca));
+        let sl = this;
+
+        this.searchElements.forEach(function(val, idx, arr) {
+            pathArr.push(findPath(val.element, sl.lca));
         });
+
         return pathArr;
     }
 
     make_button(ele){
         let sl = this;
-        let id = ele.id;
-        let id_str = id.toString();
-        let btn_id = id + '_btn';
+
         let btn = document.createElement("button");
         btn.innerHTML = "Switch Raw/Rendered HTML";
         btn.classList.add("cs_sb_btn");
-        btn.id = btn_id;
+        btn.id = ele.id.toString() + '_btn';
+
         btn.addEventListener("click", function(){
             ele.switchMode();
             console.log('Switch Raw/Rendered');
@@ -156,6 +175,7 @@ class SearchList {
         
         return btn;
     }
+
     // update the sidebar HTML codes
     // always update sidebar HTML when searchList is modified, or display mode is switched
     updateSidebar() {
@@ -163,7 +183,8 @@ class SearchList {
 
         let repo = $('#repo');
         repo.empty();
-        for (let ele of this.elements){
+
+        for (let ele of this.searchElements.element){
             let li = $('<li></li>');
             let btn = this.make_button(ele);
            
@@ -178,6 +199,7 @@ class SearchList {
                 console.log(ele.getHTML());
                 div_node.append(ele.getHTML());
             }
+
             li.append(btn);
             repo.append(li);
         }
@@ -185,20 +207,29 @@ class SearchList {
 
     isSameStructure(ele) {
         let isSame = true;
+
         this.pathtree.forEach(function(val, idx, arr) {
             let node = findNode(ele, val);
-            if ((node == null) || (node.outerHTML != elements[idx].outerHTML)) {
+            if ((node == null) || (node.outerHTML != searchElements[idx].element.outerHTML)) {
                 isSame = false;
             }
         });
+
         return isSame;
     }
 
+
     search() {
         let similarList = similarElements(this.lca);
-        similarList.forEach(function(val, idx, arr) {
-            if (this.isSameStructure(val)) {
-                this.pathtree.forEach(function(val, idx, arr) {
+        let sl = this;
+
+        if (similarList.length == 0 || similarList == null) {
+            return;
+        }
+        
+        similarList.forEach(function(ele, idx, arr) {
+            if (sl.isSameStructure(ele)) {
+                sl.pathtree.forEach(function(val, idx, arr) {
                     let node = findNode(ele, val);
                     node.classList.add("mystyle");
                 });
@@ -207,21 +238,34 @@ class SearchList {
     }
 }
 
- 
+
 
 function parents(node, root) {
     let pArr = [];
     let pNode = node;
+
     while (pNode != root) {
         pArr.unshift(pNode);
         pNode = pNode.parentNode;
     }
+    pArr.unshift(pNode);
+    
+    return pArr;
 }
+
 
 function findPath(element, ancestor) {
     let pNode = ancestor;
     let pArr = parents(element, ancestor);
     let path = [];
+
+    if (ancestor == null) {
+        return null;
+    }
+
+    if (element == ancestor) {
+        return [];
+    }
 
     pArr.forEach(function(val, idx, arr) {
         let child = pNode.firstChild;
@@ -235,6 +279,7 @@ function findPath(element, ancestor) {
     });
     return path;
 }
+
 
 function findNode(root, path) {
     let node = root;
@@ -252,9 +297,10 @@ function findNode(root, path) {
     return node;
 }
 
+
 function findlca(ele1, ele2) {
-    let pArr1 = parents(ele1, null),
-        pArr2 = parents(ele2, null);
+    let pArr1 = parents(ele1, Node.DOCUMENT_FRAGMENT_NODE),
+        pArr2 = parents(ele2, Node.DOCUMENT_FRAGMENT_NODE);
     if (pArr1[0] != pArr2[0]) {
         return null;
     }
@@ -267,8 +313,11 @@ function findlca(ele1, ele2) {
     }
 }
 
-// TODO
+
 // The standard for similar Elements
 function similarElements(ele) {
+    if (ele == null) {
+        return null;
+    }
     return document.getElementsByTagName(ele.tagName);
 }

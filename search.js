@@ -79,9 +79,8 @@ if (!clipSearch) {
                     y_t = pos[2],
                     y_d = pos[3];
                 if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-                    if (x_l != x_r && y_t != y_d && !checkExisted(element, this.searchList.elements)) {
-                        let ele = new SearchElement(element);
-                        this.searchList.elements.push(ele);
+                    if (x_l != x_r && y_t != y_d && !this.searchList.isDuplicate(element)) {
+                        this.searchList.append(element);
                         console.log("push");
                     }
                 }
@@ -199,7 +198,7 @@ if (!clipSearch) {
                     if (eventType == 'up' && this.enabled) {
                         this.rectangleSelect(this.startX, this.startY, x, y);
                         $("*").removeClass("mystyle");
-                        searchelement(this.searchList.elements);
+                        this.searchList.search();
                         this.searchList.updateSidebar();
                     } 
 
@@ -211,7 +210,7 @@ if (!clipSearch) {
         }
 
         clearResults(){
-            this.searchList.elements = [];
+            this.searchList.clear();
             document.body.removeChild(this.options);
             this.options = null;
             this.createOptions();
