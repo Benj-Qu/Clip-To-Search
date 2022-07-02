@@ -193,6 +193,18 @@ class SearchList {
         });
         return isSame;
     }
+
+    search() {
+        let similarList = similarElements(this.lca);
+        similarList.forEach(function(val, idx, arr) {
+            if (this.isSameStructure(val)) {
+                this.pathtree.forEach(function(val, idx, arr) {
+                    let node = findNode(ele, val);
+                    node.classList.add("mystyle");
+                });
+            }
+        });
+    }
 }
 
  
@@ -258,5 +270,5 @@ function findlca(ele1, ele2) {
 // TODO
 // The standard for similar Elements
 function similarElements(ele) {
-    return [];
+    return document.getElementsByTagName(ele.tagName);
 }
