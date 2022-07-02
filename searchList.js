@@ -140,9 +140,10 @@ class SearchList {
     }
 
     make_button(ele){
+        let sl = this;
         let id = ele.id;
         let id_str = id.toString();
-        let btn_id = id + 'b';
+        let btn_id = id + '_btn';
         let btn = document.createElement("button");
         btn.innerHTML = "Switch Raw/Rendered HTML";
         btn.classList.add("cs_sb_btn");
@@ -150,7 +151,7 @@ class SearchList {
         btn.addEventListener("click", function(){
             ele.switchMode();
             console.log('Switch Raw/Rendered');
-            //updateSidebar();
+            this.updateSidebar();
         });
         
         return btn;
@@ -256,6 +257,6 @@ function findlca(ele1, ele2) {
 
 // TODO
 // The standard for similar Elements
-function similarElements() {
+function similarElements(ele) {
     return [];
 }
