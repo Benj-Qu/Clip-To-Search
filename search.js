@@ -12,7 +12,7 @@ if (!clipSearch) {
             this.canvas = null;
             this.startX = null, this.startY = null, this.isDraw = false;
             this.enabled = false;
-            this.objectToSearch = [];
+            this.searchList = new SearchList();
             this.optionsHtml = `
                 <div id="cs_maximized">
                     <div id="cs_options_heading" class="cs_h1">Options</div>
@@ -34,97 +34,34 @@ if (!clipSearch) {
                 <div class="cs_control_button cs_control_close" id="cs_close" title="Close (or press ESC)">&times;</div>
                 `;
             this.sidebar = $("<div id='sidebar'></div>");
+            
 
         }
 
-        sidebarInit() {
-            $('body').css({
-                'padding-right': '600px'
-            });
-            this.sidebar.css({
-                'all': 'initial',
-                'position': 'fixed',
-                'right': '0px',
-                'top': '0px',
-                'z-index': 9999,
-                'width': '500px',
-                'height': '100%',
-                'overflow-y': 'scroll',
-                'background-color': 'GhostWhite',
-            });
+        sidebar_init() {
+            console.log("Sidebar initialization");
             $('body').append(this.sidebar);
+            
             let title = $('<h1>Sidebar</h1>');
-            title.css({
-                'font-size': '60px',
-                'font-weight': 'bold',
-            });
-            let repo_head = $('<h1>Repository</h1>');
-            repo_head.css({
-                'font-size': '40=30px',
-                'font-weight': 'bold',
-            });
+            let repo_head = $('<h1 id="repo_head">Repository</h1>');
             let repo = $('<ul id="repo"></ul>');
-            repo_head.append($('<hr class="solid">'));
-            repo_head.append(repo);
+            
+
             this.sidebar.append(title);
             this.sidebar.append($('<hr class="solid">'));
             this.sidebar.append(repo_head);
-        }
-
-        appendToSidebar(html){
-            console.log("append");
-            let li = $('<li></li>');
-            li.append(html);
-
-            let btn_group = $('<div></div>');
-            btn_group.css({
-                'display': 'inline-block',
-                'vertical-align': 'middle',
-            });
-            let raw_btn = $('<button>Raw</button>');
-            let rendered_btn = $('<button>Rendered</button>');
-            raw_btn.css({
-                'border': '1px solid black',
-                'padding': '10px',
-            });
-            rendered_btn.css({
-                'border': '1px solid black',
-                'padding': '10px',
-            });
-            btn_group.append(raw_btn); 
-            li.append(btn_group);
-            $("#repo").append(li);
-            $("#repo").append($('<hr class="dashed">'));
+            this.sidebar.append($('<hr class="solid">'));
+            this.sidebar.append(repo);
             
-            let raw_html = html.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-            var new_p = $('<p />').append(raw_html);
-            
-            raw_btn.click(function(){
-                console.log('raw_btn clicked');
-                li.replaceWith(function(){
-                    new_p.append(rendered_btn);
-                    return new_p;
-                });
-            });
-            rendered_btn.click(function(){
-                console.log('rendered_btn clicked');
-                new_p.replaceWith(li);
-            });
-            
-            //console.log(div);
+            $('body').addClass('cs_bd');
+            title.addClass('cs_sb_title');
+            repo_head.addClass('cs_sb_repo_head');
+            this.sidebar.addClass("cs_sb");
         }
         
-        clearSiderbar(){
-            console.log("clear sidebar");
-            this.sidebar.empty();
-            let title = $('<p>Sidebar</p>');
-            title.css({
-                'font-size': '60px',
-                'font-weight': 'bold',
-            });
-            this.sidebar.append(title);
+        clear_sidebar(){
+            $("#repo").empty();
         }
-
 
         rectangleSelect(x1, y1, x2, y2) {
             let x_large = x1 > x2 ? x1 : x2,
@@ -142,14 +79,14 @@ if (!clipSearch) {
                     y_t = pos[2],
                     y_d = pos[3];
                 if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-                    if (x_l != x_r && y_t != y_d && !checkExisted(element, this.objectToSearch)) {
-                       this.objectToSearch.push(element);
-                       console.log("push");
-                       this.appendToSidebar(element.outerHTML)
+                    if (x_l != x_r && y_t != y_d && !checkExisted(element, this.searchList.elements)) {
+                        let ele = new SearchElement(element);
+                        this.searchList.elements.push(ele);
+                        console.log("push");
                     }
                 }
             }
-            console.log(this.objectToSearch);
+            console.log(this.searchList.elements);
 
             document.body.removeChild(this.options);
             this.options = null;
@@ -262,10 +199,11 @@ if (!clipSearch) {
                     if (eventType == 'up' && this.enabled) {
                         this.rectangleSelect(this.startX, this.startY, x, y);
                         $("*").removeClass("mystyle");
-                        searchelement(this.objectToSearch)
+                        searchelement(this.searchList.elements);
+                        this.searchList.updateSidebar();
                     } 
 
-                    //console.log(this.objectToSearch);
+                    //console.log(this.searchList.elements);
 
                     this.isDraw = false;
                     this.clearCanvas();
@@ -273,11 +211,11 @@ if (!clipSearch) {
         }
 
         clearResults(){
-            this.objectToSearch = [];
+            this.searchList.elements = [];
             document.body.removeChild(this.options);
             this.options = null;
             this.createOptions();
-            this.clearSiderbar();
+            this.clear_sidebar();
             $("*").removeClass("mystyle");
         }
 
@@ -419,7 +357,7 @@ if (!clipSearch) {
             if (!document.getElementById(this.optionsElementId)) {
                 this.createOptions();
             }
-            this.sidebarInit();
+            this.sidebar_init();
             this.setColor("yellow");
         }
 
@@ -457,11 +395,11 @@ if (!clipSearch) {
                 break;
             case "delete":
                 //console.log("Delete request received.");
-                clipSearch.objectToSearch.pop();
+                clipSearch.searchList.elements.pop();
                 this.rectangleSelect(this.startX, this.startY, x, y);
                 $("*").removeClass("mystyle");
-                searchelement(this.objectToSearch)
-                //console.log(clipSearch.objectToSearch);
+                searchelement(clipSearch.searchList.elements)
+                //console.log(clipSearch.searchList.elements);
                 break;
             default:
                 console.log("No command received.");
