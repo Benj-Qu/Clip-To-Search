@@ -249,7 +249,7 @@ class SearchList {
 
         for (const path of this.pathtree) {
             let node = findNode(ele, path);
-            if ((node == null) || (node.outerHTML != this.searchElements[i++].element.outerHTML)) {
+            if ((node == null) || (node.outerHTML != this.searchElements[i++].elementHTML)) {
                 return false;
             }
         }
