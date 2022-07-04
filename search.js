@@ -39,7 +39,6 @@ if (!clipSearch) {
         }
 
         sidebar_init() {
-            console.log("Sidebar initialization");
             $('body').append(this.sidebar);
             
             let title = $('<h1>Sidebar</h1>');
@@ -69,7 +68,6 @@ if (!clipSearch) {
                 y_large = y1 > y2 ? y1 : y2,
                 y_small = y1 < y2 ? y1 : y2;
         
-            // console.log("inside rectangle: ", x1, " ", y1, " ", x2, " ", y2);
             const allElements = document.getElementsByTagName('*');
             
             for (const element of allElements) {
@@ -78,14 +76,11 @@ if (!clipSearch) {
                     x_r = pos[1],
                     y_t = pos[2],
                     y_d = pos[3];
-                if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-                    if (x_l != x_r && y_t != y_d && !this.searchList.isDuplicate(element)) {
-                        this.searchList.append(element);
-                        console.log("push");
-                    }
+                if (!this.searchList.isDuplicate(element) && !this.searchList.isContained(element) &&
+                    x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
+                    this.searchList.append(element);
                 }
             }
-            console.log(this.searchList.elements);
 
             document.body.removeChild(this.options);
             this.options = null;
@@ -196,13 +191,11 @@ if (!clipSearch) {
                     }
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
-                        this.rectangleSelect(this.startX, this.startY, x, y);
                         $("*").removeClass("mystyle");
+                        this.rectangleSelect(this.startX, this.startY, x, y);
                         this.searchList.search();
                         this.searchList.updateSidebar();
                     } 
-
-                    //console.log(this.searchList.elements);
 
                     this.isDraw = false;
                     this.clearCanvas();
@@ -382,26 +375,20 @@ if (!clipSearch) {
     clipSearch = new ClipSearch('clipSearch_canvas','clipSearch_options');
 
     chrome.runtime.onMessage.addListener(function(request, sender, response){
-        //console.log("onMessge");
-        console.log("request received: ", request);
         switch(request){
             case "switch":
-                console.log("Switch request received.");
                 clipSearch.switchActiveMode(true);
                 break;
             case "clear":
                 clipSearch.clearResults();
                 break;
             case "delete":
-                //console.log("Delete request received.");
                 clipSearch.searchList.elements.pop();
                 this.rectangleSelect(this.startX, this.startY, x, y);
                 $("*").removeClass("mystyle");
                 searchelement(clipSearch.searchList.elements)
-                //console.log(clipSearch.searchList.elements);
                 break;
             default:
-                console.log("No command received.");
                 break;
         }
 
