@@ -372,7 +372,9 @@ if (!clipSearch) {
 
     }
 
+    
     clipSearch = new ClipSearch('clipSearch_canvas','clipSearch_options');
+
 
     chrome.runtime.onMessage.addListener(function(request, sender, response){
         switch(request){
@@ -401,6 +403,8 @@ if (!clipSearch) {
             document.getElementsByTagName("body")[0].style.cursor = "crosshair";
         }
     });
+
+
     document.addEventListener("keyup", (event) => {
         if (event.key == "Shift") {
             clipSearch.switchActiveMode(true);
