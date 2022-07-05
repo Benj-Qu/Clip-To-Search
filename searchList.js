@@ -247,7 +247,6 @@ class SearchList {
         return btn_group;    
     }
 
-
     updateSidebar() {
         let repo = $('#repo');
         repo.empty();
