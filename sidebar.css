@@ -25,5 +25,7 @@
     display: inline-block;
     vertical-align: middle;
     border: 1px GhostWhite solid;
+    background-color: skyblue;
+    border-radius: 12px;
     padding: 10px;
 }
