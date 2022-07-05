@@ -111,14 +111,8 @@ class SearchList {
     move(from, to) {
         let moveElement = this.searchElements[from];
 
-        if (from > to) {
-            this.searchElements.splice(from, 1);
-            this.searchElements.splice(to, 0, moveElement);
-        }
-        else if (from < to) {
-            this.searchElements.splice(to, 0, moveElement);
-            this.searchElements.splice(from, 1);
-        } 
+        this.searchElements.splice(from, 1);
+        this.searchElements.splice(to, 0, moveElement);
 
         return;
     }
