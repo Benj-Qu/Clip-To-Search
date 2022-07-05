@@ -109,7 +109,7 @@ class SearchList {
 
 
     move(from, to) {
-        let moveElement = searchElements[from];
+        let moveElement = this.searchElements[from];
 
         if (from > to) {
             this.searchElements.splice(from, 1);
@@ -247,6 +247,30 @@ class SearchList {
         return btn_group;    
     }
 
+    make_text_field(ele){
+        let sl = this,
+            pos = sl.searchElements.indexOf(ele) + 1,
+            tf_id = ele.id.toString() + '_tf',
+            txt_field = $("<input type=\"text \" id=" + tf_id + " " + "value=" + pos + "><br>");
+        console.log(tf_id);
+        txt_field.addClass("cs_sb_tf"); 
+        txt_field.keypress(function(e){
+            if(e.keyCode == 13){
+                let to_pos = txt_field.val();
+                if (to_pos > sl.searchElements.length){
+                    to_pos = sl.searchElements.length + 1;
+                }else if (to_pos < 1){
+                    to_pos = 1;
+                }
+                console.log(to_pos);
+                sl.move(pos - 1, to_pos - 1);
+                sl.updateSidebar();
+            } 
+        });
+          
+        return txt_field;
+    }
+
     updateSidebar() {
         let repo = $('#repo');
         repo.empty();
@@ -256,8 +280,9 @@ class SearchList {
                 // switch_btn = this.make_switch_button(ele),
                 // delete_btn = this.make_delete_button(ele);
                 div_line = $('<hr class="solid">').addClass('cs_sb_div_line'),
+                txt_field = this.make_text_field(ele),
                 btn_group = this.make_btn_group(ele);
-                btn_group.addClass('cs_sb_btn_group');
+            btn_group.addClass('cs_sb_btn_group');
            
             if(ele.mode == Mode.Original){
                 let html_block = $('<p />');
@@ -273,6 +298,7 @@ class SearchList {
             }
 
             li.append(btn_group);
+            li.append(txt_field);
             repo.append(li);
 
             repo.append(div_line);

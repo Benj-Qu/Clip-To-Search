@@ -29,6 +29,9 @@
     width: 20%;
     float: right;
 }
+.cs_sb_tf{
+    width: 50px;
+}
 .cs_sb_div_line{
     clear:both;
     margin-top: 20px;
