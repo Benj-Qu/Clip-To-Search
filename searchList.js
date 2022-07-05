@@ -202,13 +202,28 @@ class SearchList {
     }
 
 
-    make_button(ele){
+    make_switch_button(ele){
         let sl = this;
         let btn = $("<button>Switch Raw/Rendered HTML</button>");
         btn.addClass("cs_sb_btn");
-        btn.attr('id', ele.id.toString() + '_btn');
+        btn.attr('id', ele.id.toString() + '_s_btn');
         btn.click(function() {
             ele.switchMode();
+            sl.updateSidebar();
+        });
+        
+        return btn;
+    }
+
+    make_delete_button(ele){
+        let sl = this;
+        let btn = $("<button>Delete</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', ele.id.toString() + '_d_btn');
+        btn.click(function() {
+            sl.delete(sl.searchElements.indexOf(ele));
+            // search the list again
+            // sl.search();
             sl.updateSidebar();
         });
         
@@ -222,7 +237,8 @@ class SearchList {
 
         for (const ele of this.searchElements){
             let li = $('<li></li>'),
-                btn = this.make_button(ele);
+                switch_btn = this.make_switch_button(ele),
+                delete_btn = this.make_delete_button(ele);
            
             if(ele.mode == Mode.Original){
                 let p_node = $('<p />');
@@ -235,7 +251,8 @@ class SearchList {
                 div_node.append(ele.getHTML());
             }
 
-            li.append(btn);
+            li.append(switch_btn);
+            li.append(delete_btn);
             repo.append(li);
             repo.append($('<hr class="solid">'));
         }
