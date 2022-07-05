@@ -222,9 +222,10 @@ class SearchList {
         btn.attr('id', ele.id.toString() + '_d_btn');
         btn.click(function() {
             console.log("Clicked delete button");
+            $("*").removeClass("mystyle");
             sl.delete(sl.searchElements.indexOf(ele));
             // search the list again
-            // sl.search();
+            sl.search();
             sl.updateSidebar();
         });
         
