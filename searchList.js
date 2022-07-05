@@ -109,7 +109,7 @@ class SearchList {
 
 
     move(from, to) {
-        let moveElement = searchElements[from];
+        let moveElement = this.searchElements[from];
 
         if (from > to) {
             this.searchElements.splice(from, 1);
@@ -202,11 +202,17 @@ class SearchList {
     }
 
 
-    make_button(ele){
+    make_switch_button(ele){
         let sl = this;
-        let btn = $("<button>Switch Raw/Rendered HTML</button>");
+        let btn_name;
+        if (ele.mode == Mode.Original){
+            btn_name = "Rendered";
+        }else{
+            btn_name = "Raw";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
         btn.addClass("cs_sb_btn");
-        btn.attr('id', ele.id.toString() + '_btn');
+        btn.attr('id', ele.id.toString() + '_s_btn');
         btn.click(function() {
             ele.switchMode();
             sl.updateSidebar();
@@ -215,6 +221,55 @@ class SearchList {
         return btn;
     }
 
+    make_delete_button(ele){
+        let sl = this;
+        let btn = $("<button>Delete</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', ele.id.toString() + '_d_btn');
+        btn.click(function() {
+            console.log("Clicked delete button");
+            sl.delete(sl.searchElements.indexOf(ele));
+            // search the list again
+            // sl.search();
+            sl.updateSidebar();
+        });
+        
+        return btn;
+    }
+
+    make_btn_group(ele){
+        let switch_btn = this.make_switch_button(ele),
+            delete_btn = this.make_delete_button(ele),
+            btn_group = $("<div />");
+        btn_group.append(switch_btn);
+        btn_group.append(delete_btn);
+        btn_group.attr('id', ele.id.toString() + '_btn_g');
+        return btn_group;    
+    }
+
+    make_text_field(ele){
+        let sl = this,
+            pos = sl.searchElements.indexOf(ele) + 1,
+            tf_id = ele.id.toString() + '_tf',
+            txt_field = $("<input type=\"text \" id=" + tf_id + " " + "value=" + pos + "><br>");
+        console.log(tf_id);
+        txt_field.addClass("cs_sb_tf"); 
+        txt_field.keypress(function(e){
+            if(e.keyCode == 13){
+                let to_pos = txt_field.val();
+                if (to_pos > sl.searchElements.length){
+                    to_pos = sl.searchElements.length + 1;
+                }else if (to_pos < 1){
+                    to_pos = 1;
+                }
+                console.log(to_pos);
+                sl.move(pos - 1, to_pos - 1);
+                sl.updateSidebar();
+            } 
+        });
+          
+        return txt_field;
+    }
 
     updateSidebar() {
         let repo = $('#repo');
@@ -222,22 +277,31 @@ class SearchList {
 
         for (const ele of this.searchElements){
             let li = $('<li></li>'),
-                btn = this.make_button(ele);
+                // switch_btn = this.make_switch_button(ele),
+                // delete_btn = this.make_delete_button(ele);
+                div_line = $('<hr class="solid">').addClass('cs_sb_div_line'),
+                txt_field = this.make_text_field(ele),
+                btn_group = this.make_btn_group(ele);
+            btn_group.addClass('cs_sb_btn_group');
            
             if(ele.mode == Mode.Original){
-                let p_node = $('<p />');
-                li.append(p_node);
-                p_node.append(ele.getHTML());
+                let html_block = $('<p />');
+                li.append(html_block);
+                html_block.append(ele.getHTML());
+                html_block.addClass('cs_sb_html_block');
             }
             else{
-                let div_node = $('<div />');
-                li.append(div_node);
-                div_node.append(ele.getHTML());
+                let html_block = $('<div />');
+                li.append(html_block);
+                html_block.append(ele.getHTML());
+                html_block.addClass('cs_sb_html_block');
             }
 
-            li.append(btn);
+            li.append(btn_group);
+            li.append(txt_field);
             repo.append(li);
-            repo.append($('<hr class="solid">'));
+
+            repo.append(div_line);
         }
 
         return;

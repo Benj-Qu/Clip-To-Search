@@ -38,23 +38,40 @@ if (!clipSearch) {
 
         }
 
+        make_clear_button(){
+            let sl = this;
+            let btn = $("<button>Clear</button>");
+            btn.addClass("cs_sb_btn");
+            btn.attr('id', 'clear_btn');
+            btn.click(function() {
+                sl.clearResults();
+            });
+            
+            return btn;
+        }
+        
         sidebar_init() {
             $('body').append(this.sidebar);
             
-            let title = $('<h1>Sidebar</h1>');
-            let repo_head = $('<h1 id="repo_head">Repository</h1>');
-            let repo = $('<ul id="repo"></ul>');
+            let title = $('<h1>Sidebar</h1>'),
+                repo_head = $('<h2 id="repo_head">Repository</h2>'),
+                repo = $('<ul id="repo"></ul>'),
+                span = $('<span />'),
+                clear_btn = this.make_clear_button();
+            
             
 
             this.sidebar.append(title);
             this.sidebar.append($('<hr class="solid">'));
             this.sidebar.append(repo_head);
+            repo_head.append(clear_btn);
             this.sidebar.append($('<hr class="solid">'));
             this.sidebar.append(repo);
             
             $('body').addClass('cs_bd');
             title.addClass('cs_sb_title');
             repo_head.addClass('cs_sb_repo_head');
+            clear_btn.addClass('cs_sb_btn');
             this.sidebar.addClass("cs_sb");
         }
         
