@@ -54,7 +54,7 @@ if (!clipSearch) {
             $('body').append(this.sidebar);
             
             let title = $('<h1>Sidebar</h1>'),
-                repo_head = $('<h1 id="repo_head">Repository</h1>'),
+                repo_head = $('<h2 id="repo_head">Repository</h2>'),
                 repo = $('<ul id="repo"></ul>'),
                 span = $('<span />'),
                 clear_btn = this.make_clear_button();

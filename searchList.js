@@ -204,7 +204,13 @@ class SearchList {
 
     make_switch_button(ele){
         let sl = this;
-        let btn = $("<button>Switch Raw/Rendered HTML</button>");
+        let btn_name;
+        if (ele.mode == Mode.Original){
+            btn_name = "Rendered";
+        }else{
+            btn_name = "Raw";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', ele.id.toString() + '_s_btn');
         btn.click(function() {
@@ -221,6 +227,7 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', ele.id.toString() + '_d_btn');
         btn.click(function() {
+            console.log("Clicked delete button");
             sl.delete(sl.searchElements.indexOf(ele));
             // search the list again
             // sl.search();
@@ -230,6 +237,16 @@ class SearchList {
         return btn;
     }
 
+    make_btn_group(ele){
+        let switch_btn = this.make_switch_button(ele),
+            delete_btn = this.make_delete_button(ele),
+            btn_group = $("<div />");
+        btn_group.append(switch_btn);
+        btn_group.append(delete_btn);
+        btn_group.attr('id', ele.id.toString() + '_btn_g');
+        return btn_group;    
+    }
+
 
     updateSidebar() {
         let repo = $('#repo');
@@ -237,24 +254,29 @@ class SearchList {
 
         for (const ele of this.searchElements){
             let li = $('<li></li>'),
-                switch_btn = this.make_switch_button(ele),
-                delete_btn = this.make_delete_button(ele);
+                // switch_btn = this.make_switch_button(ele),
+                // delete_btn = this.make_delete_button(ele);
+                div_line = $('<hr class="solid">').addClass('cs_sb_div_line'),
+                btn_group = this.make_btn_group(ele);
+                btn_group.addClass('cs_sb_btn_group');
            
             if(ele.mode == Mode.Original){
-                let p_node = $('<p />');
-                li.append(p_node);
-                p_node.append(ele.getHTML());
+                let html_block = $('<p />');
+                li.append(html_block);
+                html_block.append(ele.getHTML());
+                html_block.addClass('cs_sb_html_block');
             }
             else{
-                let div_node = $('<div />');
-                li.append(div_node);
-                div_node.append(ele.getHTML());
+                let html_block = $('<div />');
+                li.append(html_block);
+                html_block.append(ele.getHTML());
+                html_block.addClass('cs_sb_html_block');
             }
 
-            li.append(switch_btn);
-            li.append(delete_btn);
+            li.append(btn_group);
             repo.append(li);
-            repo.append($('<hr class="solid">'));
+
+            repo.append(div_line);
         }
 
         return;
