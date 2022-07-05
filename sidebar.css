@@ -10,7 +10,7 @@
     width: 500px;
     height: 100%;
     overflow-y: scroll;
-    background-color: GhostWhite solid;
+    background-color: GhostWhite;
 }
 .cs_sb_title{
     font-size: 60px;
@@ -21,11 +21,25 @@
     font-weight: bold;
 }
 
+.cs_sb_html_block{
+    width: 70%;
+    float: left;
+}
+.cs_sb_btn_group{
+    width: 30%;
+    float: right;
+}
+.cs_sb_div_line{
+    clear:both;
+    margin-top: 20px;
+}
 .cs_sb_btn {
-    display: inline-block;
+    display: block;
     vertical-align: middle;
-    border: 1px GhostWhite solid;
+    border: 1px GhostWhite;
     background-color: skyblue;
     border-radius: 12px;
     padding: 10px;
+    margin: 10px;
+    cursor: pointer;
 }
