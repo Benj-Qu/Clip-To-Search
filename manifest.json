@@ -20,7 +20,7 @@
         "<all_urls>"
       ],
       "css": ["searchStyle.css", "search.css", "sidebar.css"],
-      "js": ["jquery.js", "searchList.js", "search.js", "helper.js", "sidebar.js"]
+      "js": ["jquery.js", "searchElement.js", "searchList.js", "search.js", "helper.js", "sidebar.js"]
     }
   ],
 

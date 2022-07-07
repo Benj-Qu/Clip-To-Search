@@ -22,8 +22,6 @@ class SearchList {
 
         this.setPathTree();
 
-        this.printDetail();
-
         return;
     }
 
@@ -72,7 +70,7 @@ class SearchList {
         let len = this.searchElements.length;
 
         for (let i = 0; i < len; i++) {
-            if (isAncestor(ele, this.searchElements[len-i-1].element)) {
+            if (ele.contains(this.searchElements[len-i-1].element_original)) {
                 this.delete(len-i-1);
             }
         }
@@ -90,7 +88,7 @@ class SearchList {
 
     isDuplicate(ele) {
         for (const se of this.searchElements) {
-            if (ele == se.element) {
+            if (ele === se.element_original) {
                 return true;
             }
         }
@@ -101,7 +99,7 @@ class SearchList {
 
     isContained(ele) {
         for (const se of this.searchElements) {
-            if (isAncestor(se.element, ele)) {
+            if (se.element_original.contains(ele)) {
                 return true;
             }
         }
@@ -115,10 +113,10 @@ class SearchList {
 
         for (const se of this.searchElements) {
             if (this.lca == null) {
-                this.lca = se.element;
+                this.lca = se.element_original;
             }
             else {
-                this.lca = findlca(se.element, this.lca);
+                this.lca = findlca(se.element_original, this.lca);
             }
         }
 
@@ -139,7 +137,7 @@ class SearchList {
         this.pathtree = [];
 
         for (const se of this.searchElements) {
-            this.pathtree.push(findPath(se.element, this.lca));
+            this.pathtree.push(findPath(se.element_original, this.lca));
         }
 
         return;
@@ -149,7 +147,7 @@ class SearchList {
     make_switch_button(ele){
         let sl = this;
         let btn_name;
-        if (ele.mode == Mode.Original){
+        if (ele.mode === Mode.Original){
             btn_name = "Rendered";
         }else{
             btn_name = "Raw";
@@ -158,7 +156,7 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', ele.id.toString() + '_s_btn');
         btn.click(function() {
-            ele.switchMode();
+            ele.switchDisplayMode();
             sl.updateSidebar();
         });
         
@@ -171,7 +169,6 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', ele.id.toString() + '_d_btn');
         btn.click(function() {
-            console.log("Clicked delete button");
             $("*").removeClass("mystyle");
             sl.delete(sl.searchElements.indexOf(ele));
             // search the list again
@@ -197,7 +194,6 @@ class SearchList {
             pos = sl.searchElements.indexOf(ele) + 1,
             tf_id = ele.id.toString() + '_tf',
             txt_field = $("<input type=\"text \" id=" + tf_id + " " + "value=" + pos + "><br>");
-        console.log(tf_id);
         txt_field.addClass("cs_sb_tf"); 
         txt_field.keypress(function(e){
             if(e.keyCode == 13){
@@ -207,7 +203,6 @@ class SearchList {
                 }else if (to_pos < 1){
                     to_pos = 1;
                 }
-                console.log(to_pos);
                 sl.move(pos - 1, to_pos - 1);
                 sl.updateSidebar();
             } 
@@ -229,7 +224,7 @@ class SearchList {
                 btn_group = this.make_btn_group(ele);
             btn_group.addClass('cs_sb_btn_group');
            
-            if(ele.mode == Mode.Original){
+            if(ele.mode === Mode.Original){
                 let html_block = $('<p />');
                 li.append(html_block);
                 html_block.append(ele.getHTML());
@@ -256,9 +251,10 @@ class SearchList {
     isSameStructure(ele) {
         let i = 0;
 
-        for (const path of this.pathtree) {
-            let node = findNode(ele, path);
-            if ((node == null) || (node.outerHTML != this.searchElements[i++].elementHTML)) {
+        for (let i = 0; i < this.searchElements.length; i++) {
+            let node = findNode(ele, this.pathtree[i]);
+            let element = this.searchElements[i].element;
+            if (!isEqualNode(element, node)) {
                 return false;
             }
         }
@@ -289,15 +285,6 @@ class SearchList {
 
         return;
     }
-
-    
-    printDetail() {
-        console.log("search elements: ", this.searchElements);
-        console.log("lowest common ancestor: ", this.lca);
-        console.log("path tree: ", this.pathtree);
-
-        return;
-    }
 }
 
 
@@ -324,7 +311,7 @@ function findPath(element, ancestor) {
         return null;
     }
 
-    if (element == ancestor) {
+    if (element === ancestor) {
         return [];
     }
 
@@ -368,7 +355,7 @@ function findlca(ele1, ele2) {
     let lca = ele1;
 
     while (lca != null) {
-        if (isAncestor(lca, ele2)) {
+        if (lca.contains(ele2)) {
             break;
         }
         lca = lca.parentNode;
@@ -387,12 +374,38 @@ function similarElements(ele) {
 }
 
 
-function isAncestor(ancestor, element) {
-    if (ancestor == element) {
-        return true;
+function isEqualNode(ele1, ele2) {
+    if (ele1 == null || ele2 == null) {
+        return false;
     }
-    while (element != null) {
-        return isAncestor(ancestor, element.parentNode);
+
+    return isEqualHTML(ele1,ele2) && isEqualClass(ele1,ele2);
+}
+
+
+function isEqualHTML(ele1, ele2) {
+    return (ele1.innerHTML == ele2.innerHTML);
+}
+
+function isEqualClass(ele1, ele2) {
+    let classList1 = ele1.classList;
+    let classList2 = ele2.classList;
+    return isEqualList(classList1,classList2);
+}
+
+function isEqualList(list1, list2) {
+    if (list1 == null || list2 == null) {
+        return false;
     }
-    return false;
+    if (list1.length != list2.length) {
+        return false;
+    }
+    let isEqual = true;
+    list1.forEach(function(value) {
+        if (!list2.contains(value)) {
+            isEqual = false;
+        }
+    });
+
+    return isEqual;
 }

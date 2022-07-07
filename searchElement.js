@@ -10,25 +10,20 @@ class SearchElement {
 
     constructor(ele) {
         this.id = counter++;
-        this.element = ele;
+        this.element = ele.cloneNode(true);
         this.mode = Mode.Rendered;
-        this.element_copy = null;
-    }
-
-    set_copy() {
-        this.element_copy = this.element.cloneNode(true);
-        this.element_copy.id = "clone_element_" + this.id.toString();
+        this.element_original = ele;
     }
 
     // return the HTML code of the element for sidebar in original mode 
     originalHTML() {
-        let oHTML = this.elementHTML.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        let oHTML = this.element.outerHTML.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         return oHTML;
     }
 
     // return the HTML code of the element for sidebar in rendered mode 
     renderedHTML() {
-        let rHTML = this.elementHTML;
+        let rHTML = this.element.outerHTML;
         return rHTML;
     }
 
@@ -41,7 +36,7 @@ class SearchElement {
         }
     }
 
-    switchMode() {
+    switchDisplayMode() {
         switch(this.mode) {
             case Mode.Rendered:
                 this.mode = Mode.Original;
@@ -49,15 +44,6 @@ class SearchElement {
             case Mode.Original:
                 this.mode = Mode.Rendered;
                 break;
-        }
-    }
-
-    get isLeaf() {
-        if (this.element.firstChild == null) {
-            return true;
-        }
-        else {
-            return false;
         }
     }
 }
