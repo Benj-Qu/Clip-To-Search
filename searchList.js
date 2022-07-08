@@ -387,20 +387,29 @@ function isEqualHTML(ele1, ele2) {
     return (ele1.innerHTML == ele2.innerHTML);
 }
 
+
 function isEqualClass(ele1, ele2) {
     let classList1 = ele1.classList;
     let classList2 = ele2.classList;
     return isEqualList(classList1,classList2);
 }
 
+
 function isEqualList(list1, list2) {
-    if (list1 == null || list2 == null) {
+    if ((list1 == null && list2 == null) || 
+        (list1 == null && list2.length == 0) || (list1.length == 0 && list2 == null) ||
+        (list1.length == 0 && list2.length == 0)) {
+        return true;
+    }
+    else if (list1 == null || list2 == null) {
         return false;
     }
-    if (list1.length != list2.length) {
+    else if (list1.length != list2.length) {
         return false;
     }
+
     let isEqual = true;
+    
     list1.forEach(function(value) {
         if (!list2.contains(value)) {
             isEqual = false;
