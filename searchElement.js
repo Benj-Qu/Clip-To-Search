@@ -12,6 +12,7 @@ class SearchElement {
         this.id = counter++;
         this.element = ele.cloneNode(true);
         this.mode = Mode.Rendered;
+        this.editMode = false;
         this.element_original = ele;
     }
 
@@ -43,6 +44,17 @@ class SearchElement {
                 break;
             case Mode.Original:
                 this.mode = Mode.Rendered;
+                break;
+        }
+    }
+
+    toggleEditMode() {
+        switch(this.editMode){
+            case true:
+                this.editMode = false;
+                break;
+            case false:
+                this.editMode = true;
                 break;
         }
     }

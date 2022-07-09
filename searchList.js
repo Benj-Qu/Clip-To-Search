@@ -1,71 +1,3 @@
-<<<<<<< HEAD
-// Enum for display mode
-const Mode = {
-	Rendered : 0,
-    Original : 1
-}
-
-var counter = 0;
-
-class SearchElement {
-
-    constructor(ele) {
-        this.id = counter++;
-        this.element = ele;
-        this.mode = Mode.Rendered;
-        this.editMode = false;
-        this.elementHTML = ele.outerHTML;
-    }
-
-    // return the HTML code of the element for sidebar in original mode 
-    originalHTML() {
-        let oHTML = this.elementHTML.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        return oHTML;
-    }
-
-    // return the HTML code of the element for sidebar in rendered mode 
-    renderedHTML() {
-        let rHTML = this.elementHTML;
-        return rHTML;
-    }
-
-    getHTML() {
-        switch(this.mode) {
-            case Mode.Rendered:
-                return this.renderedHTML();
-            case Mode.Original:
-                return this.originalHTML();
-        }
-    }
-
-    toggleEditMode() {
-        console.log('inside tgem');
-        switch(this.editMode){
-            case true:
-                console.log('case true');
-                this.editMode = false;
-                break;
-            case false:
-                console.log('case false');
-                this.editMode = true;
-                break;    
-        }
-    }
-
-    switchMode() {
-        switch(this.mode) {
-            case Mode.Rendered:
-                this.mode = Mode.Original;
-                break;
-            case Mode.Original:
-                this.mode = Mode.Rendered;
-                break;
-        }
-    }
-}
-
-=======
->>>>>>> main
 class SearchList {
 
     constructor() {
@@ -319,13 +251,8 @@ class SearchList {
                 html_block;
             
            
-<<<<<<< HEAD
             if(ele.mode == Mode.Original){
                 html_block = $('<p />');
-=======
-            if(ele.mode === Mode.Original){
-                let html_block = $('<p />');
->>>>>>> main
                 li.append(html_block);
                 html_block.append(ele.getHTML());
                 html_block.addClass('cs_sb_html_block');
