@@ -179,10 +179,37 @@ class SearchList {
         return btn;
     }
 
-    make_btn_group(ele){
-        let switch_btn = this.make_switch_button(ele),
+    make_edit_button(ele, html_block){
+        let sl = this;
+        let btn_name;
+        if (ele.editMode == true){
+            btn_name = "Done";
+        }else{
+            btn_name = "Edit";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', ele.id.toString() + '_e_btn');
+        
+        
+        
+        btn.click(function(){
+            if(ele.editMode == true){
+                ele.element.innerHTML = html_block.innerHTML;
+            }
+            ele.toggleEditMode();
+            //do some update
+            sl.updateSidebar();
+        });
+        return btn;
+    }
+
+    make_btn_group(ele, html_block){
+        let edit_button = this.make_edit_button(ele, html_block),
+            switch_btn = this.make_switch_button(ele),
             delete_btn = this.make_delete_button(ele),
             btn_group = $("<div />");
+        btn_group.append(edit_button);    
         btn_group.append(switch_btn);
         btn_group.append(delete_btn);
         btn_group.attr('id', ele.id.toString() + '_btn_g');
@@ -221,22 +248,32 @@ class SearchList {
                 // delete_btn = this.make_delete_button(ele);
                 div_line = $('<hr class="solid">').addClass('cs_sb_div_line'),
                 txt_field = this.make_text_field(ele),
-                btn_group = this.make_btn_group(ele);
-            btn_group.addClass('cs_sb_btn_group');
+                html_block;
+            
            
-            if(ele.mode === Mode.Original){
-                let html_block = $('<p />');
+            if(ele.mode == Mode.Original){
+                html_block = $('<p />');
                 li.append(html_block);
                 html_block.append(ele.getHTML());
                 html_block.addClass('cs_sb_html_block');
             }
             else{
-                let html_block = $('<div />');
+                html_block = $('<div />');
                 li.append(html_block);
                 html_block.append(ele.getHTML());
                 html_block.addClass('cs_sb_html_block');
             }
+            if(ele.editMode == true){
+                console.log("set attr to true");
+                html_block.attr('contenteditable', 'true');
+                console.log(html_block.attr('contenteditable'));
+            }else{
+                console.log("set attr to false");
+                html_block.attr('contenteditable', 'false');
+            }
 
+            let btn_group = this.make_btn_group(ele, html_block);
+            btn_group.addClass('cs_sb_btn_group');
             li.append(btn_group);
             li.append(txt_field);
             repo.append(li);
