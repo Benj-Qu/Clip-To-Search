@@ -4,6 +4,7 @@ class SearchList {
         this.lca = null;
         this.searchElements = [];
         this.pathtree = [];
+        this.draggedElementIdx = -1;
     }
 
 
@@ -277,16 +278,36 @@ class SearchList {
             li.append(btn_group);
             li.append(txt_field);
             repo.append(li);
-            li.on('dragstart', dragStart);
+            li.on('dragstart', this, this.dragStart);
             li.on('dragend', dragEnd);
             //repo.append(div_line);
             li.addClass('cs_sb_li');
             li.addClass('draggable');
+            li.attr('id', ele.id);
         }
 
         return;
     }
 
+    dragStart(event){
+        let sl = event.data;
+        $(this).addClass("dragging");
+        let id = parseInt($(this).attr('id'));
+        sl.searchElements.forEach(function(item, index){
+            if (item.id == id){
+                sl.draggedElementIdx = index;
+            }
+        })
+    }
+
+    dragOver(event){
+        event.preventDefault();
+        console.log("dragOver");
+        let sl = event.data;
+        const nextEleIdx = getDragAfterIndex(sl.searchElements, event.clientY);
+        console.log("nextEleIdx: " + nextEleIdx);
+       
+    }
 
     isSameStructure(ele) {
         let i = 0;
@@ -327,18 +348,37 @@ class SearchList {
     }
 }
 
-function dragStart(){
-    console.log("dragStart");
-    $(this).addClass("dragging");
-    
-}
+
 
 
 function dragEnd(){
-    console.log("dragEnd");
     $(this).removeClass("dragging");
 }
 
+
+// Parameters:
+//     - container: the DOM element that contains all draggable items
+//     - y: the y position of the mouse
+// Returns:
+//     - the index of the element in searchList that we sould drop before
+function getDragAfterIndex(container, y){
+    const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')]
+    return draggableElements.reduce((closest, child, index)=>{
+
+        // console.log("child", child);
+        // console.log("element: ", child.element);
+
+        const box = child.getBoundingClientRect();
+
+        console.log(box);
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child, index: index };
+          } else {
+            return closest;
+          }
+    }, { offset: Number.NEGATIVE_INFINITY }).index;
+}
 
 function nodePath(node, root) {
     let nodes = [];

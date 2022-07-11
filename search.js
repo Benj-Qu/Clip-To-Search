@@ -55,10 +55,10 @@ if (!clipSearch) {
             
             let title = $('<h1>Sidebar</h1>'),
                 repo_head = $('<h2 id="repo_head">Repository</h2>'),
-                repo = $('<ul id="repo"></ul>'),
+                repo = $('<div id="repo"></div>'),
                 span = $('<span />'),
                 clear_btn = this.make_clear_button();
-            
+            repo.on('dragover', this.searchList, this.searchList.dragOver);
             
 
             this.sidebar.append(title);
