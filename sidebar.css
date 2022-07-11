@@ -20,6 +20,10 @@
     font-size: 40=30px;
     font-weight: bold;
 }
+.cs_sb_li{
+    border: 2px black solid;
+    margin: 5px;
+}
 
 .cs_sb_html_block{
     width: 80%;

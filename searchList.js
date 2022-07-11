@@ -243,7 +243,7 @@ class SearchList {
         repo.empty();
 
         for (const ele of this.searchElements){
-            let li = $('<li></li>'),
+            let li = $('<div draggable="true"></div>'),
                 // switch_btn = this.make_switch_button(ele),
                 // delete_btn = this.make_delete_button(ele);
                 div_line = $('<hr class="solid">').addClass('cs_sb_div_line'),
@@ -277,8 +277,11 @@ class SearchList {
             li.append(btn_group);
             li.append(txt_field);
             repo.append(li);
-
-            repo.append(div_line);
+            li.on('dragstart', dragStart);
+            li.on('dragend', dragEnd);
+            //repo.append(div_line);
+            li.addClass('cs_sb_li');
+            li.addClass('draggable');
         }
 
         return;
@@ -324,6 +327,17 @@ class SearchList {
     }
 }
 
+function dragStart(){
+    console.log("dragStart");
+    $(this).addClass("dragging");
+    
+}
+
+
+function dragEnd(){
+    console.log("dragEnd");
+    $(this).removeClass("dragging");
+}
 
 
 function nodePath(node, root) {
