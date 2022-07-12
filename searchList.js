@@ -152,11 +152,9 @@ class SearchList {
     }
 
     getIdxFromID(id){
-        console.log("getIdxFromID: " + id);
         let idx = -1;
 
         this.searchElements.forEach((item, index) =>{
-            console.log("index: " + index);
             if (item.id == id){
                 idx = index;
             }
