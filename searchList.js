@@ -264,42 +264,35 @@ class SearchList {
 
         for (const ele of this.searchElements){
             let li = $('<div draggable="true"></div>'),
-                // switch_btn = this.make_switch_button(ele),
-                // delete_btn = this.make_delete_button(ele);
-                div_line = $('<hr class="solid">').addClass('cs_sb_div_line'),
                 txt_field = this.make_text_field(ele),
                 html_block;
             
            
             if(ele.mode == Mode.Original){
-                html_block = $('<p />');
-                li.append(html_block);
-                html_block.append(ele.getHTML());
-                html_block.addClass('cs_sb_html_block');
+                html_block = $('<p />'); 
             }
             else{
                 html_block = $('<div />');
-                li.append(html_block);
-                html_block.append(ele.getHTML());
-                html_block.addClass('cs_sb_html_block');
             }
+            li.append(html_block);
+            html_block.append(ele.getHTML());
+            html_block.addClass('cs_sb_html_block');
+
             if(ele.editMode == true){
-                console.log("set attr to true");
                 html_block.attr('contenteditable', 'true');
-                console.log(html_block.attr('contenteditable'));
             }else{
-                console.log("set attr to false");
                 html_block.attr('contenteditable', 'false');
             }
 
             let btn_group = this.make_btn_group(ele, html_block);
-            btn_group.addClass('cs_sb_btn_group');
             li.append(btn_group);
             li.append(txt_field);
             repo.append(li);
+            
             li.on('dragstart', this, this.dragStart);
             li.on('dragend', this, this.dragEnd);
-            //repo.append(div_line);
+            
+            btn_group.addClass('cs_sb_btn_group');
             li.addClass('cs_sb_li');
             li.addClass('draggable');
             li.attr('id', ele.id);
@@ -311,22 +304,18 @@ class SearchList {
     dragStart(event){
         let sl = event.data;
         $(this).addClass("dragging");
-        let id = parseInt($(this).attr('id'));
-        sl.searchElements.forEach(function(item, index){
-            if (item.id == id){
-                sl.draggedElementIdx = index;
-            }
-        })
+        let id = $(this).attr('id');
+        sl.draggedElementIdx = sl.getIdxFromID(id);
     }
 
     dragOver(event){
         event.preventDefault();
+
         console.log("dragOver");
         let sl = event.data;
+        
         const container = document.querySelector('.container');
         const afterElement = getDragAfterElement(container, event.clientY);
-        console.log("afterElement", afterElement);
-
         if (afterElement == null) {
             sl.draggedToIdx = sl.searchElements.length;
         }else{
@@ -339,7 +328,7 @@ class SearchList {
         let sl = event.data;
 
         if (sl.draggedToIdx == -1){
-            console.log("draggdedToIdx = -1, error!");
+            alert("draggdedToIdx = -1, error!");
         }else{
             $(this).removeClass("dragging");
             sl.move(sl.draggedElementIdx, sl.draggedToIdx)
