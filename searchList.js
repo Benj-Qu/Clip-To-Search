@@ -5,6 +5,7 @@ class SearchList {
         this.searchElements = [];
         this.pathtree = [];
         this.draggedElementIdx = -1;
+        this.draggedToIdx = -1;
     }
 
 
@@ -60,8 +61,14 @@ class SearchList {
     move(from, to) {
         let moveElement = this.searchElements[from];
 
-        this.searchElements.splice(from, 1);
-        this.searchElements.splice(to, 0, moveElement);
+        if (from > to) {
+            this.searchElements.splice(from, 1);
+            this.searchElements.splice(to, 0, moveElement);
+        }
+        else if (from < to) {
+            this.searchElements.splice(to, 0, moveElement);
+            this.searchElements.splice(from, 1);
+        } 
 
         return;
     }
@@ -144,6 +151,18 @@ class SearchList {
         return;
     }
 
+    getIdxFromID(id){
+        console.log("getIdxFromID: " + id);
+        let idx = -1;
+
+        this.searchElements.forEach((item, index) =>{
+            console.log("index: " + index);
+            if (item.id == id){
+                idx = index;
+            }
+        })
+        return idx;
+    }
 
     make_switch_button(ele){
         let sl = this;
@@ -279,7 +298,7 @@ class SearchList {
             li.append(txt_field);
             repo.append(li);
             li.on('dragstart', this, this.dragStart);
-            li.on('dragend', dragEnd);
+            li.on('dragend', this, this.dragEnd);
             //repo.append(div_line);
             li.addClass('cs_sb_li');
             li.addClass('draggable');
@@ -304,9 +323,28 @@ class SearchList {
         event.preventDefault();
         console.log("dragOver");
         let sl = event.data;
-        const nextEleIdx = getDragAfterIndex(sl.searchElements, event.clientY);
-        console.log("nextEleIdx: " + nextEleIdx);
-       
+        const container = document.querySelector('.container');
+        const afterElement = getDragAfterElement(container, event.clientY);
+        console.log("afterElement", afterElement);
+
+        if (afterElement == null) {
+            sl.draggedToIdx = sl.searchElements.length;
+        }else{
+            console.log("else");
+            sl.draggedToIdx = sl.getIdxFromID(afterElement.id);
+        }
+    }
+
+    dragEnd(event){
+        let sl = event.data;
+
+        if (sl.draggedToIdx == -1){
+            console.log("draggdedToIdx = -1, error!");
+        }else{
+            $(this).removeClass("dragging");
+            sl.move(sl.draggedElementIdx, sl.draggedToIdx)
+        }
+        sl.updateSidebar();
     }
 
     isSameStructure(ele) {
@@ -351,9 +389,7 @@ class SearchList {
 
 
 
-function dragEnd(){
-    $(this).removeClass("dragging");
-}
+
 
 
 // Parameters:
@@ -361,24 +397,20 @@ function dragEnd(){
 //     - y: the y position of the mouse
 // Returns:
 //     - the index of the element in searchList that we sould drop before
-function getDragAfterIndex(container, y){
+function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')]
-    return draggableElements.reduce((closest, child, index)=>{
-
-        // console.log("child", child);
-        // console.log("element: ", child.element);
-
-        const box = child.getBoundingClientRect();
-
-        console.log(box);
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child, index: index };
-          } else {
-            return closest;
-          }
-    }, { offset: Number.NEGATIVE_INFINITY }).index;
-}
+  
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+  
 
 function nodePath(node, root) {
     let nodes = [];
