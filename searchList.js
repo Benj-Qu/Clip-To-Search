@@ -1,11 +1,65 @@
 class SearchList {
 
     constructor() {
+        this.searchMode = 0;
+        this.modeNum = 1;
+
         this.lca = null;
-        this.searchElements = [];
+        this.searchElements = [[]];
         this.pathtree = [];
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
+    }
+
+
+    copyList(mode) {
+        let cpList = [];
+        this.searchElements[mode].forEach(function(se) {
+            let searchElement = new SearchElement(se.element_original);
+            cpList.push(searchElement);
+        });
+        return cpList;
+    }
+
+
+    switchSearchMode(mode) {
+        this.searchMode = mode;
+
+        $("*").removeClass("mystyle");
+        this.setLCA();
+        this.setPathTree();
+        this.search();
+
+        return;
+    }
+
+
+    addSearchMode(mode) {
+        this.modeNum++;
+
+        if (mode != -1) {
+            let copyList = this.copyList(mode);
+            this.searchElements.push(copyList);
+        }
+        else {
+            this.searchElements.push([]);
+        }
+
+        return;
+    }
+
+
+    deleteSearchMode(mode) {
+        this.searchElements.splice(mode, 1);
+    }
+
+
+    clear() {
+        this.lca = null;
+        this.searchElements = [[]];
+        this.pathtree = [];
+
+        return;
     }
 
 
@@ -13,9 +67,9 @@ class SearchList {
         let searchElement = new SearchElement(ele);
 
         this.removeChild(ele);
-        this.searchElements.push(searchElement);
+        this.searchElements[this.searchMode].push(searchElement);
 
-        if (this.searchElements.length == 1) {
+        if (this.searchElements[this.searchMode].length == 1) {
             this.setLCA();
         }
         else {
@@ -29,7 +83,7 @@ class SearchList {
 
 
     delete(pos) {
-        this.searchElements.splice(pos, 1);
+        this.searchElements[this.searchMode].splice(pos, 1);
 
         this.setLCA();
 
@@ -43,9 +97,9 @@ class SearchList {
         let searchElement = new SearchElement(ele);
 
         this.removeChild(ele);
-        this.searchElements.splice(pos, 0, searchElement);
+        this.searchElements[this.searchMode].splice(pos, 0, searchElement);
 
-        if (this.searchElements.length == 1) {
+        if (this.searchElements[this.searchMode].length == 1) {
             this.setLCA();
         }
         else {
@@ -59,15 +113,15 @@ class SearchList {
 
 
     move(from, to) {
-        let moveElement = this.searchElements[from];
+        let moveElement = this.searchElements[this.searchMode][from];
 
         if (from > to) {
-            this.searchElements.splice(from, 1);
-            this.searchElements.splice(to, 0, moveElement);
+            this.searchElements[this.searchMode].splice(from, 1);
+            this.searchElements[this.searchMode].splice(to, 0, moveElement);
         }
         else if (from < to) {
-            this.searchElements.splice(to, 0, moveElement);
-            this.searchElements.splice(from, 1);
+            this.searchElements[this.searchMode].splice(to, 0, moveElement);
+            this.searchElements[this.searchMode].splice(from, 1);
         } 
 
         return;
@@ -75,19 +129,19 @@ class SearchList {
 
 
     removeChild(ele) {
-        let len = this.searchElements.length;
+        let len = this.searchElements[this.searchMode].length;
 
         for (let i = 0; i < len; i++) {
-            if (ele.contains(this.searchElements[len-i-1].element_original)) {
+            if (ele.contains(this.searchElements[this.searchMode][len-i-1].element_original)) {
                 this.delete(len-i-1);
             }
         }
     }
 
 
-    clear() {
+    clearMode() {
         this.lca = null;
-        this.searchElements = [];
+        this.searchElements[this.searchMode] = [];
         this.pathtree = [];
 
         return;
@@ -95,7 +149,7 @@ class SearchList {
 
 
     isDuplicate(ele) {
-        for (const se of this.searchElements) {
+        for (const se of this.searchElements[this.searchMode]) {
             if (ele === se.element_original) {
                 return true;
             }
@@ -106,7 +160,7 @@ class SearchList {
 
 
     isContained(ele) {
-        for (const se of this.searchElements) {
+        for (const se of this.searchElements[this.searchMode]) {
             if (se.element_original.contains(ele)) {
                 return true;
             }
@@ -119,7 +173,7 @@ class SearchList {
     setLCA() {
         this.lca = null;
 
-        for (const se of this.searchElements) {
+        for (const se of this.searchElements[this.searchMode]) {
             if (this.lca == null) {
                 this.lca = se.element_original;
             }
@@ -144,7 +198,7 @@ class SearchList {
     setPathTree() {
         this.pathtree = [];
 
-        for (const se of this.searchElements) {
+        for (const se of this.searchElements[this.searchMode]) {
             this.pathtree.push(findPath(se.element_original, this.lca));
         }
 
@@ -154,7 +208,7 @@ class SearchList {
     getIdxFromID(id){
         let idx = -1;
 
-        this.searchElements.forEach((item, index) =>{
+        this.searchElements[this.searchMode].forEach((item, index) =>{
             if (item.id == id){
                 idx = index;
             }
@@ -188,7 +242,7 @@ class SearchList {
         btn.attr('id', ele.id.toString() + '_d_btn');
         btn.click(function() {
             $("*").removeClass("mystyle");
-            sl.delete(sl.searchElements.indexOf(ele));
+            sl.delete(sl.searchElements[this.searchMode].indexOf(ele));
             // search the list again
             sl.search();
             sl.updateSidebar();
@@ -208,8 +262,6 @@ class SearchList {
         let btn = $("<button>" + btn_name + "</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', ele.id.toString() + '_e_btn');
-        
-        
         
         btn.click(function(){
             if(ele.editMode == true){
@@ -236,15 +288,15 @@ class SearchList {
 
     make_text_field(ele){
         let sl = this,
-            pos = sl.searchElements.indexOf(ele) + 1,
+            pos = sl.searchElements[this.searchMode].indexOf(ele) + 1,
             tf_id = ele.id.toString() + '_tf',
             txt_field = $("<input type=\"text \" id=" + tf_id + " " + "value=" + pos + "><br>");
         txt_field.addClass("cs_sb_tf"); 
         txt_field.keypress(function(e){
             if(e.keyCode == 13){
                 let to_pos = txt_field.val();
-                if (to_pos > sl.searchElements.length){
-                    to_pos = sl.searchElements.length + 1;
+                if (to_pos > sl.searchElements[this.searchMode].length){
+                    to_pos = sl.searchElements[this.searchMode].length + 1;
                 }else if (to_pos < 1){
                     to_pos = 1;
                 }
@@ -260,7 +312,7 @@ class SearchList {
         let repo = $('#repo');
         repo.empty();
 
-        for (const ele of this.searchElements){
+        for (const ele of this.searchElements[this.searchMode]){
             let li = $('<div draggable="true"></div>'),
                 txt_field = this.make_text_field(ele),
                 html_block;
@@ -314,9 +366,11 @@ class SearchList {
         
         const container = document.querySelector('.container');
         const afterElement = getDragAfterElement(container, event.clientY);
+        
         if (afterElement == null) {
             sl.draggedToIdx = sl.searchElements.length;
-        }else{
+        }
+        else {
             console.log("else");
             sl.draggedToIdx = sl.getIdxFromID(afterElement.id);
         }
@@ -337,9 +391,9 @@ class SearchList {
     isSameStructure(ele) {
         let i = 0;
 
-        for (let i = 0; i < this.searchElements.length; i++) {
+        for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
             let node = findNode(ele, this.pathtree[i]);
-            let element = this.searchElements[i].element;
+            let element = this.searchElements[this.searchMode][i].element;
             if (!isEqualNode(element, node)) {
                 return false;
             }
