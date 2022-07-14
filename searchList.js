@@ -361,7 +361,6 @@ class SearchList {
     dragOver(event){
         event.preventDefault();
 
-        console.log("dragOver");
         let sl = event.data;
         
         const container = document.querySelector('.container');
@@ -371,7 +370,6 @@ class SearchList {
             sl.draggedToIdx = sl.searchElements[sl.searchMode].length;
         }
         else {
-            console.log("else");
             sl.draggedToIdx = sl.getIdxFromID(afterElement.id);
         }
     }
@@ -430,7 +428,6 @@ class SearchList {
 
 
 function mark(element) {
-    console.log("Mark element ", element);
     if (element.childNodes.length > 0) {
         element.childNodes.forEach(function(ele) {
             mark(ele);
@@ -440,7 +437,6 @@ function mark(element) {
         element.classList.add("mystyle");
     }
     
-    console.log("Finish Marking element ", element);
     return;
 }
 
