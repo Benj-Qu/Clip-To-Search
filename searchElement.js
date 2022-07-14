@@ -49,13 +49,6 @@ class SearchElement {
     }
 
     toggleEditMode() {
-        switch(this.editMode){
-            case true:
-                this.editMode = false;
-                break;
-            case false:
-                this.editMode = true;
-                break;
-        }
+        this.editMode = !this.editMode;
     }
 }

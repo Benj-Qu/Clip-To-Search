@@ -264,8 +264,13 @@ class SearchList {
         btn.attr('id', ele.id.toString() + '_e_btn');
         
         btn.click(function(){
+
             if(ele.editMode == true){
-                ele.element.innerHTML = html_block.innerHTML;
+                ele.element.innerHTML = html_block[0].innerHTML;
+                $("*").removeClass("mystyle");
+                sl.setLCA();
+                sl.setPathTree();
+                sl.search();
             }
             ele.toggleEditMode();
             //do some update
@@ -317,7 +322,6 @@ class SearchList {
                 txt_field = this.make_text_field(ele),
                 html_block;
             
-           
             if(ele.mode == Mode.Original){
                 html_block = $('<p />'); 
             }
