@@ -419,7 +419,7 @@ class SearchList {
 
         for (const node of results) {
             for (const path of this.pathtree) {
-                findNode(node, path).classList.add("mystyle");
+                mark(findNode(node, path));
             }
         }
 
@@ -429,8 +429,20 @@ class SearchList {
 
 
 
-
-
+function mark(element) {
+    console.log("Mark element ", element);
+    if (element.childNodes.length > 0) {
+        element.childNodes.forEach(function(ele) {
+            mark(ele);
+        });
+    }
+    if (element.classList != null) {
+        element.classList.add("mystyle");
+    }
+    
+    console.log("Finish Marking element ", element);
+    return;
+}
 
 
 // Parameters:
@@ -560,13 +572,11 @@ function isEqualClass(ele1, ele2) {
 
 
 function isEqualList(list1, list2) {
-    if ((list1 == null && list2 == null) || 
-        (list1 == null && list2.length == 0) || (list1.length == 0 && list2 == null) ||
-        (list1.length == 0 && list2.length == 0)) {
-        return true;
-    }
-    else if (list1 == null || list2 == null) {
+    if (list1 == null || list2 == null) {
         return false;
+    }
+    else if (list1.length == 0 && list2.length == 0) {
+        return true;
     }
     else if (list1.length != list2.length) {
         return false;
