@@ -23,6 +23,7 @@
 .cs_sb_li{
     border: 2px black solid;
     margin: 5px;
+    min-height: 150px;
 }
 
 .cs_sb_html_block{
@@ -42,7 +43,6 @@
 }
 .cs_sb_btn {
     display: block;
-    vertical-align: middle;
     border: 1px GhostWhite;
     background-color: skyblue;
     border-radius: 12px;
