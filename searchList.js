@@ -242,7 +242,7 @@ class SearchList {
         btn.attr('id', ele.id.toString() + '_d_btn');
         btn.click(function() {
             $("*").removeClass("mystyle");
-            sl.delete(sl.searchElements[this.searchMode].indexOf(ele));
+            sl.delete(sl.searchElements[sl.searchMode].indexOf(ele));
             // search the list again
             sl.search();
             sl.updateSidebar();
@@ -288,15 +288,15 @@ class SearchList {
 
     make_text_field(ele){
         let sl = this,
-            pos = sl.searchElements[this.searchMode].indexOf(ele) + 1,
+            pos = sl.searchElements[sl.searchMode].indexOf(ele) + 1,
             tf_id = ele.id.toString() + '_tf',
             txt_field = $("<input type=\"text \" id=" + tf_id + " " + "value=" + pos + "><br>");
         txt_field.addClass("cs_sb_tf"); 
         txt_field.keypress(function(e){
             if(e.keyCode == 13){
                 let to_pos = txt_field.val();
-                if (to_pos > sl.searchElements[this.searchMode].length){
-                    to_pos = sl.searchElements[this.searchMode].length + 1;
+                if (to_pos > sl.searchElements[sl.searchMode].length){
+                    to_pos = sl.searchElements[sl.searchMode].length + 1;
                 }else if (to_pos < 1){
                     to_pos = 1;
                 }
@@ -368,7 +368,7 @@ class SearchList {
         const afterElement = getDragAfterElement(container, event.clientY);
         
         if (afterElement == null) {
-            sl.draggedToIdx = sl.searchElements.length;
+            sl.draggedToIdx = sl.searchElements[sl.searchMode].length;
         }
         else {
             console.log("else");
