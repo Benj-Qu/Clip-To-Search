@@ -11,6 +11,7 @@ class SearchList {
         this.modeNum = 1;
 
         this.searchElements = [[]];
+        this.bannedElements = [[]];
         this.searchStrategy = [Strategy.All];
 
         this.lca = null;
@@ -47,6 +48,7 @@ class SearchList {
     addSearchMode(mode) {
         this.modeNum++;
         this.searchStrategy.push(Strategy.All);
+        this.bannedElements.push([]);
 
         if (mode != -1) {
             let copyList = this.copyList(mode);
@@ -62,6 +64,7 @@ class SearchList {
 
     deleteSearchMode(mode) {
         this.searchElements.splice(mode, 1);
+        this.bannedElements.splice(mode, 1);
         this.searchStrategy.splice(mode, 1);
     }
 
@@ -69,6 +72,7 @@ class SearchList {
     clear() {
         this.lca = null;
         this.searchElements = [[]];
+        this.bannedElements = [[]];
         this.pathtree = [];
         this.searchStrategy = [Strategy.All];
 
@@ -155,6 +159,7 @@ class SearchList {
     clearMode() {
         this.lca = null;
         this.searchElements[this.searchMode] = [];
+        this.bannedElements[this.searchMode] = [];
         this.searchStrategy[this.searchMode] = Strategy.All;
         this.pathtree = [];
 
@@ -288,7 +293,7 @@ class SearchList {
         btn.attr('id', se.id.toString() + '_e_btn');
         btn.click(function() {
             if(se.editMode == true) {
-                se.element.innerHTML = html_block[0].innerHTML;
+                se.element.innerHTML = html_block[0].firstElementChild.innerHTML;
                 $("*").removeClass("mystyle");
                 sl.setLCA();
                 sl.setPathTree();
@@ -425,7 +430,7 @@ class SearchList {
     }
 
 
-    isSameStructure(ele) {
+    isSameStructure(ele, shift = 0) {
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
             let node = findNode(ele, this.pathtree[i]);
             let element = this.searchElements[this.searchMode][i].element;
@@ -437,11 +442,30 @@ class SearchList {
     }
 
 
-    isSimilarStructure(ele) {
+    getSimilarStructure(ele) {
+        let shift = 0;
+        while (true) {
+            shift++;
+
+            if (true) {
+                break;
+            }
+        }
+
+        shift = 0;
+        while (true) {
+            shift--;
+
+            if (true) {
+                break;
+            }
+        }
+
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
             let path = this.pathtree[i];
+            let node = findNode(ele, path);
 
-            let node = findNode(ele, this.pathtree[i]);
+            let shift = 0;
             let element = this.searchElements[this.searchMode][i].element;
             if (!isEqualNode(element, node)) {
                 return false;
@@ -459,10 +483,17 @@ class SearchList {
         }
 
         let results = [];
+
+        if (this.searchStrategy === Strategy.All || this.searchStrategy === Strategy.SameStructure) {
+
+        }
+        if (this.searchStrategy === Strategy.All || this.searchStrategy === Strategy.SimilarStructure) {
+
+        }
         
         for (const node of similarList) {
             if (this.isSameStructure(node)) {
-                results.push(node);
+                results.push([node, 0]);
             }
         }
 
