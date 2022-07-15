@@ -497,7 +497,8 @@ class SearchList {
             }
         }
 
-        for (const node of results) {
+        for (const result of results) {
+            let node = result[0];
             for (const path of this.pathtree) {
                 mark(findNode(node, path));
             }
