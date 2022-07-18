@@ -293,7 +293,13 @@ class SearchList {
         btn.attr('id', se.id.toString() + '_e_btn');
         btn.click(function() {
             if(se.editMode == true) {
-                se.element.innerHTML = html_block[0].firstElementChild.innerHTML;
+                let firstElementChildHTML;
+                if(se.mode == Mode.Original){
+                    firstElementChildHTML = html_block[0].innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+                }else{
+                    firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
+                }
+                se.element.innerHTML = firstElementChildHTML
                 $("*").removeClass("mystyle");
                 sl.setLCA();
                 sl.setPathTree();
