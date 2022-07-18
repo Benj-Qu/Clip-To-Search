@@ -500,7 +500,8 @@ class SearchList {
         for (const result of results) {
             let node = result[0];
             for (const path of this.pathtree) {
-                mark(findNode(node, path));
+                let target = findNode(node, path);
+                mark(target);
             }
         }
 
@@ -517,6 +518,7 @@ function mark(element) {
         });
     }
     if (element.classList != null) {
+        console.log("Marking target #2", element);
         element.classList.add("mystyle");
     }
     
