@@ -304,10 +304,12 @@ class SearchList {
                 let firstElementChildHTML;
                 if(se.mode == Mode.Original){
                     firstElementChildHTML = html_block[0].innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+                    let dummy = $(firstElementChildHTML);    
+                    se.element.innerHTML = dummy[0].firstElementChild.outerHTML;
                 }else{
                     firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
+                    se.element.innerHTML = firstElementChildHTML;
                 }
-                se.element.innerHTML = firstElementChildHTML
                 $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
                 sl.setLCA();
                 sl.setPathTree();
