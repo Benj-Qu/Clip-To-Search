@@ -208,7 +208,7 @@ if (!clipSearch) {
                     }
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
-                        $("*").removeClass("mystyle");
+                        $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
                         this.rectangleSelect(this.startX, this.startY, x, y);
                         this.searchList.search();
                         this.searchList.updateSidebar();
@@ -225,7 +225,7 @@ if (!clipSearch) {
             this.options = null;
             this.createOptions();
             this.clear_sidebar();
-            $("*").removeClass("mystyle");
+            $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
         }
 
         
@@ -380,7 +380,7 @@ if (!clipSearch) {
                 this.options = null;
             }
             this.enabled = false;
-            $("*").removeClass("mystyle");
+            $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
         }
 
         isEnabled () {
@@ -404,7 +404,7 @@ if (!clipSearch) {
             case "delete":
                 clipSearch.searchList.elements.pop();
                 this.rectangleSelect(this.startX, this.startY, x, y);
-                $("*").removeClass("mystyle");
+                $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
                 searchelement(clipSearch.searchList.elements)
                 break;
             default:

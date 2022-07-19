@@ -4,6 +4,12 @@ const Strategy = {
     SimilarStructure : 2
 }
 
+const Structure = {
+    SameStructure : 0,
+    NoneExist : 1,
+    Different : 2
+}
+
 class SearchList {
 
     constructor() {
@@ -36,7 +42,9 @@ class SearchList {
     switchSearchMode(mode) {
         this.searchMode = mode;
 
-        $("*").removeClass("mystyle");
+        $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+
+
         this.setLCA();
         this.setPathTree();
         this.search();
@@ -268,7 +276,7 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_d_btn');
         btn.click(function() {
-            $("*").removeClass("mystyle");
+            $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
             sl.delete(sl.searchElements[sl.searchMode].indexOf(se));
             sl.search();
             sl.updateSidebar();
@@ -302,8 +310,7 @@ class SearchList {
                     firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
                     se.element.innerHTML = firstElementChildHTML;
                 }
-                
-                $("*").removeClass("mystyle");
+                $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
                 sl.setLCA();
                 sl.setPathTree();
                 sl.search();
@@ -442,45 +449,55 @@ class SearchList {
     isSameStructure(ele, shift = 0) {
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
             let node = findNode(ele, this.pathtree[i]);
+            for (let j = 0; j < shift; j++) {
+                if (node == null) {
+                    return Structure.NoneExist;
+                }
+                node = node.nextSibling;
+            }
+            for (let j = 0; j > shift; j--) {
+                if (node == null) {
+                    return Structure.NoneExist;
+                }
+                node = node.previousSibling;
+            }
+
             let element = this.searchElements[this.searchMode][i].element;
             if (!isEqualNode(element, node)) {
-                return false;
+                return Structure.Different;
             }
         }
-        return true;
+        return Structure.SameStructure;
     }
 
 
     getSimilarStructure(ele) {
-        let shift = 0;
+        let results = [];
+        let shift;
+
+        shift = 1;
         while (true) {
+            if (this.isSameStructure(ele,shift) === Structure.NoneExist) {
+                break;
+            } 
+            else if (this.isSameStructure(ele,shift) === Structure.SameStructure) {
+                results.push([ele, shift]);
+            }
             shift++;
-
-            if (true) {
-                break;
-            }
         }
 
-        shift = 0;
+        shift = -1;
         while (true) {
-            shift--;
-
-            if (true) {
+            if (this.isSameStructure(ele,shift) === Structure.NoneExist) {
                 break;
+            } 
+            else if (this.isSameStructure(ele,shift) === Structure.SameStructure) {
+                results.push([ele, shift]);
             }
+            shift--;
         }
 
-        for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
-            let path = this.pathtree[i];
-            let node = findNode(ele, path);
-
-            let shift = 0;
-            let element = this.searchElements[this.searchMode][i].element;
-            if (!isEqualNode(element, node)) {
-                return false;
-            }
-        }
-        return true;
+        return results;
     }
 
 
@@ -491,44 +508,61 @@ class SearchList {
             return;
         }
 
-        let results = [];
+        let sameResults = [];
 
-        if (this.searchStrategy === Strategy.All || this.searchStrategy === Strategy.SameStructure) {
-
-        }
-        if (this.searchStrategy === Strategy.All || this.searchStrategy === Strategy.SimilarStructure) {
-
-        }
-        
-        for (const node of similarList) {
-            if (this.isSameStructure(node)) {
-                results.push([node, 0]);
+        if (this.searchStrategy[this.searchMode] === Strategy.All || 
+            this.searchStrategy[this.searchMode] === Strategy.SameStructure) {
+            for (const node of similarList) {
+                if (this.isSameStructure(node) === Structure.SameStructure) {
+                    sameResults.push([node, 0]);
+                }
             }
         }
 
-        for (const result of results) {
-            let node = result[0];
-            for (const path of this.pathtree) {
-                let target = findNode(node, path);
-                mark(target);
+        let similarResults = [[this.lca, 0]];
+
+        if (this.searchStrategy[this.searchMode] === Strategy.All || 
+            this.searchStrategy[this.searchMode] === Strategy.SimilarStructure) {
+            for (const node of similarList) {
+                let result = this.getSimilarStructure(node);
+                similarResults = similarResults.concat(result);
             }
         }
+
+        console.log(sameResults);
+        console.log(similarResults);
+
+        this.mark(sameResults, "cs_same_style");
+
+        this.mark(similarResults, "cs_similar_style");
 
         return;
+    }
+
+
+    mark(results, style) {
+        for (const result of results) {
+            let node = result[0],
+                shift = result[1];
+            for (const path of this.pathtree) {
+                path[path.length-1] += shift;
+                let target = findNode(node, path);
+                mark_element(target, style);
+            }
+        }
     }
 }
 
 
 
-function mark(element) {
+function mark_element(element, style) {
     if (element.childNodes.length > 0) {
         element.childNodes.forEach(function(ele) {
-            mark(ele);
+            mark_element(ele);
         });
     }
     if (element.classList != null) {
-        console.log("Marking target #2", element);
-        element.classList.add("mystyle");
+        element.classList.add(style);
     }
     
     return;
