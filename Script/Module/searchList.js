@@ -4,6 +4,12 @@ const Strategy = {
     SimilarStructure : 2
 }
 
+const Structure = {
+    SameStructure : 0,
+    NoneExist : 1,
+    Different : 2
+}
+
 class SearchList {
 
     constructor() {
@@ -433,32 +439,44 @@ class SearchList {
     isSameStructure(ele, shift = 0) {
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
             let node = findNode(ele, this.pathtree[i]);
+            for (let j = 0; j < shift; j++) {
+                if (node == null) {
+                    return Structure.NoneExist;
+                }
+                node = node.nextSibling;
+            }
+            for (let j = 0; j > shift; j--) {
+                if (node == null) {
+                    return Structure.NoneExist;
+                }
+                node = node.previousSibling;
+            }
+
             let element = this.searchElements[this.searchMode][i].element;
             if (!isEqualNode(element, node)) {
-                return false;
+                return Structure.Different;
             }
         }
-        return true;
+        return Structure.SameStructure;
     }
 
 
     getSimilarStructure(ele) {
-        let shift = 0;
+        let shift;
+        shift = 0;
         while (true) {
-            shift++;
-
             if (true) {
                 break;
             }
+            shift++;
         }
 
         shift = 0;
         while (true) {
-            shift--;
-
             if (true) {
                 break;
             }
+            shift--;
         }
 
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
@@ -485,17 +503,18 @@ class SearchList {
         let results = [];
 
         if (this.searchStrategy === Strategy.All || this.searchStrategy === Strategy.SameStructure) {
-
+            for (const node of similarList) {
+                if (this.isSameStructure(node) === Structure.SameStructure) {
+                    results.push([node, 0]);
+                }
+            }
         }
+
         if (this.searchStrategy === Strategy.All || this.searchStrategy === Strategy.SimilarStructure) {
 
         }
         
-        for (const node of similarList) {
-            if (this.isSameStructure(node)) {
-                results.push([node, 0]);
-            }
-        }
+        
 
         for (const result of results) {
             let node = result[0];
@@ -518,8 +537,7 @@ function mark(element) {
         });
     }
     if (element.classList != null) {
-        console.log("Marking target #2", element);
-        element.classList.add("mystyle");
+        element.classList.add("cs_same_style");
     }
     
     return;
