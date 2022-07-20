@@ -19,9 +19,24 @@
     font-weight: bold;
 }
 
+.cs_sb_repo_header{
+    display: flex;
+    flex-flow: row;
+}
+
 .cs_sb_repo_head{
-    font-size: 40=30px;
+    font-size: 45px;
     font-weight: bold;
+}
+
+.cs_sb_mode_btn_group{
+    float: left;
+    display: flex;
+    flex-flow: row;
+}
+
+.cs_sb_add_btn{
+    float: right;
 }
 
 .cs_sb_li{

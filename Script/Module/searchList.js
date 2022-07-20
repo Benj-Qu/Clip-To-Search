@@ -286,6 +286,7 @@ class SearchList {
         let btn_name;
         if (se.editMode == true){
             btn_name = "Done";
+            
         }else{
             btn_name = "Edit";
         }
@@ -293,15 +294,18 @@ class SearchList {
 
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_e_btn');
+        
         btn.click(function() {
             if(se.editMode == true) {
                 let firstElementChildHTML;
                 if(se.mode == Mode.Original){
                     firstElementChildHTML = html_block[0].innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+                    let dummy = $(firstElementChildHTML);    
+                    se.element.innerHTML = dummy[0].firstElementChild.outerHTML;
                 }else{
                     firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
+                    se.element.innerHTML = firstElementChildHTML;
                 }
-                se.element.innerHTML = firstElementChildHTML
                 $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
                 sl.setLCA();
                 sl.setPathTree();
@@ -358,12 +362,16 @@ class SearchList {
     updateSidebar() {
         let repo = $('#repo');
         repo.empty();
+        let existEditMode = false;
 
         for (const se of this.searchElements[this.searchMode]){
+            if (se.editMode){
+                existEditMode = true;
+            }
 
             let li = $('<div draggable="true"></div>'),
                 txt_field = this.make_text_field(se),
-                html_block;       
+                html_block;          
             if (se.mode == Mode.Original) {
                 html_block = $('<p />'); 
             }
@@ -391,9 +399,19 @@ class SearchList {
             
             btn_group.addClass('cs_sb_btn_group');
             li.addClass('cs_sb_li');
-            li.addClass('draggable');
+            li.addClass('cs_draggable');
             li.attr('id', se.id);
         }
+
+        if(existEditMode){
+            let draggables = [...document.getElementsByClassName("cs_draggable")];
+            console.log("draggables", draggables);
+            draggables.forEach(function(draggable){
+                draggable.setAttribute("draggable", "false");
+                draggable.classList.remove("cs_draggable");
+            });
+        }
+        
 
         return;
     }
@@ -401,7 +419,7 @@ class SearchList {
 
     dragStart(event){
         let sl = event.data;
-        $(this).addClass("dragging");
+        $(this).addClass("cs_dragging");
         let id = $(this).attr('id');
         sl.draggedElementIdx = sl.getIdxFromID(id);
     }
@@ -431,7 +449,7 @@ class SearchList {
             alert("draggdedToIdx = -1, error!");
         }
         else {
-            $(this).removeClass("dragging");
+            $(this).removeClass("cs_dragging");
             sl.move(sl.draggedElementIdx, sl.draggedToIdx)
         }
         sl.updateSidebar();
@@ -589,7 +607,7 @@ function mark_element(element, style) {
 // Returns:
 //     - the index of the element in searchList that we sould drop before
 function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')]
+    const draggableElements = [...container.querySelectorAll('.cs_draggable:not(.cs_dragging)')]
   
     return draggableElements.reduce((closest, child) => {
       const box = child.getBoundingClientRect();

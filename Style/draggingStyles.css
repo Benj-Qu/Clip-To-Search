@@ -1,6 +1,6 @@
-.draggable{
+.cs_draggable{
     cursor: move;
 }
-.draggable.dragging{
+.cs_draggable.cs_dragging{
     opacity: .5;
 }
