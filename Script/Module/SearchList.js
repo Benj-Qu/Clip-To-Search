@@ -1,3 +1,9 @@
+const Strategy = {
+	All : 0,
+    SameStructure : 1,
+    SimilarStructure : 2
+}
+
 const Structure = {
     SameStructure : 0,
     NoneExist : 1,
@@ -9,6 +15,8 @@ class SearchList {
     constructor() {
         this.searchMode = 0;
         this.modeNum = 1;
+
+        this.list = [];
 
         this.searchElements = [[]];
         this.bannedElements = [[]];
