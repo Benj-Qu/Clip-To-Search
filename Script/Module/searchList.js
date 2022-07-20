@@ -1,9 +1,3 @@
-const Strategy = {
-	All : 0,
-    SameStructure : 1,
-    SimilarStructure : 2
-}
-
 const Structure = {
     SameStructure : 0,
     NoneExist : 1,
@@ -446,18 +440,17 @@ class SearchList {
 
     isSameStructure(ele, shift = 0) {
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
-            let node = findNode(ele, this.pathtree[i]);
-            for (let j = 0; j < shift; j++) {
-                if (node == null) {
-                    return Structure.NoneExist;
-                }
-                node = node.nextSibling;
+            let path = this.pathtree[i];
+
+            path[1] += shift;
+            if (path[1] < 0) {
+                return Structure.NoneExist;
             }
-            for (let j = 0; j > shift; j--) {
-                if (node == null) {
-                    return Structure.NoneExist;
-                }
-                node = node.previousSibling;
+            
+            let node = findNode(ele, path);
+
+            if (node == null) {
+                return Structure.NoneExist;
             }
 
             let element = this.searchElements[this.searchMode][i].element;
@@ -472,6 +465,10 @@ class SearchList {
     getSimilarStructure(ele) {
         let results = [];
         let shift;
+
+        if (this.lcaHeight() < 2) {
+            return results;
+        }
 
         shift = 1;
         while (true) {
@@ -527,8 +524,11 @@ class SearchList {
             }
         }
 
-        console.log(sameResults);
-        console.log(similarResults);
+        console.log("search List", this.searchElement);
+        console.log("path tree", this.pathTree);
+        console.log("lca", this.lca);
+        console.log("same results", sameResults);
+        console.log("similar results", similarResults);
 
         this.mark(sameResults, "cs_same_style");
 
@@ -543,11 +543,27 @@ class SearchList {
             let node = result[0],
                 shift = result[1];
             for (const path of this.pathtree) {
-                path[path.length-1] += shift;
+                // if (path.length > 1) {
+                //     path[1] += shift;
+                // }
                 let target = findNode(node, path);
                 mark_element(target, style);
             }
         }
+    }
+
+
+    lcaHeight() {
+        let height = -1;
+        for (const path of this.pathtree) {
+            if (height == -1) {
+                height = path.length;
+            }
+            else if (height > path.length) {
+                height = path.length;
+            }
+        }
+        return height;
     }
 }
 
