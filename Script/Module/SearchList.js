@@ -39,7 +39,7 @@ class SearchList {
 
 
     clear() {
-        this.searchList = [];
+        this.searchArrays = [new SearchElementArray()];
 
         return;
     }

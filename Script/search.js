@@ -94,7 +94,6 @@ if (!clipSearch) {
                 mode_btn_group = $('<div id="mode_btn_group"><div>'),
                 add_btn = this.make_add_mode_button(),
                 clear_btn = this.make_clear_button();
-            repo.on('dragover', this.searchList, this.searchList.dragOver);
             
 
             this.sidebar.append(title);

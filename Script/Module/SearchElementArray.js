@@ -413,6 +413,7 @@ class SearchElementArray {
         let repo = $('#repo');
         repo.empty();
         let existEditMode = false;
+        repo.on('dragover', this, this.dragOver);
 
         for (const se of this.searchElements){
             if (se.editMode){
