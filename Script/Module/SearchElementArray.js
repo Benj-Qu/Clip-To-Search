@@ -4,6 +4,9 @@ const Strategy = {
     SimilarStructure : 2
 }
 
+let draggedElementIdx = -1;
+    draggedToIdx = -1;
+
 class SearchElementArray {
     
     constructor() {
@@ -14,17 +17,48 @@ class SearchElementArray {
 
 
     get lca() {
-        let lca;
+        let ancestor = null;
 
-        for (const se of this.searchElements[this.searchMode]) {
-            this.lca = findlca(this.lca, se.element_original,);
+        for (const se of this.searchElements) {
+            if (ancestor == null) {
+                ancestor = se.element_original;
+            }
+            else {
+                ancestor = findlca(se.element_original, ancestor);
+            }
         }
 
-        return;
+        return ancestor;
     }
 
-    get pathtree() {
 
+    get pathtree() {
+        let pathTree = [];
+
+        let lca = this.lca
+
+        for (const se of this.searchElements) {
+            pathTree.push(findPath(se.element_original, lca));
+        }
+
+        return pathTree;
+    }
+
+
+    get lcaHeight() {
+        let height = -1;
+        let pathtree = this.pathtree;
+        for (const path of pathtree) {
+            if (height == -1) {
+                height = path.length;
+            }
+            else if (height > path.length) {
+                height = path.length;
+            }
+        }
+
+        console.log("LCA Height: ", height);
+        return height;
     }
 
 
@@ -32,8 +66,6 @@ class SearchElementArray {
         this.searchElements = [];
         this.bannedElements = [];
         this.searchStrategy = Strategy.All;
-        this.lca = null;
-        this.pathtree = [];
         return;
     }
 
@@ -44,25 +76,12 @@ class SearchElementArray {
         this.removeChild(ele);
         this.searchElements.push(searchElement);
 
-        if (this.searchElements.length == 1) {
-            this.setLCA();
-        }
-        else {
-            this.updateLCA(ele);
-        }
-
-        this.setPathTree();
-
         return;
     }
 
 
     delete(pos) {
         this.searchElements.splice(pos, 1);
-
-        this.setLCA();
-
-        this.setPathTree();
 
         return;
     }
@@ -73,15 +92,6 @@ class SearchElementArray {
 
         this.removeChild(ele);
         this.searchElements.splice(pos, 0, searchElement);
-
-        if (this.searchElements.length == 1) {
-            this.setLCA();
-        }
-        else {
-            this.updateLCA(ele);
-        }
-
-        this.setPathTree();
 
         return;
     }
@@ -133,40 +143,6 @@ class SearchElementArray {
                 this.delete(len-i-1);
             }
         }
-    }
-
-
-    setLCA() {
-        this.lca = null;
-
-        for (const se of this.searchElements) {
-            if (this.lca == null) {
-                this.lca = se.element_original;
-            }
-            else {
-                this.lca = findlca(se.element_original, this.lca);
-            }
-        }
-
-        return;
-    }
-
-
-    updateLCA(ele) {
-        if (this.lca != null) {
-            this.lca = findlca(ele, this.lca);
-        }
-
-        return;
-    }
-
-
-    setPathTree() {
-        this.pathtree = [];
-
-        for (const se of this.searchElements) {
-            this.pathtree.push(findPath(se.element_original, this.lca));
-        }
 
         return;
     }
@@ -183,39 +159,366 @@ class SearchElementArray {
 
         return idx;
     }
+
+
+    isSameStructure(ele, shift) {
+        let pathtree = this.pathtree;
+        for (let i = 0; i < this.searchElements.length; i++) {
+            let path = [...(pathtree[i])];
+
+            if (this.lcaHeight > 1) {
+                path[1] += shift;
+                if (path[1] < 0) {
+                    console.log("nonexist structure due to Too short LCA!");
+                    return Structure.NoneExist;
+                }
+            }
+            
+            console.log("Path: ", path);
+            let node = findNode(ele, path);
+
+            if (node == null) {
+                console.log("nonexist structure due to Cant find node!");
+                return Structure.NoneExist;
+            }
+
+            let element = this.searchElements[i].element;
+            if (!isEqualNode(element, node)) {
+                return Structure.Different;
+            }
+        }
+        return Structure.SameStructure;
+    }
+
+
+    getSimilarStructure(ele) {
+        let results = [];
+        let shift;
+
+        if (this.lcaHeight < 2) {
+            console.log("Unexpected Error!", ele);
+            return results;
+        }
+
+        shift = 1;
+        while (true) {
+            if (this.isSameStructure(ele,shift) === Structure.NoneExist) {
+                break;
+            } 
+            else if (this.isSameStructure(ele,shift) === Structure.SameStructure) {
+                results.push([ele, shift]);
+            }
+            shift++;
+        }
+
+        console.log("Max shift: ", shift);
+
+        shift = -1;
+        while (true) {
+            if (this.isSameStructure(ele,shift) === Structure.NoneExist) {
+                break;
+            } 
+            else if (this.isSameStructure(ele,shift) === Structure.SameStructure) {
+                results.push([ele, shift]);
+            }
+            shift--;
+        }
+
+        console.log("Min shift: ", shift);
+
+        return results;
+    }
+
+
+    search() {
+        let lca = this.lca;
+        let similarList = similarElements(lca);
+
+        if (similarList == null || similarList.length == 0) {
+            return;
+        }
+
+        let sameResults = [];
+
+        if (this.searchStrategy === Strategy.All || 
+            this.searchStrategy === Strategy.SameStructure) {
+            for (const node of similarList) {
+                if (this.isSameStructure(node) === Structure.SameStructure) {
+                    sameResults.push([node, 0]);
+                }
+            }
+        }
+
+        let similarResults = [[lca, 0]];
+
+        if (this.searchStrategy === Strategy.All || 
+            this.searchStrategy === Strategy.SimilarStructure) {
+            console.log("Conducting similar search");
+            for (const node of similarList) {
+                console.log("With Ancestor: ", node);
+                let result = this.getSimilarStructure(node);
+                similarResults = similarResults.concat(result);
+            }
+        }
+
+        console.log("similar results", similarResults);
+
+        this.mark(sameResults, "cs_same_style");
+
+        this.mark(similarResults, "cs_similar_style");
+
+        return;
+    }
+
+
+    mark(results, style) {
+        for (const result of results) {
+            let node = result[0],
+                shift = result[1];
+            let flag = (this.lcaHeight > 1);
+            let pathtree = this.pathtree;
+            for (const path of pathtree) {
+                let copyPath = [...path];
+                if (flag) {
+                    copyPath[1] += shift;
+                }
+                let target = findNode(node, copyPath);
+                mark_element(target, style);
+            }
+        }
+
+        return;
+    }
+
+
+    make_switch_button(se){
+        let sa = this;
+        let btn_name;
+
+        if (se.mode === Mode.Original) {
+            btn_name = "Rendered";
+        }
+        else {
+            btn_name = "Raw";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
+
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', se.id.toString() + '_s_btn');
+        btn.click(function() {
+            se.switchDisplayMode();
+            sa.updateSidebar();
+        });
+        
+        return btn;
+    }
+
+
+    make_delete_button(se){
+        let sa = this;
+        let btn = $("<button>Delete</button>");
+
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', se.id.toString() + '_d_btn');
+        btn.click(function() {
+            $(".cs_same_style").removeClass("cs_same_style");
+            $(".cs_similar_style").removeClass("cs_similar_style");
+            sa.delete(sl.searchElements.indexOf(se));
+            sa.search();
+            sa.updateSidebar();
+        });
+        
+        return btn;
+    }
+
+
+    make_edit_button(se, html_block){
+        let sa = this;
+
+        let btn_name;
+        if (se.editMode == true){
+            btn_name = "Done";
+            
+        }else{
+            btn_name = "Edit";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
+
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', se.id.toString() + '_e_btn');
+        
+        btn.click(function() {
+            if(se.editMode == true) {
+                let firstElementChildHTML;
+                if(se.mode == Mode.Original){
+                    firstElementChildHTML = html_block[0].innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+                    let dummy = $(firstElementChildHTML);    
+                    se.element.innerHTML = dummy[0].firstElementChild.outerHTML;
+                }else{
+                    firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
+                    se.element.innerHTML = firstElementChildHTML;
+                }
+                $(".cs_same_style").removeClass("cs_same_style");
+                $(".cs_similar_style").removeClass("cs_similar_style");
+                sa.search();
+            }
+            se.toggleEditMode();
+            sa.updateSidebar();
+        });
+
+        return btn;
+    }
+
+
+    make_btn_group(se, html_block){
+        let edit_button = this.make_edit_button(se, html_block),
+            switch_btn = this.make_switch_button(se),
+            delete_btn = this.make_delete_button(se),
+            btn_group = $("<div />");
+
+        btn_group.append(edit_button);    
+        btn_group.append(switch_btn);
+        btn_group.append(delete_btn);
+        btn_group.attr('id', se.id.toString() + '_btn_g');
+
+        return btn_group;    
+    }
+
+
+    make_text_field(se){
+        let sa = this,
+            pos = sa.searchArrays.indexOf(se) + 1,
+            tf_id = se.id.toString() + '_tf',
+            txt_field = $("<input type=\"text \" id=" + tf_id + " " + "value=" + pos + "><br>");
+
+        txt_field.addClass("cs_sb_tf"); 
+        txt_field.keypress(function(e) {
+            if(e.keyCode == 13){
+                let to_pos = txt_field.val();
+                if (to_pos > sa.searchElements.length) {
+                    to_pos = sa.searchElements.length + 1;
+                }
+                else if (to_pos < 1){
+                    to_pos = 1;
+                }
+                sa.move(pos - 1, to_pos - 1);
+                sa.updateSidebar();
+            } 
+        });
+          
+        return txt_field;
+    }
+
+
+    updateSidebar() {
+        let repo = $('#repo');
+        repo.empty();
+        let existEditMode = false;
+
+        for (const se of this.searchElements){
+            if (se.editMode){
+                existEditMode = true;
+            }
+
+            let li = $('<div draggable="true"></div>'),
+                txt_field = this.make_text_field(se),
+                html_block;          
+            if (se.mode == Mode.Original) {
+                html_block = $('<p />'); 
+            }
+            else{
+                html_block = $('<div />');
+            }
+            li.append(html_block);
+            html_block.append(se.getHTML());
+            html_block.addClass('cs_sb_html_block');
+
+            if (se.editMode == true) {
+                html_block.attr('contenteditable', 'true');
+            }
+            else {
+                html_block.attr('contenteditable', 'false');
+            }
+
+            let btn_group = this.make_btn_group(se, html_block);
+            li.append(btn_group);
+            li.append(txt_field);
+            repo.append(li);
+            
+            li.on('dragstart', this, this.dragStart);
+            li.on('dragend', this, this.dragEnd);
+            
+            btn_group.addClass('cs_sb_btn_group');
+            li.addClass('cs_sb_li');
+            li.addClass('cs_draggable');
+            li.attr('id', se.id);
+        }
+
+        if(existEditMode){
+            let draggables = [...document.getElementsByClassName("cs_draggable")];
+            draggables.forEach(function(draggable){
+                draggable.setAttribute("draggable", "false");
+                draggable.classList.remove("cs_draggable");
+            });
+        }
+        
+
+        return;
+    }
+
+
+    dragStart(event){
+        let sa = event.data;
+        $(this).addClass("cs_dragging");
+        let id = $(this).attr('id');
+        draggedElementIdx = sa.getIdxFromID(id);
+    }
+
+
+    dragOver(event){
+        event.preventDefault();
+
+        let sa = event.data;
+        
+        const container = document.querySelector('.container');
+        const afterElement = getDragAfterElement(container, event.clientY);
+        
+        if (afterElement == null) {
+            draggedToIdx = sa.searchElements.length;
+        }
+        else {
+            draggedToIdx = sa.getIdxFromID(afterElement.id);
+        }
+    }
+
+
+    dragEnd(event){
+        let sa = event.data;
+
+        if (draggedToIdx == -1) {
+            alert("draggdedToIdx = -1, error!");
+        }
+        else {
+            $(this).removeClass("cs_dragging");
+            sa.move(draggedElementIdx, draggedToIdx)
+        }
+        sa.updateSidebar();
+    }
 }
 
 
 function mark_element(element, style) {
-    if (element.children.length > 0) {
-        element.children.forEach(function(ele) {
-            mark_element(ele);
-        });
+    if (!element) {
+        return;
+    }
+
+    for (let i = 0; i < element.children.length; i++) {
+        mark_element(element.children[i], style);
     }
     element.classList.add(style);
     
     return;
 }
-
-
-// Parameters:
-//     - container: the DOM element that contains all draggable items
-//     - y: the y position of the mouse
-// Returns:
-//     - the index of the element in searchList that we sould drop before
-function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.cs_draggable:not(.cs_dragging)')]
-  
-    return draggableElements.reduce((closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
-      if (offset < 0 && offset > closest.offset) {
-        return { offset: offset, element: child };
-      } else {
-        return closest;
-      }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-  }
   
 
 function nodePath(node, root) {
@@ -245,10 +548,10 @@ function findPath(element, ancestor) {
     }
 
     for (const node of nodes) {
-        let child = pNode.firstChild;
+        let child = pNode.firstElementChild;
         let j = 0;
         while (child != node) {
-            child = child.nextSibling;
+            child = child.nextElementSibling;
             j++;
         }
 
@@ -265,12 +568,12 @@ function findNode(root, path) {
 
     for (const rank of path) {
         if (node != null) {
-            node = node.firstChild;
+            node = node.firstElementChild;
             for (let i = 0; i < rank; i++) {
                 if (node == null) {
                     break;
                 }
-                node = node.nextSibling;
+                node = node.nextElementSibling;
             }
         }
     }
@@ -307,12 +610,53 @@ function isEqualNode(ele1, ele2) {
         return false;
     }
 
-    return isEqualHTML(ele1,ele2) && isEqualClass(ele1,ele2);
+    if (!isEqualText(ele1, ele2) || !isEqualClass(ele1, ele2)) {
+        return false;
+    }
+
+    let children1 = ele1.children,
+        children2 = ele2.children;
+
+    if (children1.length != children2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < children1.length; i++) {
+        if (!isEqualNode(children1[i], children2[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 
-function isEqualHTML(ele1, ele2) {
-    return (ele1.innerHTML == ele2.innerHTML);
+function isEqualText(ele1, ele2) {
+    let list1 = getText(ele1),
+        list2 = getText(ele2);
+
+    if (list1.length != list2.length) {
+        return false;
+    }
+    
+    for (let i = 0; i < list1.length; i++) {
+        if (list1[i].data != list2[i].data) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+
+function getText(ele) {
+    let texts = [];
+    ele.childNodes.forEach(function(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            texts.push(node);
+        }
+    });
+    return texts;
 }
 
 
@@ -343,4 +687,25 @@ function isEqualList(list1, list2) {
     });
 
     return isEqual;
+}
+
+
+
+// Parameters:
+//     - container: the DOM element that contains all draggable items
+//     - y: the y position of the mouse
+// Returns:
+//     - the index of the element in searchList that we sould drop before
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.cs_draggable:not(.cs_dragging)')]
+  
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
