@@ -49,38 +49,6 @@ if (!clipSearch) {
             
             return btn;
         }
-        
-
-        make_add_mode_button(){
-            let sl = this;
-            let btn = $("<button >Add</button>");
-            btn.addClass("cs_sb_btn");
-            btn.attr('id', 'add_btn');
-            btn.click(function() {
-                sl.add_btn_to_btn_grp();
-            });
-            
-            return btn;
-        }
-
-
-        make_mode_btn(){
-            let sl = this;
-            let btn = $("<button >BTN</button>");
-            btn.addClass("cs_sb_btn");
-            btn.click(function() {
-                console.log("DO something please");
-            });
-            return btn
-        }
-
-
-        add_btn_to_btn_grp(){
-            let btn_grp = $("#mode_btn_group"),
-                btn = this.make_mode_btn();
-            btn_grp.append(btn);    
-        }
-
 
         sidebar_init() {
             $('body').append(this.sidebar);
@@ -90,9 +58,6 @@ if (!clipSearch) {
                 repo = $('<div id="repo" class="container"></div>'),
                 span = $('<span />'),
                 repo_header = $("<div \>"),
-                main_btn_group = $('<div id="main_btn_group"><div>'),
-                mode_btn_group = $('<div id="mode_btn_group"><div>'),
-                add_btn = this.make_add_mode_button(),
                 clear_btn = this.make_clear_button();
             repo.on('dragover', this.searchList, this.searchList.dragOver);
             
@@ -103,19 +68,18 @@ if (!clipSearch) {
             repo_header.append(repo_head);
             repo_header.append(clear_btn);
             this.sidebar.append($('<hr class="solid">'));
-            this.sidebar.append(main_btn_group);
-            main_btn_group.append(mode_btn_group);
-            main_btn_group.append(add_btn);
+            
+            
             this.sidebar.append(repo);
             
             $('body').addClass('cs_bd');
             title.addClass('cs_sb_title');
             repo_header.addClass('cs_sb_repo_header');
             repo_head.addClass('cs_sb_repo_head');
-            clear_btn.addClass('cs_sb_btn');
-            mode_btn_group.addClass("cs_sb_mode_btn_group");
-            add_btn.addClass("cs_sb_add_btn");
+            clear_btn.addClass('cs_sb_btn');       
             this.sidebar.addClass("cs_sb");
+
+            this.searchList.updateSidebar();
         }
         
         clear_sidebar(){

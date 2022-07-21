@@ -327,6 +327,37 @@ class SearchList {
     }
 
 
+    add_btn_to_btn_grp(){
+        let btn_grp = $("#mode_btn_group"),
+            btn = this.make_mode_btn();
+        btn_grp.append(btn);    
+    }
+
+
+    make_mode_btn(){
+        let sl = this;
+        let btn = $("<button >BTN</button>");
+        btn.addClass("cs_sb_btn");
+        btn.click(function() {
+            console.log("DO something please");
+        });
+        return btn
+    }
+
+
+    make_add_mode_button(){
+        let sl = this;
+        let btn = $("<button >Add</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'add_btn');
+        btn.click(function() {
+            sl.add_btn_to_btn_grp();
+        });
+        
+        return btn;
+    }
+
+
     make_btn_group(se, html_block){
         let edit_button = this.make_edit_button(se, html_block),
             switch_btn = this.make_switch_button(se),
@@ -368,9 +399,20 @@ class SearchList {
 
 
     updateSidebar() {
-        let repo = $('#repo');
+        let repo = $('#repo'),
+            main_btn_group = $('<div id="main_btn_group"><div>'),
+            mode_btn_group = $('<div id="mode_btn_group"><div>'),
+            add_btn = this.make_add_mode_button();
         repo.empty();
+
+        repo.append(main_btn_group);
+        main_btn_group.append(mode_btn_group);
+        main_btn_group.append(add_btn);
+        mode_btn_group.addClass("cs_sb_mode_btn_group");
+        add_btn.addClass("cs_sb_add_btn");
+
         let existEditMode = false;
+
 
         for (const se of this.searchElements[this.searchMode]){
             if (se.editMode){
