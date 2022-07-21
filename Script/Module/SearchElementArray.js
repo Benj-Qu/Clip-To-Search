@@ -63,7 +63,6 @@ class SearchElementArray {
             }
         }
 
-        console.log("LCA Height: ", height);
         return height;
     }
 
@@ -154,11 +153,6 @@ class SearchElementArray {
     }
 
 
-    banning() {
-        
-    }
-
-
     isSameStructure(ele, shift) {
         let pathtree = this.pathtree;
         for (let i = 0; i < this.searchElements.length; i++) {
@@ -243,16 +237,15 @@ class SearchElementArray {
 
         if (this.searchStrategy === Strategy.All || 
             this.searchStrategy === Strategy.SimilarStructure) {
-            console.log("Conducting similar search");
             for (const node of similarList) {
-                console.log("With Ancestor: ", node);
                 let result = this.getSimilarStructure(node);
                 similarResults = similarResults.concat(result);
             }
         }
 
+        console.log("Search Array", this.searchElements);
         console.log("Same results", sameResults);
-        console.log("similar results", similarResults);
+        console.log("Similar results", similarResults);
 
         this.mark(sameResults, "cs_same_style");
 
