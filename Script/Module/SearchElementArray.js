@@ -26,11 +26,13 @@ class SearchElementArray {
         let ancestor = null;
 
         for (const se of this.searchElements) {
-            if (ancestor == null) {
-                ancestor = se.element_original;
-            }
-            else {
-                ancestor = findlca(se.element_original, ancestor);
+            if (se.enabled) {
+                if (ancestor == null) {
+                    ancestor = se.element_original;
+                }
+                else {
+                    ancestor = findlca(se.element_original, ancestor);
+                }
             }
         }
 
@@ -44,7 +46,12 @@ class SearchElementArray {
         let lca = this.lca
 
         for (const se of this.searchElements) {
-            pathTree.push(findPath(se.element_original, lca));
+            if (se.enabled) {
+                pathTree.push(findPath(se.element_original, lca));
+            }
+            else {
+                pathTree.push([]);
+            }
         }
 
         return pathTree;
@@ -54,12 +61,16 @@ class SearchElementArray {
     get lcaHeight() {
         let height = -1;
         let pathtree = this.pathtree;
-        for (const path of pathtree) {
-            if (height == -1) {
-                height = path.length;
-            }
-            else if (height > path.length) {
-                height = path.length;
+
+        for (let i = 0; i < this.searchElements.length; i++) {
+            let path = pathtree[i];
+            if (this.searchElements[i].enabled) {
+                if (height == -1) {
+                    height = path.length;
+                }
+                else if (height > path.length) {
+                    height = path.length;
+                }
             }
         }
 
@@ -156,24 +167,26 @@ class SearchElementArray {
     isSameStructure(ele, shift) {
         let pathtree = this.pathtree;
         for (let i = 0; i < this.searchElements.length; i++) {
-            let path = [...(pathtree[i])];
+            if (this.searchElements[i].enabled) {
+                let path = [...(pathtree[i])];
 
-            if (this.lcaHeight > 1) {
-                path[1] += shift;
-                if (path[1] < 0) {
+                if (this.lcaHeight > 1) {
+                    path[1] += shift;
+                    if (path[1] < 0) {
+                        return Structure.NoneExist;
+                    }
+                }
+            
+                let node = findNode(ele, path);
+
+                if (node == null) {
                     return Structure.NoneExist;
                 }
-            }
-            
-            let node = findNode(ele, path);
 
-            if (node == null) {
-                return Structure.NoneExist;
-            }
-
-            let element = this.searchElements[i].element;
-            if (!isEqualNode(element, node)) {
-                return Structure.Different;
+                let element = this.searchElements[i].element;
+                if (!isEqualNode(element, node)) {
+                    return Structure.Different;
+                }
             }
         }
         return Structure.SameStructure;
@@ -261,13 +274,15 @@ class SearchElementArray {
                 shift = result[1];
             let flag = (this.lcaHeight > 1);
             let pathtree = this.pathtree;
-            for (const path of pathtree) {
-                let copyPath = [...path];
-                if (flag) {
-                    copyPath[1] += shift;
+            for (let i = 0; i < this.searchElements.length; i++) {
+                let copyPath = [...pathtree[i]]
+                if (this.searchElements[i].enabled) {
+                    if (flag) {
+                        copyPath[1] += shift;
+                    }
+                    let target = findNode(node, copyPath);
+                    mark_element(target, style);
                 }
-                let target = findNode(node, copyPath);
-                mark_element(target, style);
             }
         }
 
