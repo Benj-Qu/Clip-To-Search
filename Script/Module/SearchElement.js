@@ -13,6 +13,7 @@ class SearchElement {
         this.mode = Mode.Rendered;
         this.editMode = false;
         this.element_original = ele;
+        this.enabled = true;
     }
 
     copyElement(se) {

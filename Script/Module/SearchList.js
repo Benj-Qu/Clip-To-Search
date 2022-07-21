@@ -30,6 +30,22 @@ class SearchList {
     }
 
 
+    get lcaHeight() {
+        let height = -1;
+        for (const path of this.pathtree) {
+            if (height == -1) {
+                height = path.length;
+            }
+            else if (height > path.length) {
+                height = path.length;
+            }
+        }
+
+        console.log("LCA Height: ", height);
+        return height;
+    }
+
+
     copyList(mode) {
         let cpList = [];
         this.searchElements[mode].forEach(function(se) {
@@ -104,10 +120,6 @@ class SearchList {
         }
 
         this.setPathTree();
-
-        console.log("lca", this.lca);
-        console.log("pathtree", this.pathtree);
-        console.log("searchList", this.searchElements);
 
         return;
     }
@@ -419,7 +431,6 @@ class SearchList {
 
         if(existEditMode){
             let draggables = [...document.getElementsByClassName("cs_draggable")];
-            console.log("draggables", draggables);
             draggables.forEach(function(draggable){
                 draggable.setAttribute("draggable", "false");
                 draggable.classList.remove("cs_draggable");
@@ -472,19 +483,21 @@ class SearchList {
 
     isSameStructure(ele, shift = 0) {
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
-            let path = this.pathtree[i];
+            let path = [...(this.pathtree[i])];
 
-            if (path.length > 1) {
+            if (this.lcaHeight > 1) {
                 path[1] += shift;
                 if (path[1] < 0) {
+                    console.log("nonexist structure due to Too short LCA!");
                     return Structure.NoneExist;
                 }
             }
             
-            
+            console.log("Path: ", path);
             let node = findNode(ele, path);
 
             if (node == null) {
+                console.log("nonexist structure due to Cant find node!");
                 return Structure.NoneExist;
             }
 
@@ -501,7 +514,8 @@ class SearchList {
         let results = [];
         let shift;
 
-        if (this.lcaHeight() < 2) {
+        if (this.lcaHeight < 2) {
+            console.log("Unexpected Error!", ele);
             return results;
         }
 
@@ -516,6 +530,8 @@ class SearchList {
             shift++;
         }
 
+        console.log("Max shift: ", shift);
+
         shift = -1;
         while (true) {
             if (this.isSameStructure(ele,shift) === Structure.NoneExist) {
@@ -526,6 +542,8 @@ class SearchList {
             }
             shift--;
         }
+
+        console.log("Min shift: ", shift);
 
         return results;
     }
@@ -553,17 +571,14 @@ class SearchList {
 
         if (this.searchStrategy[this.searchMode] === Strategy.All || 
             this.searchStrategy[this.searchMode] === Strategy.SimilarStructure) {
+            console.log("Conducting similar search");
             for (const node of similarList) {
+                console.log("With Ancestor: ", node);
                 let result = this.getSimilarStructure(node);
                 similarResults = similarResults.concat(result);
             }
         }
 
-        console.log("similar list", similarList);
-        console.log("search List", this.searchElement);
-        console.log("path tree", this.pathTree);
-        console.log("lca", this.lca);
-        console.log("same results", sameResults);
         console.log("similar results", similarResults);
 
         this.mark(sameResults, "cs_same_style");
@@ -578,34 +593,26 @@ class SearchList {
         for (const result of results) {
             let node = result[0],
                 shift = result[1];
+            let flag = (this.lcaHeight > 1);
             for (const path of this.pathtree) {
-                if (path.length > 1) {
-                    path[1] += shift;
+                let copyPath = [...path];
+                if (flag) {
+                    copyPath[1] += shift;
                 }
-                let target = findNode(node, path);
+                let target = findNode(node, copyPath);
                 mark_element(target, style);
             }
         }
-    }
-
-
-    lcaHeight() {
-        let height = -1;
-        for (const path of this.pathtree) {
-            if (height == -1) {
-                height = path.length;
-            }
-            else if (height > path.length) {
-                height = path.length;
-            }
-        }
-        return height;
     }
 }
 
 
 
 function mark_element(element, style) {
+    if (!element) {
+        return;
+    }
+
     for (let i = 0; i < element.children.length; i++) {
         mark_element(element.children[i], style);
     }
@@ -662,10 +669,10 @@ function findPath(element, ancestor) {
     }
 
     for (const node of nodes) {
-        let child = pNode.firstChild;
+        let child = pNode.firstElementChild;
         let j = 0;
         while (child != node) {
-            child = child.nextSibling;
+            child = child.nextElementSibling;
             j++;
         }
 
@@ -682,12 +689,12 @@ function findNode(root, path) {
 
     for (const rank of path) {
         if (node != null) {
-            node = node.firstChild;
+            node = node.firstElementChild;
             for (let i = 0; i < rank; i++) {
                 if (node == null) {
                     break;
                 }
-                node = node.nextSibling;
+                node = node.nextElementSibling;
             }
         }
     }
@@ -720,7 +727,6 @@ function similarElements(ele) {
 
 
 function isEqualNode(ele1, ele2) {
-    console.log("Comparing", ele1, ele2);
     if (ele1 == null || ele2 == null) {
         return false;
     }
@@ -776,7 +782,6 @@ function getText(ele) {
 
 
 function isEqualClass(ele1, ele2) {
-    console.log("Comparing class");
     let classList1 = ele1.classList;
     let classList2 = ele2.classList;
     return isEqualList(classList1,classList2);
@@ -785,14 +790,12 @@ function isEqualClass(ele1, ele2) {
 
 function isEqualList(list1, list2) {
     if (list1 == null || list2 == null) {
-        console.log("Died due to null classlist");
         return false;
     }
     else if (list1.length == 0 && list2.length == 0) {
         return true;
     }
     else if (list1.length != list2.length) {
-        console.log("Died due to diffrent length");
         return false;
     }
 
