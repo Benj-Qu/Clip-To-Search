@@ -44,8 +44,8 @@ class SearchList {
     switchSearchMode(mode) {
         this.searchMode = mode;
 
-        $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
-
+        $(".cs_same_style").removeClass("cs_same_style");
+        $(".cs_similar_style").removeClass("cs_similar_style");
 
         this.setLCA();
         this.setPathTree();
@@ -104,6 +104,10 @@ class SearchList {
         }
 
         this.setPathTree();
+
+        console.log("lca", this.lca);
+        console.log("pathtree", this.pathtree);
+        console.log("searchList", this.searchElements);
 
         return;
     }
@@ -278,7 +282,8 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_d_btn');
         btn.click(function() {
-            $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+            $(".cs_same_style").removeClass("cs_same_style");
+            $(".cs_similar_style").removeClass("cs_similar_style");
             sl.delete(sl.searchElements[sl.searchMode].indexOf(se));
             sl.search();
             sl.updateSidebar();
@@ -314,7 +319,8 @@ class SearchList {
                     firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
                     se.element.innerHTML = firstElementChildHTML;
                 }
-                $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+                $(".cs_same_style").removeClass("cs_same_style");
+                $(".cs_similar_style").removeClass("cs_similar_style");
                 sl.setLCA();
                 sl.setPathTree();
                 sl.search();
@@ -468,10 +474,13 @@ class SearchList {
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
             let path = this.pathtree[i];
 
-            path[1] += shift;
-            if (path[1] < 0) {
-                return Structure.NoneExist;
+            if (path.length > 1) {
+                path[1] += shift;
+                if (path[1] < 0) {
+                    return Structure.NoneExist;
+                }
             }
+            
             
             let node = findNode(ele, path);
 
@@ -550,6 +559,7 @@ class SearchList {
             }
         }
 
+        console.log("similar list", similarList);
         console.log("search List", this.searchElement);
         console.log("path tree", this.pathTree);
         console.log("lca", this.lca);
@@ -569,9 +579,9 @@ class SearchList {
             let node = result[0],
                 shift = result[1];
             for (const path of this.pathtree) {
-                // if (path.length > 1) {
-                //     path[1] += shift;
-                // }
+                if (path.length > 1) {
+                    path[1] += shift;
+                }
                 let target = findNode(node, path);
                 mark_element(target, style);
             }
@@ -596,14 +606,10 @@ class SearchList {
 
 
 function mark_element(element, style) {
-    if (element.childNodes.length > 0) {
-        element.childNodes.forEach(function(ele) {
-            mark_element(ele);
-        });
+    for (let i = 0; i < element.children.length; i++) {
+        mark_element(element.children[i], style);
     }
-    if (element.classList != null) {
-        element.classList.add(style);
-    }
+    element.classList.add(style);
     
     return;
 }
@@ -691,7 +697,6 @@ function findNode(root, path) {
 
 
 function findlca(ele1, ele2) {
-
     let lca = ele1;
 
     while (lca != null) {
@@ -715,20 +720,63 @@ function similarElements(ele) {
 
 
 function isEqualNode(ele1, ele2) {
+    console.log("Comparing", ele1, ele2);
     if (ele1 == null || ele2 == null) {
         return false;
     }
 
-    return isEqualHTML(ele1,ele2) && isEqualClass(ele1,ele2);
+    if (!isEqualText(ele1, ele2) || !isEqualClass(ele1, ele2)) {
+        return false;
+    }
+
+    let children1 = ele1.children,
+        children2 = ele2.children;
+
+    if (children1.length != children2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < children1.length; i++) {
+        if (!isEqualNode(children1[i], children2[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 
-function isEqualHTML(ele1, ele2) {
-    return (ele1.innerHTML == ele2.innerHTML);
+function isEqualText(ele1, ele2) {
+    let list1 = getText(ele1),
+        list2 = getText(ele2);
+
+    if (list1.length != list2.length) {
+        return false;
+    }
+    
+    for (let i = 0; i < list1.length; i++) {
+        if (list1[i].data != list2[i].data) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+
+function getText(ele) {
+    let texts = [];
+    ele.childNodes.forEach(function(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            texts.push(node);
+        }
+    });
+    return texts;
 }
 
 
 function isEqualClass(ele1, ele2) {
+    console.log("Comparing class");
     let classList1 = ele1.classList;
     let classList2 = ele2.classList;
     return isEqualList(classList1,classList2);
@@ -737,12 +785,14 @@ function isEqualClass(ele1, ele2) {
 
 function isEqualList(list1, list2) {
     if (list1 == null || list2 == null) {
+        console.log("Died due to null classlist");
         return false;
     }
     else if (list1.length == 0 && list2.length == 0) {
         return true;
     }
     else if (list1.length != list2.length) {
+        console.log("Died due to diffrent length");
         return false;
     }
 
