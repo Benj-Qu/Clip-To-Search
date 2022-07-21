@@ -50,15 +50,28 @@ if (!clipSearch) {
             return btn;
         }
 
+        make_add_mode_button(){
+            let sl = this.searchList;
+            let btn = $("<button >Add Mode</button>");
+            btn.addClass("cs_sb_btn");
+            btn.attr('id', 'add_btn');
+            btn.click(function() {
+                sl.add_btn_to_btn_grp();
+            });
+            
+            return btn;
+        }
+
         sidebar_init() {
             $('body').append(this.sidebar);
             
             let title = $('<h1>Sidebar</h1>'),
                 repo_head = $('<h2 id="repo_head">Repository</h2>'),
                 repo = $('<div id="repo" class="container"></div>'),
-                span = $('<span />'),
                 repo_header = $("<div \>"),
-                clear_btn = this.make_clear_button();
+                mode_btn_group = $('<div id="mode_btn_group"><div>'),
+                clear_btn = this.make_clear_button(),
+                add_btn = this.make_add_mode_button();
             repo.on('dragover', this.searchList, this.searchList.dragOver);
             
 
@@ -67,19 +80,20 @@ if (!clipSearch) {
             this.sidebar.append(repo_header);
             repo_header.append(repo_head);
             repo_header.append(clear_btn);
+            repo_header.append(add_btn);
+
+            this.sidebar.append(mode_btn_group);
             this.sidebar.append($('<hr class="solid">'));
-            
-            
             this.sidebar.append(repo);
             
             $('body').addClass('cs_bd');
             title.addClass('cs_sb_title');
             repo_header.addClass('cs_sb_repo_header');
             repo_head.addClass('cs_sb_repo_head');
-            clear_btn.addClass('cs_sb_btn');       
+            clear_btn.addClass('cs_sb_btn');  
+            add_btn.addClass("cs_sb_add_btn");    
+            mode_btn_group.addClass("cs_sb_mode_btn_group"); 
             this.sidebar.addClass("cs_sb");
-
-            this.searchList.updateSidebar();
         }
         
         clear_sidebar(){
