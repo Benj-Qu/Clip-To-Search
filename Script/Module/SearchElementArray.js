@@ -154,16 +154,8 @@ class SearchElementArray {
     }
 
 
-    getIdxFromID(id) {
-        let idx = -1;
-
-        this.searchElements.forEach(function(item, index) {
-            if (item.id == id) {
-                idx = index;
-            }
-        });
-
-        return idx;
+    banning() {
+        
     }
 
 
@@ -287,6 +279,19 @@ class SearchElementArray {
         }
 
         return;
+    }
+
+
+    getIdxFromID(id) {
+        let idx = -1;
+
+        this.searchElements.forEach(function(item, index) {
+            if (item.id == id) {
+                idx = index;
+            }
+        });
+
+        return idx;
     }
 
 

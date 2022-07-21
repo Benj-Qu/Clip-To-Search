@@ -12,6 +12,7 @@ class SearchElement {
         this.element = ele.cloneNode(true);
         this.mode = Mode.Rendered;
         this.editMode = false;
+
         this.element_original = ele;
         this.enabled = true;
     }
