@@ -1,22 +1,10 @@
-const Strategy = {
-	All : 0,
-    SameStructure : 1,
-    SimilarStructure : 2
-}
-
-const Structure = {
-    SameStructure : 0,
-    NoneExist : 1,
-    Different : 2
-}
-
 class SearchList {
 
     constructor() {
         this.searchMode = 0;
-        this.modeNum = 0;
+        this.modeNum = 1;
 
-        this.searchArrays = [];
+        this.searchArrays = [new SearchElementArray()];
     }
 
 
@@ -25,6 +13,8 @@ class SearchList {
 
         $(".cs_same_style").removeClass("cs_same_style");
         $(".cs_similar_style").removeClass("cs_similar_style");
+
+        this.searchArrays[mode].updateSidebar()
 
         this.search();
 

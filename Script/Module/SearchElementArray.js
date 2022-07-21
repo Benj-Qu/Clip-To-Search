@@ -4,8 +4,11 @@ const Strategy = {
     SimilarStructure : 2
 }
 
-let draggedElementIdx = -1;
-    draggedToIdx = -1;
+const Structure = {
+    SameStructure : 0,
+    NoneExist : 1,
+    Different : 2
+}
 
 class SearchElementArray {
     
@@ -13,6 +16,9 @@ class SearchElementArray {
         this.searchElements = [];
         this.bannedElements = [];
         this.searchStrategy = Strategy.All;
+
+        this.draggedElementIdx = -1;
+        this.draggedToIdx = -1;
     }
 
 
@@ -169,16 +175,13 @@ class SearchElementArray {
             if (this.lcaHeight > 1) {
                 path[1] += shift;
                 if (path[1] < 0) {
-                    console.log("nonexist structure due to Too short LCA!");
                     return Structure.NoneExist;
                 }
             }
             
-            console.log("Path: ", path);
             let node = findNode(ele, path);
 
             if (node == null) {
-                console.log("nonexist structure due to Cant find node!");
                 return Structure.NoneExist;
             }
 
@@ -196,7 +199,6 @@ class SearchElementArray {
         let shift;
 
         if (this.lcaHeight < 2) {
-            console.log("Unexpected Error!", ele);
             return results;
         }
 
@@ -211,8 +213,6 @@ class SearchElementArray {
             shift++;
         }
 
-        console.log("Max shift: ", shift);
-
         shift = -1;
         while (true) {
             if (this.isSameStructure(ele,shift) === Structure.NoneExist) {
@@ -223,8 +223,6 @@ class SearchElementArray {
             }
             shift--;
         }
-
-        console.log("Min shift: ", shift);
 
         return results;
     }
@@ -243,13 +241,13 @@ class SearchElementArray {
         if (this.searchStrategy === Strategy.All || 
             this.searchStrategy === Strategy.SameStructure) {
             for (const node of similarList) {
-                if (this.isSameStructure(node) === Structure.SameStructure) {
+                if (this.isSameStructure(node, 0) === Structure.SameStructure) {
                     sameResults.push([node, 0]);
                 }
             }
         }
 
-        let similarResults = [[lca, 0]];
+        let similarResults = [];
 
         if (this.searchStrategy === Strategy.All || 
             this.searchStrategy === Strategy.SimilarStructure) {
@@ -261,6 +259,7 @@ class SearchElementArray {
             }
         }
 
+        console.log("Same results", sameResults);
         console.log("similar results", similarResults);
 
         this.mark(sameResults, "cs_same_style");
@@ -323,7 +322,7 @@ class SearchElementArray {
         btn.click(function() {
             $(".cs_same_style").removeClass("cs_same_style");
             $(".cs_similar_style").removeClass("cs_similar_style");
-            sa.delete(sl.searchElements.indexOf(se));
+            sa.delete(sa.searchElements.indexOf(se));
             sa.search();
             sa.updateSidebar();
         });
@@ -387,7 +386,7 @@ class SearchElementArray {
 
     make_text_field(se){
         let sa = this,
-            pos = sa.searchArrays.indexOf(se) + 1,
+            pos = sa.searchElements.indexOf(se) + 1,
             tf_id = se.id.toString() + '_tf',
             txt_field = $("<input type=\"text \" id=" + tf_id + " " + "value=" + pos + "><br>");
 
@@ -471,7 +470,7 @@ class SearchElementArray {
         let sa = event.data;
         $(this).addClass("cs_dragging");
         let id = $(this).attr('id');
-        draggedElementIdx = sa.getIdxFromID(id);
+        sa.draggedElementIdx = sa.getIdxFromID(id);
     }
 
 
@@ -484,10 +483,10 @@ class SearchElementArray {
         const afterElement = getDragAfterElement(container, event.clientY);
         
         if (afterElement == null) {
-            draggedToIdx = sa.searchElements.length;
+            sa.draggedToIdx = sa.searchElements.length;
         }
         else {
-            draggedToIdx = sa.getIdxFromID(afterElement.id);
+            sa.draggedToIdx = sa.getIdxFromID(afterElement.id);
         }
     }
 
@@ -495,12 +494,12 @@ class SearchElementArray {
     dragEnd(event){
         let sa = event.data;
 
-        if (draggedToIdx == -1) {
+        if (sa.draggedToIdx == -1) {
             alert("draggdedToIdx = -1, error!");
         }
         else {
             $(this).removeClass("cs_dragging");
-            sa.move(draggedElementIdx, draggedToIdx)
+            sa.move(sa.draggedElementIdx, sa.draggedToIdx)
         }
         sa.updateSidebar();
     }
