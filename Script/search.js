@@ -39,12 +39,12 @@ if (!clipSearch) {
         }
 
         make_clear_button(){
-            let sl = this;
+            let cs = this;
             let btn = $("<button>Clear</button>");
             btn.addClass("cs_sb_btn");
             btn.attr('id', 'clear_btn');
             btn.click(function() {
-                sl.clearResults();
+                cs.clearResults();
             });
             
             return btn;
@@ -215,7 +215,8 @@ if (!clipSearch) {
                     }
                 } else if (eventType == 'up' || eventType == 'out') {
                     if (eventType == 'up' && this.enabled) {
-                        $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+                        $(".cs_same_style").removeClass("cs_same_style");
+                        $(".cs_similar_style").removeClass("cs_similar_style");
                         this.rectangleSelect(this.startX, this.startY, x, y);
                         this.searchList.search();
                         this.searchList.updateSidebar();
@@ -232,7 +233,8 @@ if (!clipSearch) {
             this.options = null;
             this.createOptions();
             this.clear_sidebar();
-            $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+            $(".cs_same_style").removeClass("cs_same_style");
+            $(".cs_similar_style").removeClass("cs_similar_style");
         }
 
         
@@ -387,7 +389,8 @@ if (!clipSearch) {
                 this.options = null;
             }
             this.enabled = false;
-            $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+            $(".cs_same_style").removeClass("cs_same_style");
+            $(".cs_similar_style").removeClass("cs_similar_style");
         }
 
         isEnabled () {
@@ -411,7 +414,8 @@ if (!clipSearch) {
             case "delete":
                 clipSearch.searchList.elements.pop();
                 this.rectangleSelect(this.startX, this.startY, x, y);
-                $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+                $(".cs_same_style").removeClass("cs_same_style");
+                $(".cs_similar_style").removeClass("cs_similar_style");
                 searchelement(clipSearch.searchList.elements)
                 break;
             default:

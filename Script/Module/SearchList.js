@@ -30,6 +30,22 @@ class SearchList {
     }
 
 
+    get lcaHeight() {
+        let height = -1;
+        for (const path of this.pathtree) {
+            if (height == -1) {
+                height = path.length;
+            }
+            else if (height > path.length) {
+                height = path.length;
+            }
+        }
+
+        console.log("LCA Height: ", height);
+        return height;
+    }
+
+
     copyList(mode) {
         let cpList = [];
         this.searchElements[mode].forEach(function(se) {
@@ -44,8 +60,8 @@ class SearchList {
     switchSearchMode(mode) {
         this.searchMode = mode;
 
-        $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
-
+        $(".cs_same_style").removeClass("cs_same_style");
+        $(".cs_similar_style").removeClass("cs_similar_style");
 
         this.setLCA();
         this.setPathTree();
@@ -278,7 +294,8 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_d_btn');
         btn.click(function() {
-            $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+            $(".cs_same_style").removeClass("cs_same_style");
+            $(".cs_similar_style").removeClass("cs_similar_style");
             sl.delete(sl.searchElements[sl.searchMode].indexOf(se));
             sl.search();
             sl.updateSidebar();
@@ -314,7 +331,8 @@ class SearchList {
                     firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
                     se.element.innerHTML = firstElementChildHTML;
                 }
-                $("*").removeClass("cs_same_style").removeClass("cs_similar_style");
+                $(".cs_same_style").removeClass("cs_same_style");
+                $(".cs_similar_style").removeClass("cs_similar_style");
                 sl.setLCA();
                 sl.setPathTree();
                 sl.search();
@@ -455,7 +473,6 @@ class SearchList {
 
         if(existEditMode){
             let draggables = [...document.getElementsByClassName("cs_draggable")];
-            console.log("draggables", draggables);
             draggables.forEach(function(draggable){
                 draggable.setAttribute("draggable", "false");
                 draggable.classList.remove("cs_draggable");
@@ -508,16 +525,21 @@ class SearchList {
 
     isSameStructure(ele, shift = 0) {
         for (let i = 0; i < this.searchElements[this.searchMode].length; i++) {
-            let path = this.pathtree[i];
+            let path = [...(this.pathtree[i])];
 
-            path[1] += shift;
-            if (path[1] < 0) {
-                return Structure.NoneExist;
+            if (this.lcaHeight > 1) {
+                path[1] += shift;
+                if (path[1] < 0) {
+                    console.log("nonexist structure due to Too short LCA!");
+                    return Structure.NoneExist;
+                }
             }
             
+            console.log("Path: ", path);
             let node = findNode(ele, path);
 
             if (node == null) {
+                console.log("nonexist structure due to Cant find node!");
                 return Structure.NoneExist;
             }
 
@@ -534,7 +556,8 @@ class SearchList {
         let results = [];
         let shift;
 
-        if (this.lcaHeight() < 2) {
+        if (this.lcaHeight < 2) {
+            console.log("Unexpected Error!", ele);
             return results;
         }
 
@@ -549,6 +572,8 @@ class SearchList {
             shift++;
         }
 
+        console.log("Max shift: ", shift);
+
         shift = -1;
         while (true) {
             if (this.isSameStructure(ele,shift) === Structure.NoneExist) {
@@ -559,6 +584,8 @@ class SearchList {
             }
             shift--;
         }
+
+        console.log("Min shift: ", shift);
 
         return results;
     }
@@ -586,16 +613,14 @@ class SearchList {
 
         if (this.searchStrategy[this.searchMode] === Strategy.All || 
             this.searchStrategy[this.searchMode] === Strategy.SimilarStructure) {
+            console.log("Conducting similar search");
             for (const node of similarList) {
+                console.log("With Ancestor: ", node);
                 let result = this.getSimilarStructure(node);
                 similarResults = similarResults.concat(result);
             }
         }
 
-        console.log("search List", this.searchElement);
-        console.log("path tree", this.pathTree);
-        console.log("lca", this.lca);
-        console.log("same results", sameResults);
         console.log("similar results", similarResults);
 
         this.mark(sameResults, "cs_same_style");
@@ -610,42 +635,30 @@ class SearchList {
         for (const result of results) {
             let node = result[0],
                 shift = result[1];
+            let flag = (this.lcaHeight > 1);
             for (const path of this.pathtree) {
-                // if (path.length > 1) {
-                //     path[1] += shift;
-                // }
-                let target = findNode(node, path);
+                let copyPath = [...path];
+                if (flag) {
+                    copyPath[1] += shift;
+                }
+                let target = findNode(node, copyPath);
                 mark_element(target, style);
             }
         }
-    }
-
-
-    lcaHeight() {
-        let height = -1;
-        for (const path of this.pathtree) {
-            if (height == -1) {
-                height = path.length;
-            }
-            else if (height > path.length) {
-                height = path.length;
-            }
-        }
-        return height;
     }
 }
 
 
 
 function mark_element(element, style) {
-    if (element.childNodes.length > 0) {
-        element.childNodes.forEach(function(ele) {
-            mark_element(ele);
-        });
+    if (!element) {
+        return;
     }
-    if (element.classList != null) {
-        element.classList.add(style);
+
+    for (let i = 0; i < element.children.length; i++) {
+        mark_element(element.children[i], style);
     }
+    element.classList.add(style);
     
     return;
 }
@@ -698,10 +711,10 @@ function findPath(element, ancestor) {
     }
 
     for (const node of nodes) {
-        let child = pNode.firstChild;
+        let child = pNode.firstElementChild;
         let j = 0;
         while (child != node) {
-            child = child.nextSibling;
+            child = child.nextElementSibling;
             j++;
         }
 
@@ -718,12 +731,12 @@ function findNode(root, path) {
 
     for (const rank of path) {
         if (node != null) {
-            node = node.firstChild;
+            node = node.firstElementChild;
             for (let i = 0; i < rank; i++) {
                 if (node == null) {
                     break;
                 }
-                node = node.nextSibling;
+                node = node.nextElementSibling;
             }
         }
     }
@@ -733,7 +746,6 @@ function findNode(root, path) {
 
 
 function findlca(ele1, ele2) {
-
     let lca = ele1;
 
     while (lca != null) {
@@ -761,12 +773,53 @@ function isEqualNode(ele1, ele2) {
         return false;
     }
 
-    return isEqualHTML(ele1,ele2) && isEqualClass(ele1,ele2);
+    if (!isEqualText(ele1, ele2) || !isEqualClass(ele1, ele2)) {
+        return false;
+    }
+
+    let children1 = ele1.children,
+        children2 = ele2.children;
+
+    if (children1.length != children2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < children1.length; i++) {
+        if (!isEqualNode(children1[i], children2[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 
-function isEqualHTML(ele1, ele2) {
-    return (ele1.innerHTML == ele2.innerHTML);
+function isEqualText(ele1, ele2) {
+    let list1 = getText(ele1),
+        list2 = getText(ele2);
+
+    if (list1.length != list2.length) {
+        return false;
+    }
+    
+    for (let i = 0; i < list1.length; i++) {
+        if (list1[i].data != list2[i].data) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+
+function getText(ele) {
+    let texts = [];
+    ele.childNodes.forEach(function(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            texts.push(node);
+        }
+    });
+    return texts;
 }
 
 
