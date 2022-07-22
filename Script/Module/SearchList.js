@@ -9,6 +9,7 @@ class SearchList {
 
 
     switchSearchMode(mode) {
+        console.log("switch to mode: " + mode);
         this.searchMode = mode;
 
         $(".cs_same_style").removeClass("cs_same_style");
@@ -27,7 +28,7 @@ class SearchList {
 
         let sea = new SearchElementArray();
 
-        this.searchList.push(sea);
+        this.searchArrays.push(sea);
 
         return;
     }
@@ -119,8 +120,37 @@ class SearchList {
     }
 
 
+    make_mode_btn(mode){
+        let sl = this;
+        let btn = $("<button >Mode " + mode + "</button>");
+        btn.addClass("cs_sb_btn");
+        btn.click(function() {
+            sl.switchSearchMode(mode);
+        });
+        return btn
+    }
+
+
+    update_mode_btn_group(){
+        let sea = this;
+        $('#mode_btn_group').remove();
+        let mode_btn_group = $('<div id="mode_btn_group"><div>');
+        mode_btn_group.insertAfter('#repo_header');
+       
+        this.searchArrays.forEach(function(element, index){
+            let mode_btn = sea.make_mode_btn(index);
+            
+            mode_btn_group.append(mode_btn);
+        })
+
+        mode_btn_group.addClass('cs_sb_mode_btn_group');
+
+    }
+
+
     updateSidebar() {
         this.searchArrays[this.searchMode].updateSidebar();
+        this.update_mode_btn_group();
     }
 }
 
