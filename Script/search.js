@@ -70,9 +70,8 @@ if (!clipSearch) {
                 repo = $('<div id="repo" class="container"></div>'),
                 repo_header = $("<div \>"),
                 mode_btn_group = $('<div id="mode_btn_group"><div>'),
-                clear_btn = this.make_clear_button(),
-                add_btn = this.make_add_mode_button();
-            repo.on('dragover', this.searchList, this.searchList.dragOver);
+                add_btn = this.make_add_mode_button(),
+                clear_btn = this.make_clear_button();
             
 
             this.sidebar.append(title);

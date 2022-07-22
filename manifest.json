@@ -22,6 +22,7 @@
       "css": ["Style/searchStyle.css", "Style/search.css", "Style/sidebar.css", "Style/draggingStyles.css"],
       "js": ["Script/Module/Library/jquery.js", 
              "Script/Module/SearchElement.js", 
+             "Script/Module/SearchElementArray.js", 
              "Script/Module/SearchList.js", 
              "Script/Module/helper.js",
              "Script/search.js",  
