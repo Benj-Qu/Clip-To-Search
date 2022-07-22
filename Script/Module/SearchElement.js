@@ -16,6 +16,8 @@ class SearchElement {
         this.element_original = ele;
         this.enabled = true;
 
+        this.child = [this.element];
+
         this.spanned = false;
         this.children = [];
             for (const child of ele.children) {
@@ -46,6 +48,23 @@ class SearchElement {
                 return this.renderedHTML();
             case Mode.Original:
                 return this.originalHTML();
+        }
+    }
+
+    decompose() {
+        let rHTML = this.element;
+        for (let i=0; i<rHTML.children.length;i++){
+            this.child.push(rHTML.children[i]);
+        }
+    }
+
+    elehavechild() {
+        let rHTML = this.element;
+        if (rHTML.children.length == 0){
+            return false;
+        }
+        else{
+            return true;
         }
     }
 

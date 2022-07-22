@@ -343,6 +343,19 @@ class SearchElementArray {
         return btn;
     }
 
+    make_decompose_btn(se){
+        let sl = this;
+        let btn = $("<button>Decompose</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', se.id.toString() + '_dcp_btn');
+        btn.click(function(){
+            if (se.elehavechild()){
+                se.decompose();
+            }
+            sl.updateSidebar();
+        });
+        return btn;
+    }
 
     make_edit_button(se, html_block){
         let sa = this;
@@ -386,11 +399,13 @@ class SearchElementArray {
         let edit_button = this.make_edit_button(se, html_block),
             switch_btn = this.make_switch_button(se),
             delete_btn = this.make_delete_button(se),
+            decompose_btn = this.make_decompose_btn(se),
             btn_group = $("<div />");
 
         btn_group.append(edit_button);    
         btn_group.append(switch_btn);
         btn_group.append(delete_btn);
+        btn_group.append(decompose_btn);
         btn_group.attr('id', se.id.toString() + '_btn_g');
 
         return btn_group;    
@@ -429,42 +444,51 @@ class SearchElementArray {
         repo.on('dragover', this, this.dragOver);
 
         for (const se of this.searchElements){
-            if (se.editMode){
-                existEditMode = true;
-            }
+            if (se.child.length != 0) {
+                for (let i=0; i < se.child.length; i++){
+                    if (se.editMode){
+                        existEditMode = true;
+                    }
 
-            let li = $('<div draggable="true"></div>'),
-                txt_field = this.make_text_field(se),
-                html_block;          
-            if (se.mode == Mode.Original) {
-                html_block = $('<p />'); 
-            }
-            else{
-                html_block = $('<div />');
-            }
-            li.append(html_block);
-            html_block.append(se.getHTML());
-            html_block.addClass('cs_sb_html_block');
+                    let li = $('<div draggable="true"></div>'),
+                        txt_field = this.make_text_field(se),
+                        html_block;          
+                    if (se.mode == Mode.Original) {
+                        html_block = $('<p />'); 
+                    }
+                    else{
+                        html_block = $('<div />');
+                    }
+                    li.append(html_block);
+                    if (se.mode == Mode.Rendered){
+                        html_block.append(se.child[i].outerHTML);
+                    }
+                    else {
+                        html_block.append(se.child[i].outerHTML.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+                    }
+                    html_block.addClass('cs_sb_html_block');
 
-            if (se.editMode == true) {
-                html_block.attr('contenteditable', 'true');
-            }
-            else {
-                html_block.attr('contenteditable', 'false');
-            }
+                    if (se.editMode == true) {
+                        html_block.attr('contenteditable', 'true');
+                    }
+                    else {
+                        html_block.attr('contenteditable', 'false');
+                    }
 
-            let btn_group = this.make_btn_group(se, html_block);
-            li.append(btn_group);
-            li.append(txt_field);
-            repo.append(li);
-            
-            li.on('dragstart', this, this.dragStart);
-            li.on('dragend', this, this.dragEnd);
-            
-            btn_group.addClass('cs_sb_btn_group');
-            li.addClass('cs_sb_li');
-            li.addClass('cs_draggable');
-            li.attr('id', se.id);
+                    let btn_group = this.make_btn_group(se, html_block);
+                    li.append(btn_group);
+                    li.append(txt_field);
+                    repo.append(li);
+                    
+                    li.on('dragstart', this, this.dragStart);
+                    li.on('dragend', this, this.dragEnd);
+                    
+                    btn_group.addClass('cs_sb_btn_group');
+                    li.addClass('cs_sb_li');
+                    li.addClass('cs_draggable');
+                    li.attr('id', se.id);
+                }
+            }
         }
 
         if(existEditMode){
