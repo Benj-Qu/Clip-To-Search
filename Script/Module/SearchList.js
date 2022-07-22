@@ -15,7 +15,7 @@ class SearchList {
         $(".cs_same_style").removeClass("cs_same_style");
         $(".cs_similar_style").removeClass("cs_similar_style");
 
-        this.searchArrays[mode].updateSidebar()
+        this.updateSidebar()
 
         this.search();
 
@@ -41,6 +41,7 @@ class SearchList {
 
     clear() {
         this.searchArrays = [new SearchElementArray()];
+        this.updateSidebar();
 
         return;
     }
