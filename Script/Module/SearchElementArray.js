@@ -440,6 +440,7 @@ class SearchElementArray {
     updateSidebar() {
         let repo = $('#repo');
         repo.empty();
+
         let existEditMode = false;
         repo.on('dragover', this, this.dragOver);
 

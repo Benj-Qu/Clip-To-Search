@@ -56,7 +56,8 @@ if (!clipSearch) {
             btn.addClass("cs_sb_btn");
             btn.attr('id', 'add_btn');
             btn.click(function() {
-                sl.add_btn_to_btn_grp();
+                sl.addSearchMode();
+                sl.updateSidebar();
             });
             
             return btn;
@@ -68,7 +69,7 @@ if (!clipSearch) {
             let title = $('<h1>Sidebar</h1>'),
                 repo_head = $('<h2 id="repo_head">Repository</h2>'),
                 repo = $('<div id="repo" class="container"></div>'),
-                repo_header = $("<div \>"),
+                repo_header = $('<div id="repo_header"></div>'),
                 mode_btn_group = $('<div id="mode_btn_group"><div>'),
                 add_btn = this.make_add_mode_button(),
                 clear_btn = this.make_clear_button();
@@ -93,6 +94,8 @@ if (!clipSearch) {
             add_btn.addClass("cs_sb_add_btn");    
             mode_btn_group.addClass("cs_sb_mode_btn_group"); 
             this.sidebar.addClass("cs_sb");
+
+            this.searchList.updateSidebar();
         }
         
         clear_sidebar(){

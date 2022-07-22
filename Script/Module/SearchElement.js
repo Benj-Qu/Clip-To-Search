@@ -82,4 +82,12 @@ class SearchElement {
     toggleEditMode() {
         this.editMode = !this.editMode;
     }
+
+    toggleEnabled(){
+        this.enabled = !this.enabled;
+    }
+
+    toggleSpanned(){
+        this.spanned = !this.spanned;
+    }
 }
