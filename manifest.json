@@ -23,9 +23,10 @@
               "Style/search.css", 
               "Style/sidebar.css", 
               "Style/draggingStyles.css",
-              "Style/jquery.toolbar.css"],
+              "Style/jquery.toolbar.css"
+              ],
       "js": ["Script/Module/Library/jquery.js",
-             "Script/Module/Library/toolbar/jquery.toolbar.js", 
+             "Script/Module/Library/toolbar/jquery.toolbar.min.js", 
              "Script/Module/SearchElement.js", 
              "Script/Module/SearchElementArray.js", 
              "Script/Module/SearchList.js", 
@@ -38,6 +39,7 @@
   "web_accessible_resources": [{
     "resources": ["options.html"],
     "matches": [ "https://*/*", "http://*/*", "\u003Call_urls>" ]
+   
   }],
 
   "background":{

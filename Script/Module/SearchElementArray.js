@@ -400,7 +400,7 @@ class SearchElementArray {
             switch_btn = this.make_switch_button(se),
             delete_btn = this.make_delete_button(se),
             decompose_btn = this.make_decompose_btn(se),
-            btn_group = $('<div class="btn-toolbar btn-toolbar-primary"></div>'),
+            btn_group = $('<div class="btn-toolbar btn-toolbar-primary"><i class="fa fa-cog"></i></div>'),
             toolbar = $('<div id="toolbar-options" class="hidden"></div>');
 
         // btn_group.append(edit_button);    
@@ -420,6 +420,8 @@ class SearchElementArray {
 
         return btn_group;    
     }
+
+
 
 
     make_text_field(se){
@@ -486,15 +488,31 @@ class SearchElementArray {
                         html_block.attr('contenteditable', 'false');
                     }
 
-                    let btn_group = this.make_btn_group(se, html_block);
-                    li.append(btn_group);
+                    // try toolbar
+                    let bg = $('<div class="btn-toolbar btn-toolbar-info-o" id="element">Set</div>');
+                    repo.append(bg);
+                    let tb = $('<div id="toolbar-options", class="hidden" ><a href="#">Add</i></a><a href="#"><i class="fa fa-car"></i></a><a href="#"><i class="fa fa-bicycle"></i></a></div>');
+                    repo.append(tb);
+                    $('#element').toolbar({
+                        content: '#toolbar-options',
+                        position: 'bottom',
+                        style: 'primary',
+                        animation: 'flip'
+                    });
+                    
+                    
+                    
+                    bg.addClass('cs_sb_btn_group');
+                    //try toolbar
+                    // let btn_group = this.make_btn_group(se, html_block);
+                    //li.append(btn_group);
                     li.append(txt_field);
                     repo.append(li);
                     
                     li.on('dragstart', this, this.dragStart);
                     li.on('dragend', this, this.dragEnd);
                     
-                    btn_group.addClass('cs_sb_btn_group');
+                    //btn_group.addClass('cs_sb_btn_group');
                     li.addClass('cs_sb_li');
                     li.addClass('cs_draggable');
                     li.attr('id', se.id);
