@@ -400,13 +400,23 @@ class SearchElementArray {
             switch_btn = this.make_switch_button(se),
             delete_btn = this.make_delete_button(se),
             decompose_btn = this.make_decompose_btn(se),
-            btn_group = $("<div />");
+            btn_group = $('<div class="btn-toolbar btn-toolbar-primary"></div>'),
+            toolbar = $('<div id="toolbar-options" class="hidden"></div>');
 
-        btn_group.append(edit_button);    
-        btn_group.append(switch_btn);
-        btn_group.append(delete_btn);
-        btn_group.append(decompose_btn);
-        btn_group.attr('id', se.id.toString() + '_btn_g');
+        // btn_group.append(edit_button);    
+        // btn_group.append(switch_btn);
+        // btn_group.append(delete_btn);
+        // btn_group.append(decompose_btn);
+        // btn_group.attr('id', se.id.toString() + '_btn_g');
+        toolbar.append($('<a href="#"><i class="fa fa-plane"></i></a>'));
+        btn_group.append(toolbar);
+        
+        btn_group.toolbar({
+            content: '#toolbar-options',
+            position: 'bottom',
+            style: 'primary',
+            event: 'click'
+        });
 
         return btn_group;    
     }
