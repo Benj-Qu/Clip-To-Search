@@ -345,13 +345,19 @@ class SearchElementArray {
 
     make_decompose_btn(se){
         let sl = this;
-        let btn = $("<button>Decompose</button>");
+        let btn_name;
+
+        if (se.spanned == false) {
+            btn_name = "Decompose";
+        }
+        else {
+            btn_name = "Compose";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_dcp_btn');
         btn.click(function(){
-            if (se.elehavechild()){
-                se.decompose();
-            }
+            se.decompose();
             sl.updateSidebar();
         });
         return btn;
@@ -470,57 +476,61 @@ class SearchElementArray {
         let existEditMode = false;
         repo.on('dragover', this, this.dragOver);
 
+        let index = 0;
         for (const se of this.searchElements){
-            if (se.child.length != 0) {
-                for (let i=0; i < se.child.length; i++){
-                    if (se.editMode){
-                        existEditMode = true;
+            index++;
+            if (se.spanned == true && se.hasspanned ==false){
+                if (se.children.length != 1 || se.children[0] != se){
+                    for (const child of se.children){
+                        this.searchElements.splice(index, 0, child);
                     }
-
-                    let li = $('<div draggable="true"></div>'),
-                        txt_field = this.make_text_field(se),
-                        html_block;          
-                    if (se.mode == Mode.Original) {
-                        html_block = $('<p />'); 
-                    }
-                    else{
-                        html_block = $('<div />');
-                    }
-                    li.append(html_block);
-                    if (se.mode == Mode.Rendered){
-                        html_block.append(se.child[i].outerHTML);
-                    }
-                    else {
-                        html_block.append(se.child[i].outerHTML.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-                    }
-                    html_block.addClass('cs_sb_html_block');
-
-                    if (se.editMode == true) {
-                        html_block.attr('contenteditable', 'true');
-                    }
-                    else {
-                        html_block.attr('contenteditable', 'false');
-                    }
-
-                   
-                    
-                    let btn_group = this.make_btn_group(se, html_block);
-                    li.append(btn_group);
-                    li.append(txt_field);
-                    repo.append(li);
-                    
-                    li.on('dragstart', this, this.dragStart);
-                    li.on('dragend', this, this.dragEnd);
-                    
-                    btn_group.addClass('cs_sb_btn_group');
-                    li.addClass('cs_sb_li');
-                    li.addClass('cs_draggable');
-                    li.attr('id', se.id);
-                    if (!se.enabled){
-                        li.addClass('cs_sb_disabled');
-                    }
+                    se.hasspanned = true;
                 }
             }
+            else if (se.spanned == false && se.hasspanned == true){
+                let count = countdeleteelement(se);
+                this.searchElements.splice(index, count);
+                se.hasspanned = false;
+            }
+            if (se.editMode){
+                existEditMode = true;
+            }
+
+            let li = $('<div draggable="true"></div>'),
+                txt_field = this.make_text_field(se),
+                html_block;          
+            if (se.mode == Mode.Original) {
+                html_block = $('<p />'); 
+            }
+            else{
+                html_block = $('<div />');
+            }
+            li.append(html_block);
+            html_block.append(se.getHTML())
+            html_block.addClass('cs_sb_html_block');
+
+            if (se.editMode == true) {
+                html_block.attr('contenteditable', 'true');
+            }
+            else {
+                html_block.attr('contenteditable', 'false');
+            }
+
+            let btn_group = this.make_btn_group(se, html_block);
+            li.append(btn_group);
+            li.append(txt_field);
+            repo.append(li);
+            
+            li.on('dragstart', this, this.dragStart);
+            li.on('dragend', this, this.dragEnd);
+            
+            btn_group.addClass('cs_sb_btn_group');
+            li.addClass('cs_sb_li');
+            li.addClass('cs_draggable');
+            li.attr('id', se.id);
+            if (!se.enabled){
+                li.addClass('cs_sb_disabled');
+            } 
         }
 
         if(existEditMode){
@@ -756,6 +766,19 @@ function isEqualList(list1, list2) {
     });
 
     return isEqual;
+}
+
+function countdeleteelement_helper(se, count) {
+    for (const child of se.children){
+        count++;
+        return countdeleteelement_helper(child, count);
+    }
+    return count;
+}
+
+function countdeleteelement(se){
+    count = 0;
+    return countdeleteelement_helper(se, count);
 }
 
 
