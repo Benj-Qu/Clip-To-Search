@@ -370,7 +370,7 @@ class SearchElementArray {
         let btn = $("<button>" + btn_name + "</button>");
 
         btn.addClass("cs_sb_btn");
-        btn.attr('id', se.id.toString() + '_e_btn');
+        btn.attr('id', se.id.toString() + '_edit_btn');
         
         btn.click(function() {
             if(se.editMode == true) {
@@ -394,32 +394,48 @@ class SearchElementArray {
         return btn;
     }
 
+    make_enable_button(se) {
+        let btn_name,
+            sea = this;
+        if (se.enabled == true){
+            btn_name = "Disable";
+            
+        }else{
+            btn_name = "Enable";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
+
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', se.id.toString() + '_enable_btn');
+
+        btn.click(function () {
+            se.toggleEnabled();
+            sea.updateSidebar();
+        });
+
+        return btn;
+    }
+
 
     make_btn_group(se, html_block){
         let edit_button = this.make_edit_button(se, html_block),
             switch_btn = this.make_switch_button(se),
             delete_btn = this.make_delete_button(se),
             decompose_btn = this.make_decompose_btn(se),
-            btn_group = $('<div class="btn-toolbar btn-toolbar-primary"></div>'),
-            toolbar = $('<div id="toolbar-options" class="hidden"></div>');
+            disable_btn = this.make_enable_button(se),
+            btn_group = $('<div \ >');
 
-        // btn_group.append(edit_button);    
-        // btn_group.append(switch_btn);
-        // btn_group.append(delete_btn);
-        // btn_group.append(decompose_btn);
-        // btn_group.attr('id', se.id.toString() + '_btn_g');
-        toolbar.append($('<a href="#"><i class="fa fa-plane"></i></a>'));
-        btn_group.append(toolbar);
+        btn_group.append(edit_button);    
+        btn_group.append(switch_btn);
+        btn_group.append(delete_btn);
+        btn_group.append(decompose_btn);
+        btn_group.append(disable_btn);
+        btn_group.attr('id', se.id.toString() + '_btn_g');
         
-        btn_group.toolbar({
-            content: '#toolbar-options',
-            position: 'bottom',
-            style: 'primary',
-            event: 'click'
-        });
-
         return btn_group;    
     }
+
+
 
 
     make_text_field(se){
@@ -486,6 +502,8 @@ class SearchElementArray {
                         html_block.attr('contenteditable', 'false');
                     }
 
+                   
+                    
                     let btn_group = this.make_btn_group(se, html_block);
                     li.append(btn_group);
                     li.append(txt_field);
@@ -498,6 +516,9 @@ class SearchElementArray {
                     li.addClass('cs_sb_li');
                     li.addClass('cs_draggable');
                     li.attr('id', se.id);
+                    if (!se.enabled){
+                        li.addClass('cs_sb_disabled');
+                    }
                 }
             }
         }
