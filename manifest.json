@@ -27,6 +27,7 @@
               ],
       "js": ["Script/Module/Library/jquery.js",
              "Script/Module/Library/toolbar/jquery.toolbar.min.js", 
+             "Script/Module/Library/toolbar/jquery.toolbar.js",
              "Script/Module/SearchElement.js", 
              "Script/Module/SearchElementArray.js", 
              "Script/Module/SearchList.js", 
