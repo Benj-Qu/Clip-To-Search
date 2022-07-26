@@ -50,11 +50,6 @@ class SearchElement {
         }
     }
 
-    decompose() {
-        this.spanned = !this.spanned;
-    }
-
-
     switchDisplayMode() {
         switch(this.mode) {
             case Mode.Rendered:

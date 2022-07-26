@@ -357,7 +357,7 @@ class SearchElementArray {
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_dcp_btn');
         btn.click(function(){
-            se.decompose();
+            se.toggleSpanned();
             sl.updateSidebar();
         });
         return btn;
@@ -769,16 +769,39 @@ function isEqualList(list1, list2) {
 }
 
 function countdeleteelement_helper(se, count) {
-    for (const child of se.children){
-        count++;
-        return countdeleteelement_helper(child, count);
+    if (se.hasspanned == true){
+        se.hasspanned = false;
+        se.spanned = false;
+        add = se.children.length;
+        for (const child of se.children){
+            return count + countdeleteelement_helper(child, count);
+        }
+        return add;
     }
-    return count;
 }
 
 function countdeleteelement(se){
-    count = 0;
-    return countdeleteelement_helper(se, count);
+    let queue = [];
+    if (se.children.length == 0 || se.hasspanned == false){
+        return 0;
+    }
+    else{
+        let count = 0;
+        queue.push(se);
+        while(queue.length != 0){
+            p = queue[0];
+            p.spanned = false;
+            p.hasspanned = false;
+            queue.shift();
+            for (var i = 0; i < p.children.length; i++){
+                count++;
+                if (p.children[i].hasspanned == true){
+                    queue.push(p.children[i]);
+                }
+            }
+        }
+        return count;
+    }
 }
 
 
