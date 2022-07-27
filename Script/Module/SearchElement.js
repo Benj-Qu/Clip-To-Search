@@ -16,11 +16,13 @@ class SearchElement {
         this.element_original = ele;
         this.enabled = true;
 
+        this.isChild = false;
         this.hasspanned = false;
         this.spanned = false;
         this.children = [];
             for (const child of ele.children) {
                 this.children.push(new SearchElement(child));
+                this.children[this.children.length - 1].isChild = true;
             }
     }
 

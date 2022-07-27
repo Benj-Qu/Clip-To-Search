@@ -150,6 +150,22 @@ class SearchElementArray {
         return false;
     }
 
+    isDescendant(parent, child) {
+        let queue  = [];
+        queue.push(parent);
+        while (queue.length != 0) {
+            let node = queue[0];
+            queue.shift();
+            for (const se of node.children){
+                if (child == se) {
+                    return true;
+                }
+                queue.push(se);
+            }
+        }
+        return false;
+   }
+
 
     removeChild(ele) {
         let len = this.searchElements.length;
@@ -335,7 +351,8 @@ class SearchElementArray {
         btn.click(function() {
             $(".cs_same_style").removeClass("cs_same_style");
             $(".cs_similar_style").removeClass("cs_similar_style");
-            sa.delete(sa.searchElements.indexOf(se));
+            let index = countdeleteelement(se);
+            sa.searchElements.splice(sa.searchElements.indexOf(se), index + 1);
             sa.search();
             sa.updateSidebar();
         });
