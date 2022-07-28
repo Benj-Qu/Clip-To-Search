@@ -15,6 +15,10 @@ class SearchElementArray {
     constructor() {
         this.searchElements = [];
         this.bannedElements = [];
+
+        this.searchStrategies = new Array(getDOMTreeHeight());
+        this.searchStrategies.fill(0);
+
         this.searchStrategy = Strategy.All;
 
         this.draggedElementIdx = -1;
@@ -59,18 +63,14 @@ class SearchElementArray {
 
 
     get lcaHeight() {
-        let height = -1;
+        let height = Number.MAX_VALUE;
         let pathtree = this.pathtree;
 
         for (let i = 0; i < this.searchElements.length; i++) {
             let path = pathtree[i];
             if (this.searchElements[i].enabled) {
-                if (height == -1) {
-                    height = path.length;
-                }
-                else if (height > path.length) {
-                    height = path.length;
-                }
+                height = Math.min(height, path.length)
+                height = path.length;
             }
         }
 
@@ -725,6 +725,38 @@ function isEqualList(list1, list2) {
     });
 
     return isEqual;
+}
+
+
+function getHeight(root) {
+    if (root === null) {
+        return 0;
+    }
+    
+    let tallestSubTreeHeight = 0;
+    
+    Array.from(root.children).forEach((child) => {
+        tallestSubTreeHeight = Math.max(
+            tallestSubTreeHeight,
+            getDomTreeHeight(child)
+        );
+    });
+    
+    return 1 + tallestSubTreeHeight;
+}
+
+function getDOMTreeHeight() {
+    return getHeight(document.documentElement);
+}
+
+
+function getDepth(ele) {
+    let depth = 0;
+    while (ele.parentElement != null) {
+        depth++;
+        ele = ele.parentElement;
+    }
+    return depth;
 }
 
 

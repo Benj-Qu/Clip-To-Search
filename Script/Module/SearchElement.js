@@ -18,6 +18,7 @@ class SearchElement {
 
         this.child = [this.element];
 
+        this.display = false;
         this.spanned = false;
         this.children = [];
             for (const child of ele.children) {

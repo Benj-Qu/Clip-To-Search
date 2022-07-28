@@ -133,16 +133,14 @@ class SearchList {
 
 
     update_mode_btn_group(){
-        let sea = this;
         $('#mode_btn_group').remove();
         let mode_btn_group = $('<div id="mode_btn_group"><div>');
         mode_btn_group.insertAfter('#repo_header');
-       
-        this.searchArrays.forEach(function(element, index){
-            let mode_btn = sea.make_mode_btn(index);
-            
+
+        for (let i = 0; i < this.searchArrays.length; i++) {
+            let mode_btn = this.make_mode_btn(i);
             mode_btn_group.append(mode_btn);
-        })
+        }
 
         mode_btn_group.addClass('cs_sb_mode_btn_group');
 
