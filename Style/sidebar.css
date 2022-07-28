@@ -11,7 +11,7 @@
     width: 500px;
     height: 100%;
     overflow-y: scroll;
-    background-color: GhostWhite;
+    /* background-color: GhostWhite; */
 }
 
 .cs_sb_title{
@@ -45,14 +45,21 @@
     min-height: 170px;
 }
 
+.cs_sb_disabled{
+    opacity: .3;
+}
+
 .cs_sb_html_block{
     width: 80%;
-    float: left;
+    /* float: left; */
 }
 
 .cs_sb_btn_group{
-    width: 20%;
-    float: right;
+
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    /* float: right; */
 }
 
 .cs_sb_tf{

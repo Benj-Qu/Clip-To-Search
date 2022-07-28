@@ -150,6 +150,22 @@ class SearchElementArray {
         return false;
     }
 
+    isDescendant(parent, child) {
+        let queue  = [];
+        queue.push(parent);
+        while (queue.length != 0) {
+            let node = queue[0];
+            queue.shift();
+            for (const se of node.children){
+                if (child == se) {
+                    return true;
+                }
+                queue.push(se);
+            }
+        }
+        return false;
+   }
+
 
     removeChild(ele) {
         let len = this.searchElements.length;
@@ -335,7 +351,8 @@ class SearchElementArray {
         btn.click(function() {
             $(".cs_same_style").removeClass("cs_same_style");
             $(".cs_similar_style").removeClass("cs_similar_style");
-            sa.delete(sa.searchElements.indexOf(se));
+            let index = countdeleteelement(se);
+            sa.searchElements.splice(sa.searchElements.indexOf(se), index + 1);
             sa.search();
             sa.updateSidebar();
         });
@@ -345,13 +362,19 @@ class SearchElementArray {
 
     make_decompose_btn(se){
         let sl = this;
-        let btn = $("<button>Decompose</button>");
+        let btn_name;
+
+        if (se.spanned == false) {
+            btn_name = "Decompose";
+        }
+        else {
+            btn_name = "Compose";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_dcp_btn');
         btn.click(function(){
-            if (se.elehavechild()){
-                se.decompose();
-            }
+            se.toggleSpanned();
             sl.updateSidebar();
         });
         return btn;
@@ -370,7 +393,7 @@ class SearchElementArray {
         let btn = $("<button>" + btn_name + "</button>");
 
         btn.addClass("cs_sb_btn");
-        btn.attr('id', se.id.toString() + '_e_btn');
+        btn.attr('id', se.id.toString() + '_edit_btn');
         
         btn.click(function() {
             if(se.editMode == true) {
@@ -394,22 +417,48 @@ class SearchElementArray {
         return btn;
     }
 
+    make_enable_button(se) {
+        let btn_name,
+            sea = this;
+        if (se.enabled == true){
+            btn_name = "Disable";
+            
+        }else{
+            btn_name = "Enable";
+        }
+        let btn = $("<button>" + btn_name + "</button>");
+
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', se.id.toString() + '_enable_btn');
+
+        btn.click(function () {
+            se.toggleEnabled();
+            sea.updateSidebar();
+        });
+
+        return btn;
+    }
+
 
     make_btn_group(se, html_block){
         let edit_button = this.make_edit_button(se, html_block),
             switch_btn = this.make_switch_button(se),
             delete_btn = this.make_delete_button(se),
             decompose_btn = this.make_decompose_btn(se),
-            btn_group = $("<div />");
+            disable_btn = this.make_enable_button(se),
+            btn_group = $('<div \ >');
 
         btn_group.append(edit_button);    
         btn_group.append(switch_btn);
         btn_group.append(delete_btn);
         btn_group.append(decompose_btn);
+        btn_group.append(disable_btn);
         btn_group.attr('id', se.id.toString() + '_btn_g');
-
+        
         return btn_group;    
     }
+
+
 
 
     make_text_field(se){
@@ -444,52 +493,61 @@ class SearchElementArray {
         let existEditMode = false;
         repo.on('dragover', this, this.dragOver);
 
+        let index = 0;
         for (const se of this.searchElements){
-            if (se.child.length != 0) {
-                for (let i=0; i < se.child.length; i++){
-                    if (se.editMode){
-                        existEditMode = true;
+            index++;
+            if (se.spanned == true && se.hasspanned ==false){
+                if (se.children.length != 1 || se.children[0] != se){
+                    for (const child of se.children){
+                        this.searchElements.splice(index, 0, child);
                     }
-
-                    let li = $('<div draggable="true"></div>'),
-                        txt_field = this.make_text_field(se),
-                        html_block;          
-                    if (se.mode == Mode.Original) {
-                        html_block = $('<p />'); 
-                    }
-                    else{
-                        html_block = $('<div />');
-                    }
-                    li.append(html_block);
-                    if (se.mode == Mode.Rendered){
-                        html_block.append(se.child[i].outerHTML);
-                    }
-                    else {
-                        html_block.append(se.child[i].outerHTML.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-                    }
-                    html_block.addClass('cs_sb_html_block');
-
-                    if (se.editMode == true) {
-                        html_block.attr('contenteditable', 'true');
-                    }
-                    else {
-                        html_block.attr('contenteditable', 'false');
-                    }
-
-                    let btn_group = this.make_btn_group(se, html_block);
-                    li.append(btn_group);
-                    li.append(txt_field);
-                    repo.append(li);
-                    
-                    li.on('dragstart', this, this.dragStart);
-                    li.on('dragend', this, this.dragEnd);
-                    
-                    btn_group.addClass('cs_sb_btn_group');
-                    li.addClass('cs_sb_li');
-                    li.addClass('cs_draggable');
-                    li.attr('id', se.id);
+                    se.hasspanned = true;
                 }
             }
+            else if (se.spanned == false && se.hasspanned == true){
+                let count = countdeleteelement(se);
+                this.searchElements.splice(index, count);
+                se.hasspanned = false;
+            }
+            if (se.editMode){
+                existEditMode = true;
+            }
+
+            let li = $('<div draggable="true"></div>'),
+                txt_field = this.make_text_field(se),
+                html_block;          
+            if (se.mode == Mode.Original) {
+                html_block = $('<p />'); 
+            }
+            else{
+                html_block = $('<div />');
+            }
+            li.append(html_block);
+            html_block.append(se.getHTML())
+            html_block.addClass('cs_sb_html_block');
+
+            if (se.editMode == true) {
+                html_block.attr('contenteditable', 'true');
+            }
+            else {
+                html_block.attr('contenteditable', 'false');
+            }
+
+            let btn_group = this.make_btn_group(se, html_block);
+            li.append(btn_group);
+            li.append(txt_field);
+            repo.append(li);
+            
+            li.on('dragstart', this, this.dragStart);
+            li.on('dragend', this, this.dragEnd);
+            
+            btn_group.addClass('cs_sb_btn_group');
+            li.addClass('cs_sb_li');
+            li.addClass('cs_draggable');
+            li.attr('id', se.id);
+            if (!se.enabled){
+                li.addClass('cs_sb_disabled');
+            } 
         }
 
         if(existEditMode){
@@ -728,6 +786,44 @@ function isEqualList(list1, list2) {
 }
 
 
+function countdeleteelement_helper(se, count) {
+    if (se.hasspanned == true){
+        se.hasspanned = false;
+        se.spanned = false;
+        add = se.children.length;
+        for (const child of se.children){
+            return count + countdeleteelement_helper(child, count);
+        }
+        return add;
+    }
+}
+
+
+function countdeleteelement(se){
+    let queue = [];
+    if (se.children.length == 0 || se.hasspanned == false){
+        return 0;
+    }
+    else{
+        let count = 0;
+        queue.push(se);
+        while(queue.length != 0){
+            p = queue[0];
+            p.spanned = false;
+            p.hasspanned = false;
+            queue.shift();
+            for (var i = 0; i < p.children.length; i++){
+                count++;
+                if (p.children[i].hasspanned == true){
+                    queue.push(p.children[i]);
+                }
+            }
+        }
+        return count;
+    }
+}
+
+
 function getHeight(root) {
     if (root === null) {
         return 0;
@@ -744,6 +840,7 @@ function getHeight(root) {
     
     return 1 + tallestSubTreeHeight;
 }
+
 
 function getDOMTreeHeight() {
     return getHeight(document.documentElement);
