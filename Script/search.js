@@ -12,6 +12,7 @@ if (!clipSearch) {
             this.canvas = null;
             this.startX = null, this.startY = null, this.isDraw = false;
             this.enabled = false;
+            this.deleteMode = false;
             this.searchList = new SearchList();
             this.optionsHtml = `
                 <div id="cs_maximized">
@@ -102,7 +103,7 @@ if (!clipSearch) {
             $("#repo").empty();
         }
 
-        rectangleSelect(x1, y1, x2, y2) {
+        addElements(x1, y1, x2, y2) {
             let x_large = x1 > x2 ? x1 : x2,
                 x_small = x1 < x2 ? x1 : x2,
                 y_large = y1 > y2 ? y1 : y2,
@@ -223,21 +224,36 @@ if (!clipSearch) {
                     this.startX = x;
                     this.startY = y;
                     this.isDraw = true;
-                } else if (eventType == 'move') {
+                } 
+                else if (eventType == 'move') {
                     if (this.isDraw) {
                         this.clearCanvas();
-                        this.drawBox(this.startX, this.startY, x, y, 
-                            this.rectangleBackgroundColor, this.rectangleBorderColor);
+                        if (this.enabled) {
+                            this.drawBox(this.startX, this.startY, x, y, 
+                                this.rectangleBackgroundColor, this.rectangleBorderColor);
+                        }
+                        else if (this.deleteMode) {
+                            this.drawBox(this.startX, this.startY, x, y, 
+                                this.rectangleBackgroundColor, this.rectangleBorderColor);
+                        }
+                        
                     }
-                } else if (eventType == 'up' || eventType == 'out') {
-                    if (eventType == 'up' && this.enabled) {
-                        $(".cs_same_style").removeClass("cs_same_style");
-                        $(".cs_similar_style").removeClass("cs_similar_style");
-                        this.rectangleSelect(this.startX, this.startY, x, y);
+                } 
+                else if (eventType == 'up') {
+                    if (this.enabled) {
+                        removeSearchStyle()
+                        this.addElements(this.startX, this.startY, x, y);
                         this.searchList.search();
                         this.searchList.updateSidebar();
                     } 
+                    else if (this.deleteMode) {
+                        //TODO
+                    }
 
+                    this.isDraw = false;
+                    this.clearCanvas();
+                }
+                else if (eventType == 'out') {
                     this.isDraw = false;
                     this.clearCanvas();
                 }
@@ -249,8 +265,7 @@ if (!clipSearch) {
             this.options = null;
             this.createOptions();
             this.clear_sidebar();
-            $(".cs_same_style").removeClass("cs_same_style");
-            $(".cs_similar_style").removeClass("cs_similar_style");
+            removeSearchStyle()
         }
 
         
@@ -405,8 +420,7 @@ if (!clipSearch) {
                 this.options = null;
             }
             this.enabled = false;
-            $(".cs_same_style").removeClass("cs_same_style");
-            $(".cs_similar_style").removeClass("cs_similar_style");
+            removeSearchStyle()
         }
 
         isEnabled () {
@@ -429,9 +443,8 @@ if (!clipSearch) {
                 break;
             case "delete":
                 clipSearch.searchList.elements.pop();
-                this.rectangleSelect(this.startX, this.startY, x, y);
-                $(".cs_same_style").removeClass("cs_same_style");
-                $(".cs_similar_style").removeClass("cs_similar_style");
+                this.addElements(this.startX, this.startY, x, y);
+                removeSearchStyle()
                 searchelement(clipSearch.searchList.elements)
                 break;
             default:
