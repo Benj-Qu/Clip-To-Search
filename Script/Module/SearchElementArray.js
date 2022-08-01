@@ -4,10 +4,11 @@ const Structure = {
     Different : 2
 }
 
-const selfStyle = "cs_search_style_self",
-      sameStyle = "cs_search_style_same",
-      similarStyle = "cs_search_style_similar";
+const SELF_STYLE = "cs_search_style_self",
+      SAME_STYLE = "cs_search_style_same",
+      SIMILAR_STYLE = "cs_search_style_similar";
       
+const SIMILAR_STYLE_NUM = 20;
 
 class SearchElementArray {
     
@@ -209,42 +210,44 @@ class SearchElementArray {
     }
 
 
-    findSimilarStructure(ele, level) {
+    findSimilarStructure(similarList, level) {
         let shift,
-            results = [],
             foundStrategy = false,
             strategyID = this.foundStrategyNum.toString();
 
-
-        shift = 1;
-        while (true) {
-            if (this.isSameStructure(ele,level,shift) === Structure.NoneExist) {
-                break;
-            } 
-            else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
-                this.mark([ele, level, shift], similarStyle + strategyID);
-                foundStrategy = true;
+        for (let ele of similarList) {
+            shift = 1;
+            while (true) {
+                if (this.isSameStructure(ele,level,shift) === Structure.NoneExist) {
+                    break;
+                } 
+                else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
+                    this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
+                    foundStrategy = true;
+                    console.log("Mark similar", [ele, level, shift], SIMILAR_STYLE + strategyID);
+                }
+                shift++;
             }
-            shift++;
-        }
 
-        shift = -1;
-        while (true) {
-            if (this.isSameStructure(ele,level,shift) === Structure.NoneExist) {
-                break;
-            } 
-            else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
-                this.mark([ele, level, shift], similarStyle + strategyID);
-                foundStrategy = true;
+            shift = -1;
+            while (true) {
+                if (this.isSameStructure(ele,level,shift) === Structure.NoneExist) {
+                    break;
+                } 
+                else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
+                    this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
+                    foundStrategy = true;
+                    console.log("Mark similar", [ele, level, shift], SIMILAR_STYLE + strategyID);
+                }
+                shift--;
             }
-            shift--;
         }
 
         if (foundStrategy) {
             this.foundStrategyNum++;
         }
 
-        return results;
+        return;
     }
 
 
@@ -253,25 +256,25 @@ class SearchElementArray {
         let lcaDepth = getDepth(lca),
             lcaHeight = this.lcaHeight,
             similarList = similarElements(lca);
-
-        for (let i = 0; i < lcaHeight; i++) {
-            if (this.searchStrategies[i+lcaDepth]) {
-                for (let ancestor of similarList) {
-                    this.findSimilarStructure(ancestor, i);
-                }
-            }
+        
+        for (let se of this.searchElements) {
+            mark_element(se.element_original, SELF_STYLE);
+            console.log("Mark self", se.element_original);
         }
 
         if (this.zeroStrategy) {
             for (let ancestor of similarList) {
                 if (this.isSameStructure(ancestor, -1, 0) === Structure.SameStructure) {
-                    this.mark([ancestor, -1, 0], sameStyle);
+                    this.mark([ancestor, -1, 0], SAME_STYLE);
+                    console.log("Mark same", ancestor);
                 }
             }
         }
 
-        for (let se of this.searchElements) {
-            mark_element(se.element_original, selfStyle);
+        for (let i = 0; i < lcaHeight; i++) {
+            if (this.searchStrategies[i+lcaDepth]) {
+                this.findSimilarStructure(similarList, i);
+            }
         }
 
         console.log("Search Array", this.searchElements);        
@@ -603,10 +606,26 @@ function mark_element(element, style) {
         return;
     }
 
+    console.log("Mark element", element, style);
     for (let i = 0; i < element.children.length; i++) {
         mark_element(element.children[i], style);
     }
     element.classList.add(style);
+    
+    return;
+}
+
+
+function unmark_element(element) {
+    if (!element) {
+        return;
+    }
+
+    for (let i = 0; i < element.children.length; i++) {
+        unmark_element(element.children[i]);
+    }
+
+    removeSearchStyle(element);
     
     return;
 }
@@ -759,7 +778,7 @@ function isEqualClass(ele1, ele2) {
 
 
 function removeCSClass(list) {
-    let cs_pattern = new RegExp('^cs_*')
+    let cs_pattern = new RegExp('cs_search_style')
     for (let value of list.values()) {
         if (cs_pattern.test(value)) {
             list.remove(value);
@@ -862,10 +881,23 @@ function getDepth(ele) {
 }
 
 
-function removeSearchStyle() {
-    $(".cs_same_style").removeClass("cs_same_style");
-    $(".cs_similar_style").removeClass("cs_similar_style");
-    $(".cs_search_style_self").removeClass("cs_search_style_self");
+function removeSearchStyle(element) {
+    if (element == undefined) {
+        $('.' + SELF_STYLE).removeClass(SELF_STYLE);
+        $('.' + SAME_STYLE).removeClass(SAME_STYLE);
+        for (let i = 0; i < SIMILAR_STYLE_NUM; i++) {
+            let style = SIMILAR_STYLE + i.toString();
+            $('.' + style).removeClass(style);
+        }
+    }
+    else {
+        element.classList.remove(SELF_STYLE, SAME_STYLE);
+        for (let i = 0; i < SIMILAR_STYLE_NUM; i++) {
+            element.classList.remove(SIMILAR_STYLE + i.toString());
+        }
+    }
+
+    return;
 }
 
 
