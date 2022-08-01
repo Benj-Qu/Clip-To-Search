@@ -771,13 +771,13 @@ function getText(ele) {
 
 
 function isEqualClass(ele1, ele2) {
-    let classList1 = removeCSClass(ele1.classList);
-    let classList2 = removeCSClass(ele2.classList);
+    let classList1 = neglectCSClass(ele1.classList);
+    let classList2 = neglectCSClass(ele2.classList);
     return isEqualList(classList1,classList2);
 }
 
 
-function removeCSClass(classList) {
+function neglectCSClass(classList) {
     let list = [...classList];
     let cs_pattern = new RegExp('cs_search_style');
     for (let value of list.values()) {
