@@ -777,11 +777,12 @@ function isEqualClass(ele1, ele2) {
 }
 
 
-function removeCSClass(list) {
-    let cs_pattern = new RegExp('cs_search_style')
+function removeCSClass(classList) {
+    let list = [...classList];
+    let cs_pattern = new RegExp('cs_search_style');
     for (let value of list.values()) {
-        if (cs_pattern.test(value)) {
-            list.remove(value);
+        if (!cs_pattern.test(value)) {
+            list.push(value);
         }
     }
     return list;
