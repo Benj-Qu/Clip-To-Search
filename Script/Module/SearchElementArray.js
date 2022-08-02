@@ -7,6 +7,8 @@ const Structure = {
 const SELF_STYLE = "cs_search_style_self",
       SAME_STYLE = "cs_search_style_same",
       SIMILAR_STYLE = "cs_search_style_similar";
+
+const CS_SEARCH_PATTERN = new RegExp('cs_search_style');
       
 const SIMILAR_STYLE_NUM = 20;
 
@@ -20,7 +22,7 @@ class SearchElementArray {
         this.searchStrategies = new Array(getDOMTreeHeight());
         this.searchStrategies.fill(true);
         this.foundStrategyNum = 0;
-        
+
         this.emphasizingStrategy = "";
 
         this.draggedElementIdx = -1;
@@ -49,7 +51,7 @@ class SearchElementArray {
     get pathtree() {
         let pathTree = [];
 
-        let lca = this.lca
+        let lca = this.lca;
 
         for (const se of this.searchElements) {
             if (se.enabled) {
@@ -71,7 +73,7 @@ class SearchElementArray {
         for (let i = 0; i < this.searchElements.length; i++) {
             let path = pathtree[i];
             if (this.searchElements[i].enabled) {
-                height = Math.min(height, path.length)
+                height = Math.min(height, path.length);
                 height = path.length;
             }
         }
@@ -254,10 +256,10 @@ class SearchElementArray {
         let lca = this.lca;
         let lcaDepth = getDepth(lca),
             lcaHeight = this.lcaHeight,
-            similarList = similarElements(lca);
+            similarList = similarElements(lca); 
         
-        for (let se of this.searchElements) {
-            mark_element(se.element_original, SELF_STYLE);
+        if (lcaDepth == -1) {
+            return;
         }
 
         if (this.zeroStrategy) {
@@ -272,7 +274,12 @@ class SearchElementArray {
             if (this.searchStrategies[i+lcaDepth]) {
                 this.findSimilarStructure(similarList, i);
             }
-        }     
+        }   
+        
+        for (let se of this.searchElements) {
+            unmark_element(se.element_original);
+            mark_element(se.element_original, SELF_STYLE);
+        }
 
         return;
     }
@@ -342,8 +349,7 @@ class SearchElementArray {
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_d_btn');
         btn.click(function() {
-            $(".cs_same_style").removeClass("cs_same_style");
-            $(".cs_similar_style").removeClass("cs_similar_style");
+            removeSearchStyle();
             let index = countdeleteelement(se);
             sa.searchElements.splice(sa.searchElements.indexOf(se), index + 1);
             sa.search();
@@ -399,8 +405,7 @@ class SearchElementArray {
                     firstElementChildHTML = html_block[0].firstElementChild.innerHTML;
                     se.element.innerHTML = firstElementChildHTML;
                 }
-                $(".cs_same_style").removeClass("cs_same_style");
-                $(".cs_similar_style").removeClass("cs_similar_style");
+                removeSearchStyle();
                 sa.search();
             }
             se.toggleEditMode();
@@ -772,10 +777,9 @@ function isEqualClass(ele1, ele2) {
 
 
 function neglectCSClass(classList) {
-    let list = [...classList];
-    let cs_pattern = new RegExp('cs_search_style');
-    for (let value of list.values()) {
-        if (!cs_pattern.test(value)) {
+    let list = [];
+    for (let value of classList.values()) {
+        if (!CS_SEARCH_PATTERN.test(value)) {
             list.push(value);
         }
     }
@@ -868,6 +872,11 @@ function getDOMTreeHeight() {
 function getDepth(ele) {
     // root depth 0
     let depth = 0;
+
+    if (ele == null) {
+        return -1;
+    }
+
     while (ele.parentElement != null) {
         depth++;
         ele = ele.parentElement;
@@ -896,8 +905,17 @@ function removeSearchStyle(element) {
 }
 
 
-function emphasizeStrategy(strategyID) {
+function emphasizeSameStrategy() {
+    $(".cs_search_style_same").addClass("cs_strategy_show_style");
+}
 
+
+function emphasizeSimilarStrategy(id) {
+    $(".cs_search_style_similar" + id.toString()).addClass("cs_strategy_show_style");
+}
+
+function deemphasizeStrategy() {
+    $(".cs_strategy_show_style").removeClass("cs_strategy_show_style");
 }
 
 

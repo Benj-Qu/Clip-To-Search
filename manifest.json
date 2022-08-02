@@ -32,8 +32,8 @@
              "Script/Module/SearchElementArray.js", 
              "Script/Module/SearchList.js", 
              "Script/Module/helper.js",
-             "Script/search.js",  
-             "Script/sidebar.js"]
+             "Script/search.js"
+            ]
     }
   ],
 
