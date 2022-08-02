@@ -151,6 +151,3 @@ class SearchList {
         this.update_mode_btn_group();
     }
 }
-
-
-

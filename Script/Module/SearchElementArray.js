@@ -19,8 +19,9 @@ class SearchElementArray {
         this.zeroStrategy = true;
         this.searchStrategies = new Array(getDOMTreeHeight());
         this.searchStrategies.fill(true);
-
         this.foundStrategyNum = 0;
+        
+        this.emphasizingStrategy = "";
 
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
@@ -224,7 +225,6 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
-                    console.log("Mark similar", [ele, level, shift], SIMILAR_STYLE + strategyID);
                 }
                 shift++;
             }
@@ -237,7 +237,6 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
-                    console.log("Mark similar", [ele, level, shift], SIMILAR_STYLE + strategyID);
                 }
                 shift--;
             }
@@ -259,14 +258,12 @@ class SearchElementArray {
         
         for (let se of this.searchElements) {
             mark_element(se.element_original, SELF_STYLE);
-            console.log("Mark self", se.element_original);
         }
 
         if (this.zeroStrategy) {
             for (let ancestor of similarList) {
                 if (this.isSameStructure(ancestor, -1, 0) === Structure.SameStructure) {
                     this.mark([ancestor, -1, 0], SAME_STYLE);
-                    console.log("Mark same", ancestor);
                 }
             }
         }
@@ -275,9 +272,7 @@ class SearchElementArray {
             if (this.searchStrategies[i+lcaDepth]) {
                 this.findSimilarStructure(similarList, i);
             }
-        }
-
-        console.log("Search Array", this.searchElements);        
+        }     
 
         return;
     }
@@ -606,7 +601,6 @@ function mark_element(element, style) {
         return;
     }
 
-    console.log("Mark element", element, style);
     for (let i = 0; i < element.children.length; i++) {
         mark_element(element.children[i], style);
     }
@@ -899,6 +893,11 @@ function removeSearchStyle(element) {
     }
 
     return;
+}
+
+
+function emphasizeStrategy(strategyID) {
+
 }
 
 
