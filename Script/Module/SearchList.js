@@ -12,8 +12,7 @@ class SearchList {
         console.log("switch to mode: " + mode);
         this.searchMode = mode;
 
-        $(".cs_same_style").removeClass("cs_same_style");
-        $(".cs_similar_style").removeClass("cs_similar_style");
+        removeSearchStyle()
 
         this.updateSidebar()
 
