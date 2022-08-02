@@ -834,7 +834,7 @@ function getHeight(root) {
     Array.from(root.children).forEach((child) => {
         tallestSubTreeHeight = Math.max(
             tallestSubTreeHeight,
-            getDomTreeHeight(child)
+            // getDomTreeHeight(child)
         );
     });
     
@@ -858,11 +858,6 @@ function getDepth(ele) {
 
 
 
-// Parameters:
-//     - container: the DOM element that contains all draggable items
-//     - y: the y position of the mouse
-// Returns:
-//     - the index of the element in searchList that we sould drop before
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.cs_draggable:not(.cs_dragging)')]
   

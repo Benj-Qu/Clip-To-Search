@@ -255,7 +255,7 @@ if (!clipSearch) {
 
         
 
-        static helpHtml = `<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">...</p></div>`;
+        static helpHtml = `<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">qzmdsb</p></div>`;
 
         createOptions () {
             let options = document.createElement('div');
@@ -297,12 +297,15 @@ if (!clipSearch) {
 
             document.getElementById('cs_help').addEventListener('click', () => {
                     let helpModal = document.createElement("div");
-                    helpModal.id = "cs_modal";
+                    helpModal.id = "cs_modaal";
                     helpModal.setAttribute('class', 'cs_modal');
                     helpModal.innerHTML = ClipSearch.helpHtml;
                     document.body.appendChild(helpModal);
-                    document.getElementById('cs_modal_text').innerHTML = chrome.i18n.getMessage("help_text");
-                    let removeModal = () => document.body.removeChild(document.getElementById('cs_modal'));
+                    // document.getElementById('cs_modal_text').innerHTML = chrome.i18n.getMessage("help_text");
+                    let removeModal = () => {
+                        document.body.removeChild(document.getElementById('cs_modaal'));
+                        console.log("remove modal");
+                };
                     document.getElementById('cs_modal_close').addEventListener("click", removeModal);
                 });
 
