@@ -27,11 +27,22 @@ class SearchElementArray {
 
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
+
+        this.lcaRecord = null;
+        this.lcaUpdated = false;
+        this.pathtreeRecord = null;
+        this.pathtreeupdated = false;
+        this.lcaheightRecord = null;
+        this.lcaheightUpdated = false;
     }
 
 
     get lca() {
         let ancestor = null;
+
+        if (this.lcaUpdated) {
+            return this.lcaRecord;
+        }
 
         for (const se of this.searchElements) {
             if (se.enabled) {
@@ -42,41 +53,54 @@ class SearchElementArray {
                     ancestor = findlca(se.element_original, ancestor);
                 }
             }
-        }
+        }  
+        this.lcaUpdated = true; 
+        this.lcaRecord = ancestor;  
 
-        return ancestor;
+        return ancestor; 
     }
 
 
     get pathtree() {
-        let pathTree = [];
+        let pathtree = [];
 
-        let lca = this.lca;
+        if (this.pathtreeupdated) {
+            return this.pathtreeRecord;
+        }
 
         for (const se of this.searchElements) {
             if (se.enabled) {
-                pathTree.push(findPath(se.element_original, lca));
+                pathtree.push(findPath(se.element_original, this.lca));
             }
             else {
-                pathTree.push([]);
+                pathtree.push([]);
             }
         }
 
-        return pathTree;
+        this.pathtreeupdated = true;
+        this.pathtreeRecord = pathtree;
+
+        return pathtree;
     }
 
 
     get lcaHeight() {
         let height = Number.MAX_VALUE;
-        let pathtree = this.pathtree;
+
+        if (this.lcaheightUpdated) {
+            return this.lcaheightRecord;
+        }
 
         for (let i = 0; i < this.searchElements.length; i++) {
-            let path = pathtree[i];
+            let path = this.pathtree[i];
             if (this.searchElements[i].enabled) {
                 height = Math.min(height, path.length);
                 height = path.length;
             }
         }
+
+        this.lcaheightUpdated = true;
+        this.lcaheightRecord = height;
 
         return height;
     }
@@ -86,6 +110,10 @@ class SearchElementArray {
         this.searchElements = [];
         this.bannedElements = [];
         this.searchStrategies.fill(true);
+
+        this.lcaUpdated = false;
+        this.pathtreeupdated = false;
+
         return;
     }
 
@@ -96,12 +124,18 @@ class SearchElementArray {
         this.removeChild(ele);
         this.searchElements.push(searchElement);
 
+        this.lcaUpdated = false;
+        this.pathtreeupdated = false;
+
         return;
     }
 
 
     delete(pos) {
         this.searchElements.splice(pos, 1);
+
+        this.lcaUpdated = false;
+        this.pathtreeupdated = false;
 
         return;
     }
@@ -112,6 +146,9 @@ class SearchElementArray {
 
         this.removeChild(ele);
         this.searchElements.splice(pos, 0, searchElement);
+
+        this.lcaUpdated = false;
+        this.pathtreeupdated = false;
 
         return;
     }
@@ -154,22 +191,6 @@ class SearchElementArray {
         return false;
     }
 
-    isDescendant(parent, child) {
-        let queue  = [];
-        queue.push(parent);
-        while (queue.length != 0) {
-            let node = queue[0];
-            queue.shift();
-            for (const se of node.children){
-                if (child == se) {
-                    return true;
-                }
-                queue.push(se);
-            }
-        }
-        return false;
-   }
-
 
     removeChild(ele) {
         let len = this.searchElements.length;
@@ -185,10 +206,9 @@ class SearchElementArray {
 
 
     isSameStructure(ele, level, shift) {
-        let pathtree = this.pathtree;
         for (let i = 0; i < this.searchElements.length; i++) {
             if (this.searchElements[i].enabled) {
-                let path = [...(pathtree[i])];
+                let path = [...(this.pathtree[i])];
 
                 if (level != -1) {
                     path[level] += shift;
@@ -253,10 +273,9 @@ class SearchElementArray {
 
 
     search() {
-        let lca = this.lca;
-        let lcaDepth = getDepth(lca),
+        let lcaDepth = getDepth(this.lca),
             lcaHeight = this.lcaHeight,
-            similarList = similarElements(lca); 
+            similarList = similarElements(this.lca); 
         
         if (lcaDepth == -1) {
             return;
@@ -289,10 +308,9 @@ class SearchElementArray {
         let node = result[0],
             level = result[1],
             shift = result[2];
-        let pathtree = this.pathtree;
 
         for (let i = 0; i < this.searchElements.length; i++) {
-            let path = [...pathtree[i]]
+            let path = [...this.pathtree[i]]
             if (this.searchElements[i].enabled) {
                 if (level != -1) {
                     path[level] += shift;
@@ -810,7 +828,7 @@ function isEqualList(list1, list2) {
 }
 
 
-function countdeleteelement_helper(se, count) {
+function count_deleteelement_helper(se, count) {
     if (se.hasspanned == true) {
         se.hasspanned = false;
         se.spanned = false;
