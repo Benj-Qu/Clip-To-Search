@@ -132,7 +132,7 @@ class SearchList {
 
     make_choose_btn() {
         let sl = this;
-        let btn = $("<button >Choose</button>");
+        let btn = $("<button >Strategy</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'choose_btn');
         btn.click(function() {
