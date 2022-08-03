@@ -132,21 +132,19 @@ class SearchList {
 
     make_choose_btn() {
         let sl = this;
-        let btn = $("<button >Choose</button>");
+        let btn = $("<button >Choose Strategy</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'choose_btn');
         btn.click(function() {
             let helpModal = $('<div></div>');
             helpModal.attr('id', 'cs_modal');
-            helpModal.addClass( 'cs_modal');
+            helpModal.addClass('cs_modal');
             let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
-            let k = 0;
-            if (sl.searchArrays[sl.searchMode].zeroStrategy){
+            if (sl.searchArrays[sl.searchMode].zeroStrategy) {
                 let choice = $('<div></div>');
                 let strategy_btn = sl.make_same_strategy_btn();
                 choice.append(strategy_btn);
                 choice_group.append(choice);
-                k=1;
             }
             for(let i=0; i < sl.searchArrays[sl.searchMode].foundStrategyNum; i++){
                 let choice = $('<div></div>');
@@ -167,7 +165,6 @@ class SearchList {
     }
 
     make_no_strategy_btn(){
-        let sl = this;
         let btn = $("<button >Deemphasize</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
@@ -177,7 +174,6 @@ class SearchList {
         return btn;
     }
     make_simailar_strategy_btn(id){
-        let sl = this;
         let btn = $("<button >Enable strategy "+ id + "</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
@@ -188,8 +184,6 @@ class SearchList {
     }
 
     make_same_strategy_btn(){
-        let sl = this;
-        console.log(this);
         let btn = $("<button >Enable same strategy</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
