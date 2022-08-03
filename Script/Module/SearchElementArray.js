@@ -82,6 +82,8 @@ class SearchElementArray {
     }
 
 
+    
+
     clear() {
         this.searchElements = [];
         this.bannedElements = [];

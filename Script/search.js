@@ -64,6 +64,8 @@ if (!clipSearch) {
             return btn;
         }
 
+
+
         sidebar_init() {
             $('body').append(this.sidebar);
             

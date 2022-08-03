@@ -130,6 +130,26 @@ class SearchList {
         return btn
     }
 
+    make_choose_btn() {
+        let sl = this;
+        let btn = $("<button >Choose</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'add_btn');
+        btn.click(function() {
+            let helpModal = document.createElement("div");
+            helpModal.id = "cs_modal";
+            helpModal.setAttribute('class', 'cs_modal');
+            helpModal.innerHTML = `<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">test</p></div>`;
+            let choice_group = $('<div id="choice_group"><div>');
+            for(let i=0; i < this.searchArrays[this.searchMode].foundStrategyNum; i++){
+            }
+            document.body.appendChild(helpModal);
+            let removeModal = () => document.body.removeChild(document.getElementById('cs_modal'));
+            document.getElementById('cs_modal_close').addEventListener("click", removeModal);
+        });
+        return btn;
+    }
+
 
     update_mode_btn_group(){
         $('#mode_btn_group').remove();
@@ -145,9 +165,18 @@ class SearchList {
 
     }
 
+    update_choose_btn(){
+        $('#choose_btn').remove();
+        let choose_btn = $('<div id="choose_btn"><div>');
+        choose_btn.insertAfter('#repo_header');
+        choose_btn.append(this.make_choose_btn);
+        choose_btn.addClass('cs_choose_btn');
+    }
+
 
     updateSidebar() {
         this.searchArrays[this.searchMode].updateSidebar();
+        this.update_choose_btn();
         this.update_mode_btn_group();
     }
 }
