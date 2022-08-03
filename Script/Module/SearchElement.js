@@ -16,6 +16,7 @@ class SearchElement {
         this.element_original = ele;
         this.enabled = true;
 
+        this.isChild = false;
         this.spanned = false;
         this.hasspanned = false;
         
