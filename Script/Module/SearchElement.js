@@ -25,6 +25,20 @@ class SearchElement {
             }
     }
 
+    get spannedNum() {
+        let count = 1;
+
+        if (this.children.length == 0 || this.hasspanned == false) {
+            return count;
+        }
+
+        for (const se of this.children) {
+            count += se.spannedNum;
+        }
+
+        return count;
+    }
+
     copyElement(se) {
         this.element.innerHTML = se.element.innerHTML;
         this.mode = se.mode;
@@ -72,19 +86,5 @@ class SearchElement {
 
     toggleSpanned(){
         this.spanned = !this.spanned;
-    }
-
-    spannedNum() {
-        let count = 1;
-
-        if (this.children.length == 0 || this.hasspanned == false) {
-            return count;
-        }
-
-        for (let se of this.children) {
-            count += se.spannedNum();
-        }
-
-        return count;
     }
 }

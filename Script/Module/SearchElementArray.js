@@ -371,7 +371,7 @@ class SearchElementArray {
         btn.attr('id', se.id.toString() + '_d_btn');
         btn.click(function() {
             removeSearchStyle();
-            let num = se.spannedNum(se),
+            let num = se.spannedNum,
                 pos = sa.searchElements.indexOf(se);
             sa.delete(pos, num);
             sa.search();
@@ -382,7 +382,7 @@ class SearchElementArray {
     }
 
     make_decompose_btn(se){
-        let sl = this;
+        let sa = this;
         let btn_name;
 
         if (se.spanned == false) {
@@ -396,7 +396,7 @@ class SearchElementArray {
         btn.attr('id', se.id.toString() + '_dcp_btn');
         btn.click(function(){
             se.toggleSpanned();
-            sl.updateSidebar();
+            sa.updateSidebar();
         });
         return btn;
     }
