@@ -20,7 +20,9 @@ class SearchElementArray {
         this.zeroStrategy = true;
         this.searchStrategies = new Array(getDOMTreeHeight());
         this.searchStrategies.fill(true);
+
         this.foundStrategyNum = 0;
+        this.foundZeroStrategy = false;
 
         this.emphasizingStrategy = "";
 
@@ -105,14 +107,18 @@ class SearchElementArray {
     }
 
 
-    
+    cleanRecord() {
+        this.foundStrategyNum = 0;
+        this.foundZeroStrategy = false;
+        this.lcaUpdated = false;
+        this.pathtreeupdated = false;
+    }
 
     clear() {
         this.searchElements = [];
         this.searchStrategies.fill(true);
 
-        this.lcaUpdated = false;
-        this.pathtreeupdated = false;
+        this.cleanRecord();
 
         return;
     }
@@ -124,18 +130,16 @@ class SearchElementArray {
         this.removeChild(ele);
         this.searchElements.push(searchElement);
 
-        this.lcaUpdated = false;
-        this.pathtreeupdated = false;
+        this.cleanRecord();
 
         return;
     }
 
 
-    delete(pos) {
-        this.searchElements.splice(pos, 1);
+    delete(pos, num = 1) {
+        this.searchElements.splice(pos, num);
 
-        this.lcaUpdated = false;
-        this.pathtreeupdated = false;
+        this.cleanRecord();
 
         return;
     }
@@ -147,8 +151,7 @@ class SearchElementArray {
         this.removeChild(ele);
         this.searchElements.splice(pos, 0, searchElement);
 
-        this.lcaUpdated = false;
-        this.pathtreeupdated = false;
+        this.cleanRecord();
 
         return;
     }
@@ -368,8 +371,9 @@ class SearchElementArray {
         btn.attr('id', se.id.toString() + '_d_btn');
         btn.click(function() {
             removeSearchStyle();
-            let index = countdeleteelement(se);
-            sa.searchElements.splice(sa.searchElements.indexOf(se), index + 1);
+            let num = se.spannedNum(se),
+                pos = sa.searchElements.indexOf(se);
+            sa.delete(pos, num);
             sa.search();
             sa.updateSidebar();
         });
@@ -512,7 +516,7 @@ class SearchElementArray {
         let index = 0;
         for (const se of this.searchElements){
             index++;
-            if (se.spanned == true && se.hasspanned ==false){
+            if (se.spanned == true && se.hasspanned == false){
                 if (se.children.length != 1 || se.children[0] != se){
                     for (const child of se.children){
                         this.searchElements.splice(index, 0, child);
@@ -828,44 +832,6 @@ function isEqualList(list1, list2) {
 }
 
 
-function count_deleteelement_helper(se, count) {
-    if (se.hasspanned == true) {
-        se.hasspanned = false;
-        se.spanned = false;
-        add = se.children.length;
-        for (const child of se.children) {
-            return count + countdeleteelement_helper(child, count);
-        }
-        return add;
-    }
-}
-
-
-function countdeleteelement(se){
-    let queue = [];
-    if (se.children.length == 0 || se.hasspanned == false) {
-        return 0;
-    }
-    else {
-        let count = 0;
-        queue.push(se);
-        while(queue.length != 0){
-            p = queue[0];
-            p.spanned = false;
-            p.hasspanned = false;
-            queue.shift();
-            for (var i = 0; i < p.children.length; i++){
-                count++;
-                if (p.children[i].hasspanned == true){
-                    queue.push(p.children[i]);
-                }
-            }
-        }
-        return count;
-    }
-}
-
-
 function getHeight(root) {
     // leaf height 1
     if (root == null) {
@@ -931,6 +897,7 @@ function emphasizeSameStrategy() {
 function emphasizeSimilarStrategy(id) {
     $(".cs_search_style_similar" + id.toString()).addClass("cs_strategy_show_style");
 }
+
 
 function deemphasizeStrategy() {
     $(".cs_strategy_show_style").removeClass("cs_strategy_show_style");

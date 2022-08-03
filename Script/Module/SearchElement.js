@@ -16,13 +16,12 @@ class SearchElement {
         this.element_original = ele;
         this.enabled = true;
 
-        this.isChild = false;
-        this.hasspanned = false;
         this.spanned = false;
+        this.hasspanned = false;
+        
         this.children = [];
             for (const child of ele.children) {
                 this.children.push(new SearchElement(child));
-                this.children[this.children.length - 1].isChild = true;
             }
     }
 
@@ -73,5 +72,19 @@ class SearchElement {
 
     toggleSpanned(){
         this.spanned = !this.spanned;
+    }
+
+    spannedNum() {
+        let count = 1;
+
+        if (this.children.length == 0 || this.hasspanned == false) {
+            return count;
+        }
+
+        for (let se of this.children) {
+            count += se.spannedNum();
+        }
+
+        return count;
     }
 }
