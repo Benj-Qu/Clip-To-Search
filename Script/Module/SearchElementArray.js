@@ -801,7 +801,7 @@ function isEqualList(list1, list2) {
     let isEqual = true;
     
     list1.forEach(function(value) {
-        if (!list2.contains(value)) {
+        if (!list2.includes(value)) {
             isEqual = false;
         }
     });
