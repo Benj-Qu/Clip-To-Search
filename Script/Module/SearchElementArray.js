@@ -16,7 +16,6 @@ class SearchElementArray {
     
     constructor() {
         this.searchElements = [];
-        this.bannedElements = [];
 
         this.zeroStrategy = true;
         this.searchStrategies = new Array(getDOMTreeHeight());
@@ -108,7 +107,6 @@ class SearchElementArray {
 
     clear() {
         this.searchElements = [];
-        this.bannedElements = [];
         this.searchStrategies.fill(true);
 
         this.lcaUpdated = false;
