@@ -64,6 +64,8 @@ if (!clipSearch) {
             return btn;
         }
 
+
+
         sidebar_init() {
             $('body').append(this.sidebar);
             
@@ -72,6 +74,7 @@ if (!clipSearch) {
                 repo = $('<div id="repo" class="container"></div>'),
                 repo_header = $('<div id="repo_header"></div>'),
                 mode_btn_group = $('<div id="mode_btn_group"><div>'),
+                choose_btn = $('<div id="choose_btn"><div>'),
                 add_btn = this.make_add_mode_button(),
                 clear_btn = this.make_clear_button();
             
@@ -84,6 +87,7 @@ if (!clipSearch) {
             repo_header.append(add_btn);
 
             this.sidebar.append(mode_btn_group);
+            this.sidebar.append(choose_btn);
             this.sidebar.append($('<hr class="solid">'));
             this.sidebar.append(repo);
             
@@ -94,6 +98,7 @@ if (!clipSearch) {
             clear_btn.addClass('cs_sb_btn');  
             add_btn.addClass("cs_sb_add_btn");    
             mode_btn_group.addClass("cs_sb_mode_btn_group"); 
+            choose_btn.addClass("cs_sb_choose_btn");
             this.sidebar.addClass("cs_sb");
 
             this.searchList.updateSidebar();

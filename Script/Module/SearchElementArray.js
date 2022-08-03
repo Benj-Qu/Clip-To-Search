@@ -105,6 +105,8 @@ class SearchElementArray {
     }
 
 
+    
+
     clear() {
         this.searchElements = [];
         this.searchStrategies.fill(true);
