@@ -28,7 +28,7 @@ class SearchElement {
     get spannedNum() {
         let count = 1;
 
-        if (this.children.length == 0 || this.hasspanned == false) {
+        if (this.children.length == 0 || this.spanned == false) {
             return count;
         }
 
