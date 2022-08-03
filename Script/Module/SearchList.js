@@ -134,18 +134,67 @@ class SearchList {
         let sl = this;
         let btn = $("<button >Choose</button>");
         btn.addClass("cs_sb_btn");
-        btn.attr('id', 'add_btn');
+        btn.attr('id', 'choose_btn');
         btn.click(function() {
-            let helpModal = document.createElement("div");
-            helpModal.id = "cs_modal";
-            helpModal.setAttribute('class', 'cs_modal');
-            helpModal.innerHTML = `<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">test</p></div>`;
-            let choice_group = $('<div id="choice_group"><div>');
-            for(let i=0; i < this.searchArrays[this.searchMode].foundStrategyNum; i++){
+            let helpModal = $('<div></div>');
+            helpModal.attr('id', 'cs_modal');
+            helpModal.addClass( 'cs_modal');
+            let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
+            let k = 0;
+            if (sl.searchArrays[sl.searchMode].zeroStrategy){
+                let choice = $('<div></div>');
+                let strategy_btn = sl.make_same_strategy_btn();
+                choice.append(strategy_btn);
+                choice_group.append(choice);
+                k=1;
             }
-            document.body.appendChild(helpModal);
-            let removeModal = () => document.body.removeChild(document.getElementById('cs_modal'));
+            for(let i=0; i < sl.searchArrays[sl.searchMode].foundStrategyNum; i++){
+                let choice = $('<div></div>');
+                let strategy_btn = sl.make_simailar_strategy_btn(i);
+                choice.append(strategy_btn);
+                choice_group.append(choice);
+            }
+            let choice = $('<div></div>');
+            let strategy_btn = sl.make_no_strategy_btn();
+            choice.append(strategy_btn);
+            choice_group.append(choice);
+            helpModal.append(choice_group);
+            $('body').append(helpModal);
+            let removeModal = () => $('#cs_modal').remove();;
             document.getElementById('cs_modal_close').addEventListener("click", removeModal);
+        });
+        return btn;
+    }
+
+    make_no_strategy_btn(){
+        let sl = this;
+        let btn = $("<button >Deemphasize</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn');
+        btn.click(function(){
+            deemphasizeStrategy();
+        });
+        return btn;
+    }
+    make_simailar_strategy_btn(id){
+        let sl = this;
+        let btn = $("<button >Enable strategy "+ id + "</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn');
+        btn.click(function(){
+            emphasizeSimilarStrategy(id);
+        });
+        return btn;
+    }
+
+    make_same_strategy_btn(){
+        let sl = this;
+        console.log(this);
+        let btn = $("<button >Enable same strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn');
+        btn.click(function(){
+            emphasizeSameStrategy();
         });
         return btn;
     }
@@ -167,10 +216,9 @@ class SearchList {
 
     update_choose_btn(){
         $('#choose_btn').remove();
-        let choose_btn = $('<div id="choose_btn"><div>');
+        let choose_btn = this.make_choose_btn();
         choose_btn.insertAfter('#repo_header');
-        choose_btn.append(this.make_choose_btn);
-        choose_btn.addClass('cs_choose_btn');
+        choose_btn.addClass('cs_sb_choose_btn');
     }
 
 
