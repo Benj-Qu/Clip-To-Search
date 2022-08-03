@@ -5,7 +5,7 @@ if (!clipSearch) {
     clipSearch = new ClipSearch('clipSearch_canvas','clipSearch_options');
 
 
-    chrome.runtime.onMessage.addListener(function(request, sender, response){
+    chrome.runtime.onMessage.addListener(function(request, sender, response) {
         switch(request){
             case "switch":
                 clipSearch.switchActiveMode(true);
@@ -40,22 +40,17 @@ if (!clipSearch) {
             document.getElementsByTagName("body")[0].style.cursor = "default";
         }
     });
-    
-    
-    
-    //Split('body', 'sidebar');
-  
 
     window.addEventListener("resize", () => clipSearch.canvasResize());
 
     clipSearch.init();
 
-} else {
-
+} 
+else {
     if (clipSearch.isEnabled()) {
         clipSearch.remove();
-    } else {
+    } 
+    else {
         clipSearch.init();
     }
-
 }
