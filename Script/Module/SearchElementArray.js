@@ -20,9 +20,12 @@ class SearchElementArray {
         this.zeroStrategy = true;
         this.searchStrategies = new Array(getDOMTreeHeight());
         this.searchStrategies.fill(true);
-        this.foundStrategyNum = 0;
 
-        this.emphasizingStrategy = "";
+        this.idToLevel = new Array(getDOMTreeHeight());
+        this.idToLevel.fill(-1);
+
+        this.foundZeroStrategy = false;
+        this.foundStrategyNum = 0;
 
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
@@ -276,6 +279,9 @@ class SearchElementArray {
         let lcaDepth = getDepth(this.lca),
             lcaHeight = this.lcaHeight,
             similarList = similarElements(this.lca); 
+
+        this.foundZeroStrategy = false;
+        this.foundStrategyNum = 0;
         
         if (lcaDepth == -1) {
             return;
@@ -285,6 +291,7 @@ class SearchElementArray {
             for (let ancestor of similarList) {
                 if (this.isSameStructure(ancestor, -1, 0) === Structure.SameStructure) {
                     this.mark([ancestor, -1, 0], SAME_STYLE);
+                    this.foundZeroStrategy = true;
                 }
             }
         }
