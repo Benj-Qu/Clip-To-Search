@@ -250,6 +250,7 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
+                    this.idToLevel[this.foundStrategyNum] = level;
                 }
                 shift++;
             }
@@ -262,6 +263,7 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
+                    this.idToLevel[this.foundStrategyNum] = level;
                 }
                 shift--;
             }
@@ -282,6 +284,8 @@ class SearchElementArray {
 
         this.foundZeroStrategy = false;
         this.foundStrategyNum = 0;
+
+        this.idToLevel.fill(-1);
         
         if (lcaDepth == -1) {
             return;
