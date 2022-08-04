@@ -336,6 +336,15 @@ class SearchElementArray {
     }
 
 
+    toggle_strat(id){
+        let level = this.idToLevel[id];
+        if (level == -1) {
+            alert("Invalid level!");
+        }
+        this.searchStrategies[level] = !this.searchStrategies[level];
+    }
+
+
     getIdxFromID(id) {
         let idx = -1;
 
