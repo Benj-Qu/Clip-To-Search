@@ -137,8 +137,8 @@ class SearchElementArray {
     }
 
 
-    delete(pos, num = 1) {
-        this.searchElements.splice(pos, num);
+    delete(pos) {
+        this.searchElements.splice(pos, 1);
 
         this.cleanRecord();
 
@@ -251,7 +251,7 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
-                    this.idToLevel[this.foundStrategyNum] = level;
+                    this.idToLevel[this.foundStrategyNum] = level + getDepth(this.lca);
                 }
                 shift++;
             }
@@ -264,7 +264,7 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
-                    this.idToLevel[this.foundStrategyNum] = level;
+                    this.idToLevel[this.foundStrategyNum] = level + getDepth(this.lca);
                 }
                 shift--;
             }
@@ -380,9 +380,8 @@ class SearchElementArray {
         btn.attr('id', se.id.toString() + '_d_btn');
         btn.click(function() {
             removeSearchStyle();
-            let num = se.spannedNum,
-                pos = sa.searchElements.indexOf(se);
-            sa.delete(pos, num);
+            let pos = sa.searchElements.indexOf(se);
+            sa.delete(pos);
             sa.search();
             sa.updateSidebar();
         });
@@ -522,22 +521,16 @@ class SearchElementArray {
         let existEditMode = false;
         repo.on('dragover', this, this.dragOver);
 
+        let searchElements = [...this.searchElements];
+
         let index = 0;
-        for (const se of this.searchElements){
+        for (const se of searchElements){
             index++;
-            if (se.spanned == true && se.hasspanned == false){
-                if (se.children.length != 1 || se.children[0] != se){
-                    for (const child of se.children){
-                        this.searchElements.splice(index, 0, child);
-                    }
-                    se.hasspanned = true;
-                }
+
+            if (se.spanned == true){
+                searchElements.splice(index, 0, ...se.children);
             }
-            else if (se.spanned == false && se.hasspanned == true){
-                let count = countdeleteelement(se);
-                this.searchElements.splice(index, count);
-                se.hasspanned = false;
-            }
+
             if (se.editMode){
                 existEditMode = true;
             }

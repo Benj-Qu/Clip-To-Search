@@ -4,7 +4,6 @@ if (!clipSearch) {
     
     clipSearch = new ClipSearch('clipSearch_canvas','clipSearch_options');
 
-
     chrome.runtime.onMessage.addListener(function(request, sender, response) {
         switch(request){
             case "switch":
@@ -25,14 +24,12 @@ if (!clipSearch) {
 
     });
 
-
     document.addEventListener("keydown", (event) => {
         if (event.key == "Shift") {
             clipSearch.enable();
             document.getElementsByTagName("body")[0].style.cursor = "crosshair";
         }
     });
-
 
     document.addEventListener("keyup", (event) => {
         if (event.key == "Shift") {

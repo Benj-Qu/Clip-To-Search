@@ -211,6 +211,7 @@ class SearchList {
 
         mode_btn_group.addClass('cs_sb_mode_btn_group');
 
+        return;
     }
     
 
@@ -219,6 +220,8 @@ class SearchList {
         let choose_btn = this.make_choose_btn();
         choose_btn.insertAfter('#repo_header');
         choose_btn.addClass('cs_sb_choose_btn');
+
+        return;
     }
 
 
@@ -226,5 +229,7 @@ class SearchList {
         this.searchArrays[this.searchMode].updateSidebar();
         this.update_choose_btn();
         this.update_mode_btn_group();
+
+        return;
     }
 }
