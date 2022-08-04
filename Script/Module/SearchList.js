@@ -131,6 +131,37 @@ class SearchList {
     }
 
 
+    make_disable_button(id){
+        let sea = this.searchArrays[this.searchMode],
+            sl = this,
+            btn = $("<button> Disable Strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn' + toString(id));
+        
+        if (id == -1) {
+            btn.click(function(){
+                sea.zeroStrategy = false;
+                removeSearchStyle();
+                deemphasizeStrategy();
+                sl.search();
+            });
+        } 
+        else {
+            console.log(sea.foundStrategyNum);
+            console.log(sea.searchStrategies);
+            btn.click(function(){
+                sea.toggle_strat(id);
+                console.log(sea.searchStrategies);
+                removeSearchStyle();
+                deemphasizeStrategy();
+                sl.search();
+            });
+        }
+        return btn;
+    }
+
+
+    // sanitize later
     make_choose_btn() {
         let sl = this;
         let btn = $("<button >Choose Strategy</button>");
@@ -143,19 +174,22 @@ class SearchList {
             let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
             if (sl.searchArrays[sl.searchMode].zeroStrategy) {
                 let choice = $('<div></div>');
-                let strategy_btn = sl.make_same_strategy_btn();
+                let strategy_btn = sl.make_same_strategy_btn(),
+                    disable_btn = sl.make_disable_button(-1);
                 choice.append(strategy_btn);
+                choice.append(disable_btn);
                 choice_group.append(choice);
             }
             for(let i=0; i < sl.searchArrays[sl.searchMode].foundStrategyNum; i++){
                 let choice = $('<div></div>');
-                let strategy_btn = sl.make_simailar_strategy_btn(i);
+                let strategy_btn = sl.make_simailar_strategy_btn(i),
+                    disable_btn = sl.make_disable_button(i);
                 choice.append(strategy_btn);
+                choice.append(disable_btn);
                 choice_group.append(choice);
             }
             let choice = $('<div></div>');
-            let strategy_btn = sl.make_deemphasize_btn();
-            choice.append(strategy_btn);
+            // choice.append(strategy_btn);
             choice_group.append(choice);
             helpModal.append(choice_group);
             $('body').append(helpModal);
@@ -166,15 +200,7 @@ class SearchList {
     }
 
 
-    make_deemphasize_btn(){
-        let btn = $("<button >Deemphasize</button>");
-        btn.addClass("cs_sb_btn");
-        btn.attr('id', 'strategy_btn');
-        btn.click(function(){
-            deemphasizeStrategy();
-        });
-        return btn;
-    }
+
 
 
     make_simailar_strategy_btn(id){
@@ -182,6 +208,7 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
         btn.click(function(){
+            deemphasizeStrategy();
             emphasizeSimilarStrategy(id);
         });
         return btn;
@@ -193,6 +220,7 @@ class SearchList {
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
         btn.click(function(){
+            deemphasizeStrategy();
             emphasizeSameStrategy();
         });
         return btn;
