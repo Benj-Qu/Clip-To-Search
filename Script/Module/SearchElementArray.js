@@ -24,8 +24,6 @@ class SearchElementArray {
         this.foundStrategyNum = 0;
         this.foundZeroStrategy = false;
 
-        this.emphasizingStrategy = "";
-
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
 
