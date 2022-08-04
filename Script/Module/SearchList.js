@@ -130,6 +130,7 @@ class SearchList {
         return btn
     }
 
+
     make_choose_btn() {
         let sl = this;
         let btn = $("<button >Choose Strategy</button>");
@@ -140,13 +141,11 @@ class SearchList {
             helpModal.attr('id', 'cs_modal');
             helpModal.addClass('cs_modal');
             let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
-            let k = 0;
             if (sl.searchArrays[sl.searchMode].zeroStrategy) {
                 let choice = $('<div></div>');
                 let strategy_btn = sl.make_same_strategy_btn();
                 choice.append(strategy_btn);
                 choice_group.append(choice);
-                k=1;
             }
             for(let i=0; i < sl.searchArrays[sl.searchMode].foundStrategyNum; i++){
                 let choice = $('<div></div>');
@@ -155,7 +154,7 @@ class SearchList {
                 choice_group.append(choice);
             }
             let choice = $('<div></div>');
-            let strategy_btn = sl.make_no_strategy_btn();
+            let strategy_btn = sl.make_deemphasize_btn();
             choice.append(strategy_btn);
             choice_group.append(choice);
             helpModal.append(choice_group);
@@ -166,7 +165,8 @@ class SearchList {
         return btn;
     }
 
-    make_no_strategy_btn(){
+
+    make_deemphasize_btn(){
         let btn = $("<button >Deemphasize</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
@@ -175,6 +175,8 @@ class SearchList {
         });
         return btn;
     }
+
+
     make_simailar_strategy_btn(id){
         let btn = $("<button >Enable strategy "+ id + "</button>");
         btn.addClass("cs_sb_btn");
@@ -184,6 +186,7 @@ class SearchList {
         });
         return btn;
     }
+
 
     make_same_strategy_btn(){
         let btn = $("<button >Enable same strategy</button>");
@@ -209,6 +212,7 @@ class SearchList {
         mode_btn_group.addClass('cs_sb_mode_btn_group');
 
     }
+    
 
     update_choose_btn(){
         $('#choose_btn').remove();

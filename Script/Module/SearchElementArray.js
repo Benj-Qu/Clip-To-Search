@@ -21,8 +21,11 @@ class SearchElementArray {
         this.searchStrategies = new Array(getDOMTreeHeight());
         this.searchStrategies.fill(true);
 
-        this.foundStrategyNum = 0;
+        this.idToLevel = new Array(getDOMTreeHeight());
+        this.idToLevel.fill(-1);
+
         this.foundZeroStrategy = false;
+        this.foundStrategyNum = 0;
 
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
@@ -248,6 +251,7 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
+                    this.idToLevel[this.foundStrategyNum] = level;
                 }
                 shift++;
             }
@@ -260,6 +264,7 @@ class SearchElementArray {
                 else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
                     this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
                     foundStrategy = true;
+                    this.idToLevel[this.foundStrategyNum] = level;
                 }
                 shift--;
             }
@@ -277,6 +282,11 @@ class SearchElementArray {
         let lcaDepth = getDepth(this.lca),
             lcaHeight = this.lcaHeight,
             similarList = similarElements(this.lca); 
+
+        this.foundZeroStrategy = false;
+        this.foundStrategyNum = 0;
+
+        this.idToLevel.fill(-1);
         
         if (lcaDepth == -1) {
             return;
@@ -286,6 +296,7 @@ class SearchElementArray {
             for (let ancestor of similarList) {
                 if (this.isSameStructure(ancestor, -1, 0) === Structure.SameStructure) {
                     this.mark([ancestor, -1, 0], SAME_STYLE);
+                    this.foundZeroStrategy = true;
                 }
             }
         }
