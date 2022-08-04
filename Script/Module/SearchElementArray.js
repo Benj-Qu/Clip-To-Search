@@ -294,9 +294,11 @@ class SearchElementArray {
 
         if (this.zeroStrategy) {
             for (let ancestor of similarList) {
-                if (this.isSameStructure(ancestor, -1, 0) === Structure.SameStructure) {
-                    this.mark([ancestor, -1, 0], SAME_STYLE);
-                    this.foundZeroStrategy = true;
+                if (ancestor != this.lca) {
+                    if (this.isSameStructure(ancestor, -1, 0) === Structure.SameStructure) {
+                        this.mark([ancestor, -1, 0], SAME_STYLE);
+                        this.foundZeroStrategy = true;
+                    }
                 }
             }
         }
@@ -470,6 +472,8 @@ class SearchElementArray {
 
         btn.click(function () {
             se.toggleEnabled();
+            removeSearchStyle();
+            sea.search();
             sea.updateSidebar();
         });
 

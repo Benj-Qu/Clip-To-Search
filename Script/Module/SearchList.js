@@ -172,7 +172,7 @@ class SearchList {
             helpModal.attr('id', 'cs_modal');
             helpModal.addClass('cs_modal');
             let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
-            if (sl.searchArrays[sl.searchMode].zeroStrategy) {
+            if (sl.searchArrays[sl.searchMode].foundZeroStrategy) {
                 let choice = $('<div></div>');
                 let strategy_btn = sl.make_same_strategy_btn(),
                     disable_btn = sl.make_disable_button(-1);
