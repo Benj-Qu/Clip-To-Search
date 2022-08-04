@@ -400,6 +400,7 @@ class SearchElementArray {
         return btn;
     }
 
+
     make_decompose_btn(se){
         let sa = this;
         let btn_name;
@@ -419,6 +420,7 @@ class SearchElementArray {
         });
         return btn;
     }
+
 
     make_edit_button(se, html_block){
         let sa = this;
@@ -455,6 +457,7 @@ class SearchElementArray {
 
         return btn;
     }
+
 
     make_enable_button(se) {
         let btn_name,
@@ -498,8 +501,6 @@ class SearchElementArray {
         
         return btn_group;    
     }
-
-
 
 
     make_text_field(se){
