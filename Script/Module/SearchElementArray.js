@@ -666,7 +666,7 @@ function unmark_element(element) {
     
     return;
 }
-  
+
 
 function nodePath(node, root) {
     let nodes = [];

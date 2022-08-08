@@ -1,38 +1,17 @@
 class ClipSearch {
         
-    constructor (canvasElementId, optionsElementId) {
+    constructor (canvasElementId) {
         this.canvasElementId = canvasElementId;
-        this.optionsElementId = optionsElementId;
 
         this.activeColor = null;
         this.canvas = null;
         this.startX = null, this.startY = null, this.isDraw = false;
         this.enabled = false;
+        this.active = false;
         this.deleteMode = false;
         this.searchList = new SearchList();
-        this.optionsHtml = `
-            <div id="cs_maximized">
-                <div id="cs_options_heading" class="cs_h1">Options</div>
-                <div class="cs_colors">
-                    <div class="cs_color_button cs_yellow" id="cs_color_yellow"> </div><div class="cs_color_button cs_blue" id="cs_color_blue"></div><div class="cs_color_button cs_green" id="cs_color_green"></div><div class="cs_color_button cs_red" id="cs_color_red"></div><div class="cs_color_button cs_white" id="cs_color_white"></div><div class="cs_color_button cs_black" id="cs_color_black"></div>
-                </div>
-                <div class="cts_clr_btn" id="clr_btn">Clear</div>
-                <div class="cs_flags">
-                    <input type="checkbox" id="cs_active" name="active"/>
-                    <label id="cs_active" for="cs_active">Active</label> 
-                </div>
-                <div class="cs_control_button cs_control_minmax" id="cs_minimize" title="Minimize">▲</div>
-            </div>
-            <div id="cs_minimized" style="display: none">
-                <div id="cs_options_heading_minimized" class="cs_h1">Options</div>
-                <div class="cs_control_button cs_control_minmax" id="cs_maximize" title="Maximize">▼</div>
-            </div>
-            <div class="cs_control_button cs_control_help" id="cs_help" title="Help">?</div>
-            <div class="cs_control_button cs_control_close" id="cs_close" title="Close (or press ESC)">&times;</div>
-            `;
-        this.sidebar = $("<div id='sidebar'></div>");
         
-
+        this.sidebar = $("<div id='sidebar'></div>");
     }
 
     make_clear_button(){
@@ -269,144 +248,31 @@ class ClipSearch {
         removeSearchStyle()
     }
 
-    
+    switchActiveMode () {
+        this.active = !this.active;
 
-    static helpHtml = `<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">...</p></div>`;
-
-    createOptions () {
-        let options = document.createElement('div');
-        options.id = this.optionsElementId;
-        options.setAttribute('class', 'cs_options');
-        options.innerHTML = this.optionsHtml;
-
-        document.body.appendChild(options);
-        this.options = options;
-
-        let colors = ['yellow', 'blue', 'green', 'red', 'white', 'black'];
-        for (let color of colors) {
-            document.getElementById('cs_color_'+color).addEventListener('click', 
-                () => this.setColor(color));
-        }
-
-        document.getElementById("clr_btn").addEventListener("click", () => {
-            // TODO: replace with a clear function
-            clipSearch.clearResults();
-        });
-
-        document.getElementById('cs_active').addEventListener("click", () => {
-            this.switchActiveMode(false);
-        });
-
-
-        document.getElementById('cs_close').addEventListener("click", () => {
-                this.remove();
-            });
-
-        document.getElementById('cs_maximize').addEventListener("click", () => {
-                document.getElementById("cs_minimized").setAttribute('style', 'display: none');
-                document.getElementById("cs_maximized").setAttribute('style', 'display: block');
-            });
-        document.getElementById('cs_minimize').addEventListener("click", () => {
-                document.getElementById("cs_maximized").setAttribute('style', 'display: none');
-                document.getElementById("cs_minimized").setAttribute('style', 'display: block');
-            });
-
-        document.getElementById('cs_help').addEventListener('click', () => {
-                let helpModal = document.createElement("div");
-                helpModal.id = "cs_modal";
-                helpModal.setAttribute('class', 'cs_modal');
-                helpModal.innerHTML = ClipSearch.helpHtml;
-                document.body.appendChild(helpModal);
-                document.getElementById('cs_modal_text').innerHTML = chrome.i18n.getMessage("help_text");
-                let removeModal = () => document.body.removeChild(document.getElementById('cs_modal'));
-                document.getElementById('cs_modal_close').addEventListener("click", removeModal);
-            });
-
-        this.options.addEventListener("mousedown", e => this.optionsDrag(e));
-        document.addEventListener("mouseup", e => this.optionsDrop(e));
-        document.addEventListener("mousemove", e => this.optionsMove(e));
-        this.optionsDragData = { isDragged: false, sX: 0, sY: 0 };
-
-        // i18n
-        let translateInnerHtml = ["options_heading"];
-        for (let t of translateInnerHtml) {
-            document.getElementById('cs_'+t).innerHTML = chrome.i18n.getMessage(t);
-        }
-
-        let translateTitle = ["minimize", "maximize", "help", "color_yellow", "color_blue", "color_green", "color_red", "color_white", "color_black"];
-        for (let t of translateTitle) {
-            document.getElementById('cs_'+t).setAttribute("title", chrome.i18n.getMessage(t));
-        }
-
-    }
-
-    optionsDrag (e) {
-        this.optionsDragData.isDragged = true;
-        this.optionsDragData.sX = e.clientX;
-        this.optionsDragData.sY = e.clientY;
-    }
-
-    optionsMove (e) {
-        if (!this.optionsDragData.isDragged) return;
-
-        let nX = this.optionsDragData.sX - e.clientX;
-        let nY = this.optionsDragData.sY - e.clientY;
-        this.optionsDragData.sX = e.clientX;
-        this.optionsDragData.sY = e.clientY;
-        this.options.style.top = (this.options.offsetTop - nY) + "px";
-        this.options.style.left = (this.options.offsetLeft - nX) + "px";
-        this.options.style.right = "auto";
-        e.preventDefault();     // prevents text being selected
-    }
-
-    optionsDrop () {
-        this.optionsDragData.isDragged = false;
-    }
-
-    updateMinimizedOptionsTitle () {
-        if (this.isEnabled() && this.activeColor) {
-            let title =  chrome.i18n.getMessage("color_"+this.activeColor);
-            document.getElementById("cs_options_heading_minimized").innerHTML = title;
-        }
-    }
-
-    switchActiveMode (changeCheckedStatus) {
-        if (changeCheckedStatus) {
-            let checkbox = document.getElementById("cs_active");
-            checkbox.checked = !checkbox.checked;
-        }
         if (!this.isActiveMode()) {
             if (!this.canvas) return;      
             document.body.removeChild(this.canvas);
             this.canvas = null;
-            this.enabled = false;
-        } else {
+        } 
+        else {
             this.enable();
-            
         }
-        this.updateMinimizedOptionsTitle();
     }
 
     isActiveMode () {
-        let checkBox = document.getElementById("cs_active");
-        return checkBox && checkBox.checked;
+        return this.enabled && this.active;
     }
 
     enable () {
         if (!document.getElementById(this.canvasElementId)) {
             this.createCanvas();
         }
-        if (!document.getElementById(this.optionsElementId)) {
-            this.createOptions();
-        }
-        this.setColor("yellow");
         this.enabled = true;
     }
 
     init () {
-        if (!document.getElementById(this.optionsElementId)) {
-            this.createOptions();
-        }
         this.sidebar_init();
         this.setColor("yellow");
     }
@@ -416,16 +282,7 @@ class ClipSearch {
             document.body.removeChild(this.canvas);
             this.canvas = null;
         }
-        if (this.options) {
-            document.body.removeChild(this.options);
-            this.options = null;
-        }
         this.enabled = false;
         removeSearchStyle()
     }
-
-    isEnabled () {
-        return this.options ? true : false;
-    }
-
 }

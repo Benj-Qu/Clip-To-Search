@@ -200,9 +200,6 @@ class SearchList {
     }
 
 
-
-
-
     make_simailar_strategy_btn(id){
         let btn = $("<button >Enable strategy "+ id + "</button>");
         btn.addClass("cs_sb_btn");
