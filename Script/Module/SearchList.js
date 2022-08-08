@@ -41,6 +41,7 @@ class SearchList {
     clear() {
         this.searchArrays = [new SearchElementArray()];
         this.updateSidebar();
+        removeSearchStyle();
 
         return;
     }

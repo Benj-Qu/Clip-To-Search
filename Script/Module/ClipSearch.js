@@ -102,13 +102,6 @@ class ClipSearch {
                 this.searchList.append(element);
             }
         }
-
-        document.body.removeChild(this.options);
-        this.options = null;
-        this.createOptions();
-        this.enabled = true;
-        let checkbox = document.getElementById("cs_active");
-        checkbox.checked = true;
     }
 
     setColor (color) {
@@ -128,18 +121,12 @@ class ClipSearch {
             case 'black':
                 this.setRectRGBA(0, 0, 0, 0.2, 0.6);
                 break;
+            case 'yellow':
+                this.setRectRGBA(255, 255, 0, 0.2, 0.6);
+                break;
             default:
                 this.setRectRGBA(255, 255, 0, 0.2, 0.6);
-                color = 'yellow';
         }
-
-        let elems = document.getElementsByClassName("cs_color_button");
-        Array.from(elems).forEach(elem => {
-            elem.className = elem.className.replace(" cs_active", "");
-        });
-        document.getElementById("cs_color_"+color).className += " cs_active"; 
-        this.activeColor = color;
-        this.updateMinimizedOptionsTitle();
     }
 
     setRectRGBA (r, g, b, bgTransparency, borderTransparency) {
@@ -189,12 +176,6 @@ class ClipSearch {
         this.canvas.height = document.documentElement.clientHeight;
 
         this.clearCanvas();
-
-        if (this.options) {     // move options window back to initial position
-            this.options.style.top = "10px";
-            this.options.style.left = "auto";
-            this.options.style.right = "10px";
-        }
     }
 
     mouseEvent (eventType, event) {
@@ -241,9 +222,6 @@ class ClipSearch {
 
     clearResults(){
         this.searchList.clear();
-        document.body.removeChild(this.options);
-        this.options = null;
-        this.createOptions();
         this.clear_sidebar();
         removeSearchStyle()
     }
