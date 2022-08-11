@@ -135,7 +135,7 @@ class SearchList {
 
 
     make_strategy_btn() {
-        return this.searchArrays[this.searchMode].make_strategy_btn();
+        return this.searchArrays[this.searchMode].searching.make_strategy_btn();
     }
 
 

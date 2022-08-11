@@ -19,12 +19,25 @@ class Searching {
         this.lca = null;
         this.pathtree = [];
         this.lcaHeight = Number.MAX_VALUE;
+
+        this.zeroStrategy = true;
+
+        this.searchStrategies = new Array(getDOMTreeHeight());
+        this.searchStrategies.fill(true);
+        
+        this.foundZeroStrategy = false;
+        this.foundStrategyNum = 0;
+        this.idToLevel = new Array(getDOMTreeHeight());
     }
 
 
-    setPara(sea, zs, ss) {
-        this.zeroStrategy = zs;
-        this.searchStrategies = ss;
+    clear() {
+        this.zeroStrategy = true;
+        this.searchStrategies.fill(true);
+    }
+
+
+    setPara(sea) {
 
         this.searchElements = [];
 
@@ -58,20 +71,20 @@ class Searching {
         this.lcaHeight = Number.MAX_VALUE;
 
         for (const path of this.pathtree) {
-            height = Math.min(height, path.length);
+            this.lcaHeight = Math.min(this.lcaHeight, path.length);
         }
-    }
-
-
-    search(sea, zs, ss) {
-        this.setPara(sea, zs, ss);
-
-        let lcaDepth = getDepth(this.lca),
-            similarList = similarElements(this.lca); 
 
         this.foundZeroStrategy = false;
         this.foundStrategyNum = 0;
         this.idToLevel.fill(-1);
+    }
+
+
+    search(sea) {
+        this.setPara(sea);
+
+        let lcaDepth = getDepth(this.lca),
+            similarList = similarElements(this.lca); 
         
         if (lcaDepth == -1) {
             return;
@@ -192,6 +205,104 @@ class Searching {
     }
 
 
+    // sanitize later
+    make_strategy_btn() {
+        let s = this;
+        let btn = $("<button >Choose Strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'choose_btn');
+        btn.click(function() {
+            let helpModal = $('<div></div>');
+            helpModal.attr('id', 'cs_modal');
+            helpModal.addClass('cs_modal');
+            let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
+            if (s.foundZeroStrategy) {
+                let choice = $('<div></div>');
+                let strategy_btn = s.make_same_strategy_btn(),
+                    disable_btn = s.make_disable_button(-1);
+                choice.append(strategy_btn);
+                choice.append(disable_btn);
+                choice_group.append(choice);
+            }
+            for(let i = 0; i < s.foundStrategyNum; i++){
+                let choice = $('<div></div>');
+                let strategy_btn = s.make_simailar_strategy_btn(i),
+                    disable_btn = s.make_disable_button(i);
+                choice.append(strategy_btn);
+                choice.append(disable_btn);
+                choice_group.append(choice);
+            }
+            let choice = $('<div></div>');
+            choice_group.append(choice);
+            helpModal.append(choice_group);
+            $('body').append(helpModal);
+            let removeModal = () => $('#cs_modal').remove();;
+            document.getElementById('cs_modal_close').addEventListener("click", removeModal);
+        });
+        return btn;
+    }
+
+
+    make_simailar_strategy_btn(id){
+        let btn = $("<button >Enable strategy "+ id + "</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn');
+        btn.click(function(){
+            deemphasizeStrategy();
+            emphasizeSimilarStrategy(id);
+        });
+        return btn;
+    }
+
+
+    make_same_strategy_btn(){
+        let btn = $("<button >Enable same strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn');
+        btn.click(function(){
+            deemphasizeStrategy();
+            emphasizeSameStrategy();
+        });
+        return btn;
+    }
+
+
+    make_disable_button(id){
+        let s = this,
+            btn = $("<button> Disable Strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn' + toString(id));
+        
+        if (id == -1) {
+            btn.click(function(){
+                s.zeroStrategy = false;
+                removeSearchStyle();
+                deemphasizeStrategy();
+                s.search();
+            });
+        } 
+        else {
+            console.log(s.foundStrategyNum);
+            console.log(s.searchStrategies);
+            btn.click(function(){
+                s.toggle_strat(id);
+                console.log(s.searchStrategies);
+                removeSearchStyle();
+                deemphasizeStrategy();
+                s.search();
+            });
+        }
+        return btn;
+    }
+
+
+    toggle_strat(id){
+        let level = this.idToLevel[id];
+        if (level == -1) {
+            alert("Invalid level!");
+        }
+        this.searchStrategies[level] = !this.searchStrategies[level];
+    }
 }
 
 

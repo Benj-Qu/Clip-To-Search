@@ -19,10 +19,22 @@ class SearchElement {
         this.spanned = false;
         this.hasspanned = false;
         
+        this.parent = null;
+
         this.children = [];
             for (const child of ele.children) {
-                this.children.push(new SearchElement(child));
+                let se = new SearchElement(child);
+                se.parent = this;
+                this.children.push(se);
             }
+    }
+
+    get isChild() {
+        return (this.parent != null);
+    }
+
+    get spannable() {
+        return (this.children.length != 0);
     }
 
     get spannedNum() {
@@ -80,11 +92,37 @@ class SearchElement {
         this.editMode = !this.editMode;
     }
 
-    toggleEnabled(){
-        this.enabled = !this.enabled;
+    toggleSpanned() {
+        this.spanned = !this.spanned;
     }
 
-    toggleSpanned(){
-        this.spanned = !this.spanned;
+    toggleEnabled() {
+        this.enabled = !this.enabled;
+        this.toggleChildrenEnabled(this.enabled);
+        this.toggleParentEnabled(this.enabled);
+    }
+
+    toggleChildrenEnabled(enabled) {
+        for (let se of this.children) {
+            se.enabled = enabled;
+            se.toggleChildrenEnabled(enabled);
+        }
+    }
+
+    toggleParentEnabled(enabled) {
+        if (!this.isChild) {
+            return;
+        }
+
+        if (enabled) {
+            for (let sibling of this.parent.children) {
+                if (!sibling.enabled) {
+                    return;
+                }
+            }
+        }
+
+        this.parent.enabled = enabled;
+        this.parent.toggleParentEnabled(enabled);
     }
 }

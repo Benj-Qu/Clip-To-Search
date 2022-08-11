@@ -3,34 +3,15 @@ class SearchElementArray {
     constructor() {
         this.searchElements = [];
 
-        this.zeroStrategy = true;
-        this.searchStrategies = new Array(getDOMTreeHeight());
-        this.searchStrategies.fill(true);
-
-        this.idToLevel = new Array(getDOMTreeHeight());
-        this.idToLevel.fill(-1);
-
-        this.foundZeroStrategy = false;
-        this.foundStrategyNum = 0;
-
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
 
-        this.search = new Searching([]);
-    }
-
-    cleanRecord() {
-        this.foundStrategyNum = 0;
-        this.foundZeroStrategy = false;
-        this.lcaUpdated = false;
-        this.pathtreeupdated = false;
+        this.searching = new Searching();
     }
 
     clear() {
         this.searchElements = [];
-        this.searchStrategies.fill(true);
-
-        this.cleanRecord();
+        this.searching.clear();
 
         return;
     }
@@ -42,16 +23,12 @@ class SearchElementArray {
         this.removeChild(ele);
         this.searchElements.push(searchElement);
 
-        this.cleanRecord();
-
         return;
     }
 
 
     delete(pos) {
         this.searchElements.splice(pos, 1);
-
-        this.cleanRecord();
 
         return;
     }
@@ -62,8 +39,6 @@ class SearchElementArray {
 
         this.removeChild(ele);
         this.searchElements.splice(pos, 0, searchElement);
-
-        this.cleanRecord();
 
         return;
     }
@@ -117,15 +92,6 @@ class SearchElementArray {
         }
 
         return;
-    }
-
-
-    toggle_strat(id){
-        let level = this.idToLevel[id];
-        if (level == -1) {
-            alert("Invalid level!");
-        }
-        this.searchStrategies[level] = !this.searchStrategies[level];
     }
 
 
@@ -197,7 +163,7 @@ class SearchElementArray {
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_dcp_btn');
         btn.click(function(){
-            if (se.children.length != 0) {
+            if (se.spannable) {
                 se.toggleSpanned();
                 se.hasspanned = true;
                 sa.updateSidebar();
@@ -269,98 +235,6 @@ class SearchElementArray {
     }
 
 
-    make_simailar_strategy_btn(id){
-        let btn = $("<button >Enable strategy "+ id + "</button>");
-        btn.addClass("cs_sb_btn");
-        btn.attr('id', 'strategy_btn');
-        btn.click(function(){
-            deemphasizeStrategy();
-            emphasizeSimilarStrategy(id);
-        });
-        return btn;
-    }
-
-
-    make_same_strategy_btn(){
-        let btn = $("<button >Enable same strategy</button>");
-        btn.addClass("cs_sb_btn");
-        btn.attr('id', 'strategy_btn');
-        btn.click(function(){
-            deemphasizeStrategy();
-            emphasizeSameStrategy();
-        });
-        return btn;
-    }
-
-
-    make_disable_button(id){
-        let sea = this,
-            btn = $("<button> Disable Strategy</button>");
-        btn.addClass("cs_sb_btn");
-        btn.attr('id', 'strategy_btn' + toString(id));
-        
-        if (id == -1) {
-            btn.click(function(){
-                sea.zeroStrategy = false;
-                removeSearchStyle();
-                deemphasizeStrategy();
-                sea.search();
-            });
-        } 
-        else {
-            console.log(sea.foundStrategyNum);
-            console.log(sea.searchStrategies);
-            btn.click(function(){
-                sea.toggle_strat(id);
-                console.log(sea.searchStrategies);
-                removeSearchStyle();
-                deemphasizeStrategy();
-                sea.search();
-            });
-        }
-        return btn;
-    }
-
-
-    // sanitize later
-    make_strategy_btn() {
-        let sea = this;
-        let btn = $("<button >Choose Strategy</button>");
-        btn.addClass("cs_sb_btn");
-        btn.attr('id', 'choose_btn');
-        btn.click(function() {
-            let helpModal = $('<div></div>');
-            helpModal.attr('id', 'cs_modal');
-            helpModal.addClass('cs_modal');
-            let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
-            if (sea.foundZeroStrategy) {
-                let choice = $('<div></div>');
-                let strategy_btn = sea.make_same_strategy_btn(),
-                    disable_btn = sea.make_disable_button(-1);
-                choice.append(strategy_btn);
-                choice.append(disable_btn);
-                choice_group.append(choice);
-            }
-            for(let i = 0; i < sea.foundStrategyNum; i++){
-                let choice = $('<div></div>');
-                let strategy_btn = sea.make_simailar_strategy_btn(i),
-                    disable_btn = sea.make_disable_button(i);
-                choice.append(strategy_btn);
-                choice.append(disable_btn);
-                choice_group.append(choice);
-            }
-            let choice = $('<div></div>');
-            // choice.append(strategy_btn);
-            choice_group.append(choice);
-            helpModal.append(choice_group);
-            $('body').append(helpModal);
-            let removeModal = () => $('#cs_modal').remove();;
-            document.getElementById('cs_modal_close').addEventListener("click", removeModal);
-        });
-        return btn;
-    }
-
-
     make_btn_group(se, html_block){
         let edit_button = this.make_edit_button(se, html_block),
             switch_btn = this.make_switch_button(se),
@@ -418,11 +292,11 @@ class SearchElementArray {
         for (const se of searchElements){
             index++;
 
-            if (se.spanned == true){
+            if (se.spanned) {
                 searchElements.splice(index, 0, ...se.children);
             }
 
-            if (se.editMode){
+            if (se.editMode) {
                 existEditMode = true;
             }
 
@@ -471,6 +345,7 @@ class SearchElementArray {
             });
         }
         
+        console.log(this.searchElements);
 
         return;
     }
@@ -505,7 +380,8 @@ class SearchElementArray {
         let sa = event.data;
 
         if (sa.draggedToIdx == -1) {
-            alert("draggdedToIdx = -1, error!");
+            console.log("draggdedToIdx = -1, error!");
+            return;
         }
         else {
             $(this).removeClass("cs_dragging");
@@ -516,8 +392,8 @@ class SearchElementArray {
 
 
     search() {
-        let searching = new Searching(this.searchElements, this.zeroStrategy, this.searchStrategies);
-        searching.search();
+        let sea = [...this.searchElements];
+        this.searching.search(sea);
     }
 }
 
