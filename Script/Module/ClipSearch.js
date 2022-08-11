@@ -8,13 +8,15 @@ class ClipSearch {
         this.startX = null, this.startY = null, this.isDraw = false;
         this.enabled = false;
         this.active = false;
+        
         this.deleteMode = false;
         this.searchList = new SearchList();
         
         this.sidebar = $("<div id='sidebar'></div>");
     }
 
-    make_clear_button(){
+
+    make_clear_button() {
         let cs = this;
         let btn = $("<button>Clear</button>");
         btn.addClass("cs_sb_btn");
@@ -26,7 +28,8 @@ class ClipSearch {
         return btn;
     }
 
-    make_add_mode_button(){
+
+    make_add_mode_button() {
         let sl = this.searchList;
         let btn = $("<button >Add Mode</button>");
         btn.addClass("cs_sb_btn");
@@ -40,6 +43,10 @@ class ClipSearch {
     }
 
 
+    make_strategy_btn() {
+        return this.searchList.make_strategy_btn();
+    }
+
 
     sidebar_init() {
         $('body').append(this.sidebar);
@@ -49,20 +56,21 @@ class ClipSearch {
             repo = $('<div id="repo" class="container"></div>'),
             repo_header = $('<div id="repo_header"></div>'),
             mode_btn_group = $('<div id="mode_btn_group"><div>'),
-            choose_btn = $('<div id="choose_btn"><div>'),
+            strategy_btn = this.make_strategy_btn(),
+            // strategy_btn = $('<div id="strategy_btn"><div>'),
             add_btn = this.make_add_mode_button(),
             clear_btn = this.make_clear_button();
-        
 
         this.sidebar.append(title);
         this.sidebar.append($('<hr class="solid">'));
         this.sidebar.append(repo_header);
         repo_header.append(repo_head);
         repo_header.append(clear_btn);
+        repo_header.append(strategy_btn);
         repo_header.append(add_btn);
 
         this.sidebar.append(mode_btn_group);
-        this.sidebar.append(choose_btn);
+        this.sidebar.append(strategy_btn);
         this.sidebar.append($('<hr class="solid">'));
         this.sidebar.append(repo);
         
@@ -73,15 +81,18 @@ class ClipSearch {
         clear_btn.addClass('cs_sb_btn');  
         add_btn.addClass("cs_sb_add_btn");    
         mode_btn_group.addClass("cs_sb_mode_btn_group"); 
-        choose_btn.addClass("cs_sb_choose_btn");
+        strategy_btn.addClass("cs_sb_strategy_btn");
+
         this.sidebar.addClass("cs_sb");
 
         this.searchList.updateSidebar();
     }
+
     
-    clear_sidebar(){
+    clear_sidebar() {
         $("#repo").empty();
     }
+
 
     addElements(x1, y1, x2, y2) {
         let x_large = x1 > x2 ? x1 : x2,
@@ -103,6 +114,7 @@ class ClipSearch {
             }
         }
     }
+
 
     setColor (color) {
         switch (color) {
@@ -129,11 +141,13 @@ class ClipSearch {
         }
     }
 
+
     setRectRGBA (r, g, b, bgTransparency, borderTransparency) {
         let base = "rgba("+r+","+g+","+b+",";
         this.rectangleBackgroundColor = base + bgTransparency + ")";
         this.rectangleBorderColor = base + borderTransparency + ")";
     }
+
 
     createCanvas () {
         let canvas = document.createElement('canvas');
@@ -150,12 +164,14 @@ class ClipSearch {
         this.canvasResize();
     }
 
+
     clearCanvas () {
         if (!this.canvas) return;
 
         let context = this.canvas.getContext("2d");
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+
 
     drawBox (sX, sY, eX, eY, bgColor, borderColor) {
         if (!this.canvas) return;
@@ -168,6 +184,7 @@ class ClipSearch {
         context.strokeRect(sX+0.5, sY+0.5, eX-sX, eY-sY);
     }
 
+
     canvasResize () {
         if (!this.canvas) return;
 
@@ -177,6 +194,7 @@ class ClipSearch {
 
         this.clearCanvas();
     }
+
 
     mouseEvent (eventType, event) {
             let x = event.clientX;
@@ -220,11 +238,13 @@ class ClipSearch {
             }
     }
 
+
     clearResults(){
         this.searchList.clear();
         this.clear_sidebar();
         removeSearchStyle()
     }
+
 
     switchActiveMode () {
         this.active = !this.active;
@@ -239,9 +259,11 @@ class ClipSearch {
         }
     }
 
+
     isActiveMode () {
         return this.enabled && this.active;
     }
+
 
     enable () {
         if (!document.getElementById(this.canvasElementId)) {
@@ -250,10 +272,12 @@ class ClipSearch {
         this.enabled = true;
     }
 
+
     init () {
         this.sidebar_init();
         this.setColor("yellow");
     }
+
 
     remove () {
         if (this.canvas) {

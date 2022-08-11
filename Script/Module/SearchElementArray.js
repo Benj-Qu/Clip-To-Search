@@ -1,17 +1,3 @@
-const Structure = {
-    SameStructure : 0,
-    NoneExist : 1,
-    Different : 2
-}
-
-const SELF_STYLE = "cs_search_style_self",
-      SAME_STYLE = "cs_search_style_same",
-      SIMILAR_STYLE = "cs_search_style_similar";
-
-const CS_SEARCH_PATTERN = new RegExp('cs_search_style');
-      
-const SIMILAR_STYLE_NUM = 20;
-
 class SearchElementArray {
     
     constructor() {
@@ -30,83 +16,8 @@ class SearchElementArray {
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
 
-        this.lcaRecord = null;
-        this.lcaUpdated = false;
-        this.pathtreeRecord = null;
-        this.pathtreeupdated = false;
-        this.lcaheightRecord = null;
-        this.lcaheightUpdated = false;
+        this.search = new Searching([]);
     }
-
-
-    get lca() {
-        let ancestor = null;
-
-        if (this.lcaUpdated) {
-            return this.lcaRecord;
-        }
-
-        for (const se of this.searchElements) {
-            if (se.enabled) {
-                if (ancestor == null) {
-                    ancestor = se.element_original;
-                }
-                else {
-                    ancestor = findlca(se.element_original, ancestor);
-                }
-            }
-        }  
-        this.lcaUpdated = true; 
-        this.lcaRecord = ancestor;  
-
-        return ancestor; 
-    }
-
-
-    get pathtree() {
-        let pathtree = [];
-
-        if (this.pathtreeupdated) {
-            return this.pathtreeRecord;
-        }
-
-        for (const se of this.searchElements) {
-            if (se.enabled) {
-                pathtree.push(findPath(se.element_original, this.lca));
-            }
-            else {
-                pathtree.push([]);
-            }
-        }
-
-        this.pathtreeupdated = true;
-        this.pathtreeRecord = pathtree;
-
-        return pathtree;
-    }
-
-
-    get lcaHeight() {
-        let height = Number.MAX_VALUE;
-
-        if (this.lcaheightUpdated) {
-            return this.lcaheightRecord;
-        }
-
-        for (let i = 0; i < this.searchElements.length; i++) {
-            let path = this.pathtree[i];
-            if (this.searchElements[i].enabled) {
-                height = Math.min(height, path.length);
-                height = path.length;
-            }
-        }
-
-        this.lcaheightUpdated = true;
-        this.lcaheightRecord = height;
-
-        return height;
-    }
-
 
     cleanRecord() {
         this.foundStrategyNum = 0;
@@ -209,135 +120,6 @@ class SearchElementArray {
     }
 
 
-    isSameStructure(ele, level, shift) {
-        for (let i = 0; i < this.searchElements.length; i++) {
-            if (this.searchElements[i].enabled) {
-                let path = [...(this.pathtree[i])];
-
-                if (level != -1) {
-                    path[level] += shift;
-                    if (path[level] < 0) {
-                        return Structure.NoneExist;
-                    }
-                }
-            
-                let node = findNode(ele, path);
-
-                if (node == null) {
-                    return Structure.NoneExist;
-                }
-
-                let element = this.searchElements[i].element;
-                if (!isEqualNode(element, node)) {
-                    return Structure.Different;
-                }
-            }
-        }
-        return Structure.SameStructure;
-    }
-
-
-    findSimilarStructure(similarList, level) {
-        let shift,
-            foundStrategy = false,
-            strategyID = this.foundStrategyNum.toString();
-
-        for (let ele of similarList) {
-            shift = 1;
-            while (true) {
-                if (this.isSameStructure(ele,level,shift) === Structure.NoneExist) {
-                    break;
-                } 
-                else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
-                    this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
-                    foundStrategy = true;
-                    this.idToLevel[this.foundStrategyNum] = level + getDepth(this.lca);
-                }
-                shift++;
-            }
-
-            shift = -1;
-            while (true) {
-                if (this.isSameStructure(ele,level,shift) === Structure.NoneExist) {
-                    break;
-                } 
-                else if (this.isSameStructure(ele,level,shift) === Structure.SameStructure) {
-                    this.mark([ele, level, shift], SIMILAR_STYLE + strategyID);
-                    foundStrategy = true;
-                    this.idToLevel[this.foundStrategyNum] = level + getDepth(this.lca);
-                }
-                shift--;
-            }
-        }
-
-        if (foundStrategy) {
-            this.foundStrategyNum++;
-        }
-
-        return;
-    }
-
-
-    search() {
-        let lcaDepth = getDepth(this.lca),
-            lcaHeight = this.lcaHeight,
-            similarList = similarElements(this.lca); 
-
-        this.foundZeroStrategy = false;
-        this.foundStrategyNum = 0;
-
-        this.idToLevel.fill(-1);
-        
-        if (lcaDepth == -1) {
-            return;
-        }
-
-        if (this.zeroStrategy) {
-            for (let ancestor of similarList) {
-                if (ancestor != this.lca) {
-                    if (this.isSameStructure(ancestor, -1, 0) === Structure.SameStructure) {
-                        this.mark([ancestor, -1, 0], SAME_STYLE);
-                        this.foundZeroStrategy = true;
-                    }
-                }
-            }
-        }
-
-        for (let i = 0; i < lcaHeight; i++) {
-            if (this.searchStrategies[i+lcaDepth]) {
-                this.findSimilarStructure(similarList, i);
-            }
-        }   
-        
-        for (let se of this.searchElements) {
-            unmark_element(se.element_original);
-            mark_element(se.element_original, SELF_STYLE);
-        }
-
-        return;
-    }
-
-
-    mark(result, style) {
-        let node = result[0],
-            level = result[1],
-            shift = result[2];
-
-        for (let i = 0; i < this.searchElements.length; i++) {
-            let path = [...this.pathtree[i]]
-            if (this.searchElements[i].enabled) {
-                if (level != -1) {
-                    path[level] += shift;
-                }
-                let target = findNode(node, path);
-                mark_element(target, style);
-            }
-        }
-
-        return;
-    }
-
-
     toggle_strat(id){
         let level = this.idToLevel[id];
         if (level == -1) {
@@ -415,8 +197,11 @@ class SearchElementArray {
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_dcp_btn');
         btn.click(function(){
-            se.toggleSpanned();
-            sa.updateSidebar();
+            if (se.children.length != 0) {
+                se.toggleSpanned();
+                se.hasspanned = true;
+                sa.updateSidebar();
+            }
         });
         return btn;
     }
@@ -480,6 +265,98 @@ class SearchElementArray {
             sea.updateSidebar();
         });
 
+        return btn;
+    }
+
+
+    make_simailar_strategy_btn(id){
+        let btn = $("<button >Enable strategy "+ id + "</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn');
+        btn.click(function(){
+            deemphasizeStrategy();
+            emphasizeSimilarStrategy(id);
+        });
+        return btn;
+    }
+
+
+    make_same_strategy_btn(){
+        let btn = $("<button >Enable same strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn');
+        btn.click(function(){
+            deemphasizeStrategy();
+            emphasizeSameStrategy();
+        });
+        return btn;
+    }
+
+
+    make_disable_button(id){
+        let sea = this,
+            btn = $("<button> Disable Strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'strategy_btn' + toString(id));
+        
+        if (id == -1) {
+            btn.click(function(){
+                sea.zeroStrategy = false;
+                removeSearchStyle();
+                deemphasizeStrategy();
+                sea.search();
+            });
+        } 
+        else {
+            console.log(sea.foundStrategyNum);
+            console.log(sea.searchStrategies);
+            btn.click(function(){
+                sea.toggle_strat(id);
+                console.log(sea.searchStrategies);
+                removeSearchStyle();
+                deemphasizeStrategy();
+                sea.search();
+            });
+        }
+        return btn;
+    }
+
+
+    // sanitize later
+    make_strategy_btn() {
+        let sea = this;
+        let btn = $("<button >Choose Strategy</button>");
+        btn.addClass("cs_sb_btn");
+        btn.attr('id', 'choose_btn');
+        btn.click(function() {
+            let helpModal = $('<div></div>');
+            helpModal.attr('id', 'cs_modal');
+            helpModal.addClass('cs_modal');
+            let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
+            if (sea.foundZeroStrategy) {
+                let choice = $('<div></div>');
+                let strategy_btn = sea.make_same_strategy_btn(),
+                    disable_btn = sea.make_disable_button(-1);
+                choice.append(strategy_btn);
+                choice.append(disable_btn);
+                choice_group.append(choice);
+            }
+            for(let i = 0; i < sea.foundStrategyNum; i++){
+                let choice = $('<div></div>');
+                let strategy_btn = sea.make_simailar_strategy_btn(i),
+                    disable_btn = sea.make_disable_button(i);
+                choice.append(strategy_btn);
+                choice.append(disable_btn);
+                choice_group.append(choice);
+            }
+            let choice = $('<div></div>');
+            // choice.append(strategy_btn);
+            choice_group.append(choice);
+            helpModal.append(choice_group);
+            $('body').append(helpModal);
+            let removeModal = () => $('#cs_modal').remove();;
+            document.getElementById('cs_modal_close').addEventListener("click", removeModal);
+        });
         return btn;
     }
 
@@ -636,287 +513,12 @@ class SearchElementArray {
         }
         sa.updateSidebar();
     }
-}
 
 
-function mark_element(element, style) {
-    if (!element) {
-        return;
+    search() {
+        let searching = new Searching(this.searchElements, this.zeroStrategy, this.searchStrategies);
+        searching.search();
     }
-
-    for (let i = 0; i < element.children.length; i++) {
-        mark_element(element.children[i], style);
-    }
-    element.classList.add(style);
-    
-    return;
-}
-
-
-function unmark_element(element) {
-    if (!element) {
-        return;
-    }
-
-    for (let i = 0; i < element.children.length; i++) {
-        unmark_element(element.children[i]);
-    }
-
-    removeSearchStyle(element);
-    
-    return;
-}
-
-
-function nodePath(node, root) {
-    let nodes = [];
-    let pNode = node;
-
-    while (pNode != root) {
-        nodes.unshift(pNode);
-        pNode = pNode.parentNode;
-    }
-    
-    return nodes;
-}
-
-
-function findPath(element, ancestor) {
-    let pNode = ancestor;
-    let nodes = nodePath(element, ancestor);
-    let path = [];
-
-    if (ancestor == null) {
-        return null;
-    }
-
-    if (element === ancestor) {
-        return [];
-    }
-
-    for (const node of nodes) {
-        let child = pNode.firstElementChild;
-        let j = 0;
-        while (child != node) {
-            child = child.nextElementSibling;
-            j++;
-        }
-
-        pNode = node;
-        path.push(j);
-    }
-
-    return path;
-}
-
-
-function findNode(root, path) {
-    let node = root;
-
-    for (const rank of path) {
-        if (node != null) {
-            node = node.firstElementChild;
-            for (let i = 0; i < rank; i++) {
-                if (node == null) {
-                    break;
-                }
-                node = node.nextElementSibling;
-            }
-        }
-    }
-
-    return node;
-}
-
-
-function findlca(ele1, ele2) {
-    let lca = ele1;
-
-    while (lca != null) {
-        if (lca.contains(ele2)) {
-            break;
-        }
-        lca = lca.parentNode;
-    }
-    
-    return lca;
-}
-
-
-function similarElements(ele) {
-    if (ele == null) {
-        return null;
-    }
-
-    return document.getElementsByTagName(ele.tagName);
-}
-
-
-function isEqualNode(ele1, ele2) {
-    if (ele1 == null || ele2 == null) {
-        return false;
-    }
-
-    if (!isEqualText(ele1, ele2) || !isEqualClass(ele1, ele2)) {
-        return false;
-    }
-
-    let children1 = ele1.children,
-        children2 = ele2.children;
-
-    if (children1.length != children2.length) {
-        return false;
-    }
-
-    for (let i = 0; i < children1.length; i++) {
-        if (!isEqualNode(children1[i], children2[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
-function isEqualText(ele1, ele2) {
-    let list1 = getText(ele1),
-        list2 = getText(ele2);
-
-    if (list1.length != list2.length) {
-        return false;
-    }
-    
-    for (let i = 0; i < list1.length; i++) {
-        if (list1[i].data != list2[i].data) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-
-function getText(ele) {
-    let texts = [];
-    ele.childNodes.forEach(function(node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            texts.push(node);
-        }
-    });
-    return texts;
-}
-
-
-function isEqualClass(ele1, ele2) {
-    let classList1 = neglectCSClass(ele1.classList);
-    let classList2 = neglectCSClass(ele2.classList);
-    return isEqualList(classList1,classList2);
-}
-
-
-function neglectCSClass(classList) {
-    let list = [];
-    for (let value of classList.values()) {
-        if (!CS_SEARCH_PATTERN.test(value)) {
-            list.push(value);
-        }
-    }
-    return list;
-}
-
-
-function isEqualList(list1, list2) {
-    if (list1 == null || list2 == null) {
-        return false;
-    }
-    else if (list1.length == 0 && list2.length == 0) {
-        return true;
-    }
-    else if (list1.length != list2.length) {
-        return false;
-    }
-
-    let isEqual = true;
-    
-    list1.forEach(function(value) {
-        if (!list2.includes(value)) {
-            isEqual = false;
-        }
-    });
-
-    return isEqual;
-}
-
-
-function getHeight(root) {
-    // leaf height 1
-    if (root == null) {
-        return 0;
-    }
-    
-    let maxHeight = 0;
-    
-    Array.from(root.children).forEach((child) => {
-        maxHeight = Math.max(maxHeight,getHeight(child));
-    });
-    
-    return (maxHeight + 1);
-}
-
-
-function getDOMTreeHeight() {
-    return getHeight(document.documentElement);
-}
-
-
-function getDepth(ele) {
-    // root depth 0
-    let depth = 0;
-
-    if (ele == null) {
-        return -1;
-    }
-
-    while (ele.parentElement != null) {
-        depth++;
-        ele = ele.parentElement;
-    }
-    return depth;
-}
-
-
-function removeSearchStyle(element) {
-    if (element == undefined) {
-        $('.' + SELF_STYLE).removeClass(SELF_STYLE);
-        $('.' + SAME_STYLE).removeClass(SAME_STYLE);
-        for (let i = 0; i < SIMILAR_STYLE_NUM; i++) {
-            let style = SIMILAR_STYLE + i.toString();
-            $('.' + style).removeClass(style);
-        }
-    }
-    else {
-        element.classList.remove(SELF_STYLE, SAME_STYLE);
-        for (let i = 0; i < SIMILAR_STYLE_NUM; i++) {
-            element.classList.remove(SIMILAR_STYLE + i.toString());
-        }
-    }
-
-    return;
-}
-
-
-function emphasizeSameStrategy() {
-    $(".cs_search_style_same").addClass("cs_strategy_show_style");
-}
-
-
-function emphasizeSimilarStrategy(id) {
-    $(".cs_search_style_similar" + id.toString()).addClass("cs_strategy_show_style");
-}
-
-
-function deemphasizeStrategy() {
-    $(".cs_strategy_show_style").removeClass("cs_strategy_show_style");
 }
 
 

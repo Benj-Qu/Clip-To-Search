@@ -31,9 +31,10 @@
              "Script/Module/SearchElement.js", 
              "Script/Module/SearchElementArray.js", 
              "Script/Module/SearchList.js", 
+             "Script/Module/Searching.js", 
              "Script/Module/ClipSearch.js", 
              "Script/Module/helper.js",
-             "Script/search.js"
+             "Script/main.js"
             ]
     }
   ],
