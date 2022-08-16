@@ -81,7 +81,9 @@ class Searching {
 
 
     search(sea) {
-        this.setPara(sea);
+        if (sea != null) {
+            this.setPara(sea);
+        }
 
         let lcaDepth = getDepth(this.lca),
             similarList = similarElements(this.lca); 

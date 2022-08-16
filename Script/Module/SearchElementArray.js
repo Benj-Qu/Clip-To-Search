@@ -108,6 +108,11 @@ class SearchElementArray {
     }
 
 
+    make_strategy_button() {
+        return this.searching.make_strategy_button();
+    }
+
+
     make_switch_button(se){
         let sa = this;
         let btn_name;
@@ -211,6 +216,7 @@ class SearchElementArray {
 
 
     make_enable_button(se) {
+
         let btn_name,
             sea = this;
         if (se.enabled == true){

@@ -22,7 +22,7 @@ class ClipSearch {
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'clear_btn');
         btn.click(function() {
-            cs.clearResults();
+            cs.searchList.clear();
         });
         
         return btn;
@@ -88,30 +88,10 @@ class ClipSearch {
         this.searchList.updateSidebar();
     }
 
-    
-    clear_sidebar() {
-        $("#repo").empty();
-    }
 
-
-    addElements(x1, y1, x2, y2) {
-        let x_large = x1 > x2 ? x1 : x2,
-            x_small = x1 < x2 ? x1 : x2,
-            y_large = y1 > y2 ? y1 : y2,
-            y_small = y1 < y2 ? y1 : y2;
-    
-        const allElements = document.getElementsByTagName('*');
-        
-        for (const element of allElements) {
-            let pos = getPos(element);
-            let x_l = pos[0],
-                x_r = pos[1],
-                y_t = pos[2],
-                y_d = pos[3];
-            if (!this.searchList.isDuplicate(element) && !this.searchList.isContained(element) &&
-                x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-                this.searchList.append(element);
-            }
+    addElements(elements) {
+        for (let element of elements) {
+            this.searchList.append(element);
         }
     }
 
@@ -220,10 +200,15 @@ class ClipSearch {
             } 
             else if (eventType == 'up') {
                 if (this.enabled) {
-                    removeSearchStyle()
-                    this.addElements(this.startX, this.startY, x, y);
-                    this.searchList.search();
-                    this.searchList.updateSidebar();
+                    if (this.deleteMode) {
+                        //TODO
+                    }
+                    else {
+                        removeSearchStyle()
+                        this.addElements(recSelect(this.startX, this.startY, x, y));
+                        this.searchList.search();
+                        this.searchList.updateSidebar();
+                    }
                 } 
                 else if (this.deleteMode) {
                     //TODO
@@ -236,13 +221,6 @@ class ClipSearch {
                 this.isDraw = false;
                 this.clearCanvas();
             }
-    }
-
-
-    clearResults(){
-        this.searchList.clear();
-        this.clear_sidebar();
-        removeSearchStyle()
     }
 
 
@@ -287,4 +265,41 @@ class ClipSearch {
         this.enabled = false;
         removeSearchStyle()
     }
+}
+
+
+function recSelect(x1, y1, x2, y2) {
+    let results = [];
+
+    let x_large = x1 > x2 ? x1 : x2,
+        x_small = x1 < x2 ? x1 : x2,
+        y_large = y1 > y2 ? y1 : y2,
+        y_small = y1 < y2 ? y1 : y2;
+
+    const allElements = document.getElementsByTagName('*');
+    
+    for (const element of allElements) {
+        let pos = getPos(element);
+        let x_l = pos[0],
+            x_r = pos[1],
+            y_t = pos[2],
+            y_d = pos[3];
+        if (!this.searchList.isDuplicate(element) && !this.searchList.isContained(element) &&
+            x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
+            results.push(element);
+        }
+    }
+
+    return results;
+}
+
+
+function getPos(element) {
+    let rect = element.getBoundingClientRect();
+    let x_l = rect.left + parseInt(getComputedStyle(element).paddingLeft),
+        x_r = rect.right - parseInt(getComputedStyle(element).paddingRight),
+        y_t = rect.top + parseInt(getComputedStyle(element).paddingTop),
+        y_d = rect.bottom - parseInt(getComputedStyle(element).paddingBottom);
+    let pos = [x_l, x_r, y_t, y_d];
+    return pos;
 }
