@@ -91,7 +91,9 @@ class ClipSearch {
 
     addElements(elements) {
         for (let element of elements) {
-            this.searchList.append(element);
+            if (!this.searchList.isDuplicate(element) && !this.searchList.isContained(element)) {
+                this.searchList.append(element);
+            }
         }
     }
 
@@ -261,7 +263,7 @@ class ClipSearch {
 
 
 function recSelect(x1, y1, x2, y2) {
-    let results = [];
+    let list = [];
 
     let x_large = x1 > x2 ? x1 : x2,
         x_small = x1 < x2 ? x1 : x2,
@@ -276,9 +278,8 @@ function recSelect(x1, y1, x2, y2) {
             x_r = pos[1],
             y_t = pos[2],
             y_d = pos[3];
-        if (!this.searchList.isDuplicate(element) && !this.searchList.isContained(element) &&
-            x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
-            results.push(element);
+        if (x_l >= x_small && x_r <= x_large && y_t >= y_small && y_d <= y_large) {
+            list.push(element);
         }
     }
 
@@ -294,4 +295,11 @@ function getPos(element) {
         y_d = rect.bottom - parseInt(getComputedStyle(element).paddingBottom);
     let pos = [x_l, x_r, y_t, y_d];
     return pos;
+}
+
+// Disables text selection on the current page
+function disableTextSelection(){
+    document.querySelector('*').addEventListener('selectstart', (e) => {
+        e.preventDefault();
+    });
 }
