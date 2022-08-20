@@ -191,11 +191,6 @@ class ClipSearch {
                         this.drawBox(this.startX, this.startY, x, y, 
                             this.rectangleBackgroundColor, this.rectangleBorderColor);
                     }
-                    else if (this.deleteMode) {
-                        this.drawBox(this.startX, this.startY, x, y, 
-                            this.rectangleBackgroundColor, this.rectangleBorderColor);
-                    }
-                    
                 }
             } 
             else if (eventType == 'up') {
@@ -210,9 +205,6 @@ class ClipSearch {
                         this.searchList.updateSidebar();
                     }
                 } 
-                else if (this.deleteMode) {
-                    //TODO
-                }
 
                 this.isDraw = false;
                 this.clearCanvas();
