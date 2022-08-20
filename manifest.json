@@ -33,7 +33,6 @@
              "Script/Module/SearchList.js", 
              "Script/Module/Searching.js", 
              "Script/Module/ClipSearch.js", 
-             "Script/Module/helper.js",
              "Script/main.js"
             ]
     }
