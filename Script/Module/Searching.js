@@ -221,7 +221,7 @@ class Searching {
             if (s.foundZeroStrategy) {
                 let choice = $('<div></div>');
                 let strategy_btn = s.make_same_strategy_btn(),
-                    disable_btn = s.make_disable_button(-1);
+                    disable_btn = s.make_disable_btn(-1);
                 choice.append(strategy_btn);
                 choice.append(disable_btn);
                 choice_group.append(choice);
@@ -229,7 +229,7 @@ class Searching {
             for(let i = 0; i < s.foundStrategyNum; i++){
                 let choice = $('<div></div>');
                 let strategy_btn = s.make_simailar_strategy_btn(i),
-                    disable_btn = s.make_disable_button(i);
+                    disable_btn = s.make_disable_btn(i);
                 choice.append(strategy_btn);
                 choice.append(disable_btn);
                 choice_group.append(choice);
@@ -269,7 +269,7 @@ class Searching {
     }
 
 
-    make_disable_button(id){
+    make_disable_btn(id){
         let s = this,
             btn = $("<button> Disable Strategy</button>");
         btn.addClass("cs_sb_btn");

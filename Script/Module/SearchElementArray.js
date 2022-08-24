@@ -108,12 +108,12 @@ class SearchElementArray {
     }
 
 
-    make_strategy_button() {
-        return this.searching.make_strategy_button();
+    make_strategy_btn() {
+        return this.searching.make_strategy_btn();
     }
 
 
-    make_switch_button(se){
+    make_switch_btn(se){
         let sa = this;
         let btn_name;
 
@@ -136,7 +136,7 @@ class SearchElementArray {
     }
 
 
-    make_delete_button(se){
+    make_delete_btn(se){
         let sa = this;
         let btn = $("<button>Delete</button>");
 
@@ -178,7 +178,7 @@ class SearchElementArray {
     }
 
 
-    make_edit_button(se, html_block){
+    make_edit_btn(se, html_block){
         let sa = this;
 
         let btn_name;
@@ -215,7 +215,7 @@ class SearchElementArray {
     }
 
 
-    make_enable_button(se) {
+    make_enable_btn(se) {
 
         let btn_name,
             sea = this;
@@ -242,14 +242,14 @@ class SearchElementArray {
 
 
     make_btn_group(se, html_block){
-        let edit_button = this.make_edit_button(se, html_block),
-            switch_btn = this.make_switch_button(se),
-            delete_btn = this.make_delete_button(se),
+        let edit_btn = this.make_edit_btn(se, html_block),
+            switch_btn = this.make_switch_btn(se),
+            delete_btn = this.make_delete_btn(se),
             decompose_btn = this.make_decompose_btn(se),
-            disable_btn = this.make_enable_button(se),
+            disable_btn = this.make_enable_btn(se),
             btn_group = $('<div \ >');
 
-        btn_group.append(edit_button);    
+        btn_group.append(edit_btn);    
         btn_group.append(switch_btn);
         btn_group.append(delete_btn);
         btn_group.append(decompose_btn);

@@ -16,7 +16,7 @@ class ClipSearch {
     }
 
 
-    make_clear_button() {
+    make_clear_btn() {
         let cs = this;
         let btn = $("<button>Clear</button>");
         btn.addClass("cs_sb_btn");
@@ -29,7 +29,7 @@ class ClipSearch {
     }
 
 
-    make_add_mode_button() {
+    make_add_mode_btn() {
         let sl = this.searchList;
         let btn = $("<button >Add Mode</button>");
         btn.addClass("cs_sb_btn");
@@ -58,8 +58,8 @@ class ClipSearch {
             mode_btn_group = $('<div id="mode_btn_group"><div>'),
             strategy_btn = this.make_strategy_btn(),
             // strategy_btn = $('<div id="strategy_btn"><div>'),
-            add_btn = this.make_add_mode_button(),
-            clear_btn = this.make_clear_button();
+            add_btn = this.make_add_mode_btn(),
+            clear_btn = this.make_clear_btn();
 
         this.sidebar.append(title);
         this.sidebar.append($('<hr class="solid">'));
