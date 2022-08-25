@@ -283,7 +283,7 @@ function recSelect(x1, y1, x2, y2) {
         }
     }
 
-    return results;
+    return list;
 }
 
 

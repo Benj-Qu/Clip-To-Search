@@ -1,0 +1,9 @@
+.cs_popup_choice_grp{
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+}
+
+.cs_popup_confirm_btn{
+    float: right;
+}

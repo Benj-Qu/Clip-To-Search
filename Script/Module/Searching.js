@@ -206,47 +206,85 @@ class Searching {
         return;
     }
 
+    make_choice_grp(id){
+        let choice_grp = $('<div id = "choice_grp"></div>'),
+            checkbox = $('<input type="checkbox" id=' + id +'>'),
+            btn;
+        if (id == -1) {
+            btn = this.make_same_strategy_btn();
+        }
+        else {
+            btn = this.make_similar_strategy_btn(id);
+        }    
+        
+        choice_grp.append(checkbox);
+        choice_grp.append(btn);
+        choice_grp.addClass('cs_popup_choice_grp');
+        return choice_grp;   
+    }
+
+    make_confirm_btn(){
+        let s = this,
+            btn = $("<button>Confirm</button>");
+        btn.addClass("cs_sb_btn");
+        // btn.addClass("cs_popup_confirm_btn");
+        
+        btn.attr('id', 'confirm_btn');  
+        btn.click(function(){
+            // Look at all checked checkboxes
+            console.log("Confirm!");
+            $("input:checkbox:not(:checked)").map(function(){
+                console.log(this.id);
+                if (this.id == -1) {
+                    s.zeroStrategy = false;
+                    removeSearchStyle();
+                    deemphasizeStrategy();
+                    s.search();
+                }
+                else {
+                    s.toggle_strat(this.id);
+                    //console.log(s.searchStrategies);
+                    removeSearchStyle();
+                    deemphasizeStrategy();
+                    s.search();
+                }
+                
+            });
+        }); 
+
+        return btn;
+    }
+
 
     // sanitize later
     make_strategy_btn() {
-        let s = this;
-        let btn = $("<button >Choose Strategy</button>");
+        let s = this,
+            btn = $("<button >Choose Strategy</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'choose_btn');
-        btn.click(function() {
-            let helpModal = $('<div></div>');
-            helpModal.attr('id', 'cs_modal');
-            helpModal.addClass('cs_modal');
-            let choice_group = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
+        btn.click(function(){
+            let popup_page = $('<div id = "cs_modal" class = "cs_modal"></div>');
+            let popup_content = $(`<div class="cs_modal_content"><span id="cs_modal_close" class="cs_modal_close">&times;</span><p id="cs_modal_text">Choose Strategy</p></div>`);
+            
             if (s.foundZeroStrategy) {
-                let choice = $('<div></div>');
-                let strategy_btn = s.make_same_strategy_btn(),
-                    disable_btn = s.make_disable_btn(-1);
-                choice.append(strategy_btn);
-                choice.append(disable_btn);
-                choice_group.append(choice);
+                popup_content.append(s.make_choice_grp(-1));
             }
             for(let i = 0; i < s.foundStrategyNum; i++){
-                let choice = $('<div></div>');
-                let strategy_btn = s.make_simailar_strategy_btn(i),
-                    disable_btn = s.make_disable_btn(i);
-                choice.append(strategy_btn);
-                choice.append(disable_btn);
-                choice_group.append(choice);
+                popup_content.append(s.make_choice_grp(i));
             }
-            let choice = $('<div></div>');
-            choice_group.append(choice);
-            helpModal.append(choice_group);
-            $('body').append(helpModal);
+            
+            $('body').append(popup_page);
+            popup_page.append(popup_content);
+            popup_content.append(s.make_confirm_btn());
+            
             let removeModal = () => $('#cs_modal').remove();;
             document.getElementById('cs_modal_close').addEventListener("click", removeModal);
         });
         return btn;
     }
 
-
-    make_simailar_strategy_btn(id){
-        let btn = $("<button >Enable strategy "+ id + "</button>");
+    make_similar_strategy_btn(id){
+        let btn = $("<button >Display Strategy "+ id + "</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
         btn.click(function(){
@@ -258,7 +296,7 @@ class Searching {
 
 
     make_same_strategy_btn(){
-        let btn = $("<button >Enable same strategy</button>");
+        let btn = $("<button >Display Same Strategy</button>");
         btn.addClass("cs_sb_btn");
         btn.attr('id', 'strategy_btn');
         btn.click(function(){
@@ -269,33 +307,33 @@ class Searching {
     }
 
 
-    make_disable_btn(id){
-        let s = this,
-            btn = $("<button> Disable Strategy</button>");
-        btn.addClass("cs_sb_btn");
-        btn.attr('id', 'strategy_btn' + toString(id));
+    // make_disable_btn(id){
+    //     let s = this,
+    //         btn = $("<button> Disable Strategy</button>");
+    //     btn.addClass("cs_sb_btn");
+    //     btn.attr('id', 'strategy_btn' + toString(id));
         
-        if (id == -1) {
-            btn.click(function(){
-                s.zeroStrategy = false;
-                removeSearchStyle();
-                deemphasizeStrategy();
-                s.search();
-            });
-        } 
-        else {
-            console.log(s.foundStrategyNum);
-            console.log(s.searchStrategies);
-            btn.click(function(){
-                s.toggle_strat(id);
-                console.log(s.searchStrategies);
-                removeSearchStyle();
-                deemphasizeStrategy();
-                s.search();
-            });
-        }
-        return btn;
-    }
+    //     if (id == -1) {
+    //         btn.click(function(){
+    //             s.zeroStrategy = false;
+    //             removeSearchStyle();
+    //             deemphasizeStrategy();
+    //             s.search();
+    //         });
+    //     } 
+    //     else {
+    //         console.log(s.foundStrategyNum);
+    //         console.log(s.searchStrategies);
+    //         btn.click(function(){
+    //             s.toggle_strat(id);
+    //             console.log(s.searchStrategies);
+    //             removeSearchStyle();
+    //             deemphasizeStrategy();
+    //             s.search();
+    //         });
+    //     }
+    //     return btn;
+    // }
 
 
     toggle_strat(id){

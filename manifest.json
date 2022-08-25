@@ -23,7 +23,8 @@
               "Style/search.css", 
               "Style/sidebar.css", 
               "Style/draggingStyles.css",
-              "Style/jquery.toolbar.css"
+              "Style/jquery.toolbar.css",
+              "Style/popup.css"
               ],
       "js": ["Script/Module/Library/jquery.js",
              "Script/Module/Library/toolbar/jquery.toolbar.min.js", 
