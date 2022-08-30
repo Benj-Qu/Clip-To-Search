@@ -239,17 +239,16 @@ class Searching {
                     s.zeroStrategy = false;
                     removeSearchStyle();
                     deemphasizeStrategy();
-                    s.search();
                 }
                 else {
                     s.toggle_strat(this.id);
                     //console.log(s.searchStrategies);
                     removeSearchStyle();
                     deemphasizeStrategy();
-                    s.search();
-                }
-                
+                }   
             });
+
+            //s.search();
         }); 
 
         return btn;
