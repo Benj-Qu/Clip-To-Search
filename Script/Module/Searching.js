@@ -233,20 +233,17 @@ class Searching {
         btn.click(function(){
             // Look at all checked checkboxes
             console.log("Confirm!");
-            $("input:checkbox:not(:checked)").map(function(){
+            deemphasizeStrategy();
+            $("input:checkbox:checked").map(function(){
                 console.log(this.id);
                 if (this.id == -1) {
                     s.zeroStrategy = false;
-                    removeSearchStyle();
-                    deemphasizeStrategy();
-                    s.search();
+                    emphasizeSameStrategy();
                 }
                 else {
                     s.toggle_strat(this.id);
                     //console.log(s.searchStrategies);
-                    removeSearchStyle();
-                    deemphasizeStrategy();
-                    s.search();
+                    emphasizeSimilarStrategy(this.id);
                 }
                 
             });
