@@ -206,6 +206,16 @@ class Searching {
         return;
     }
 
+    disable_strategy(id){
+        if (id == -1){
+            this.foundZeroStrategy = false;
+        }
+        else {
+            this.foundStrategyNum--;
+            this.searchStrategies[id] = false;
+        }
+    }
+
     make_choice_grp(id){
         let choice_grp = $('<div id = "choice_grp"></div>'),
             checkbox = $('<input type="checkbox" id=' + id +'>'),
