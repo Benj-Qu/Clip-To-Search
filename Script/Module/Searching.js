@@ -207,6 +207,7 @@ class Searching {
     }
 
     disable_strategy(id){
+        console.log("disable" + id + " strategy");
         if (id == -1){
             this.foundZeroStrategy = false;
         }
@@ -243,22 +244,14 @@ class Searching {
         btn.click(function(){
             // Look at all checked checkboxes
             console.log("Confirm!");
+            removeSearchStyle();
+            
             $("input:checkbox:not(:checked)").map(function(){
                 console.log(this.id);
-                if (this.id == -1) {
-                    s.zeroStrategy = false;
-                    removeSearchStyle();
-                    deemphasizeStrategy();
-                }
-                else {
-                    s.toggle_strat(this.id);
-                    //console.log(s.searchStrategies);
-                    removeSearchStyle();
-                    deemphasizeStrategy();
-                }   
+                s.disable_strategy(this.id);  
             });
-
-            //s.search();
+            
+            s.search();
         }); 
 
         return btn;
