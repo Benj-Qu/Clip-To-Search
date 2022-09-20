@@ -1,4 +1,4 @@
-class ClipSearch {
+class ClipSearch { 
         
     constructor (canvasElementId) {
         this.canvasElementId = canvasElementId;
