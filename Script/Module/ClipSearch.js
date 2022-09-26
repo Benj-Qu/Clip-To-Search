@@ -87,7 +87,10 @@ class ClipSearch {
         this.sidebar.append(strategy_btn);
         this.sidebar.append($('<hr class="solid">'));
         this.sidebar.append(MMScontainer);
-        this.sidebar.append($('<hr class="solid">'));
+        let thickLine = $('<hr class="solid">');
+        thickLine.css('height', '5px');
+        thickLine.css('background-color', '#000000');
+        this.sidebar.append(thickLine);
         this.sidebar.append(repo);
         
         $('body').addClass('cs_bd');

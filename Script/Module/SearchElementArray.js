@@ -119,19 +119,19 @@ class SearchElementArray {
 
     getIdxFromID(id, inMMS) {
         // weird JS implementation: inMMS is a string here not bool
-        console.log("inMMS: ", inMMS);
+        //console.log("inMMS: ", inMMS);
         let idx = -1;
         if (!inMMS) {
-            console.log("!inMMS");
+            //console.log("!inMMS");
             this.searchElements.forEach(function(item, index) {
-                console.log("forEach: item.id, index: ", item.id, index);
+                //console.log("forEach: item.id, index: ", item.id, index);
                 if (item.id == id) {
                     idx = index;
                 }
             });
         }
         else {
-            console.log("inMMS");
+            //console.log("inMMS");
             this.MMSElements.forEach(function(item, index) {
                 if (item.id == id) {
                     idx = index;
@@ -178,8 +178,8 @@ class SearchElementArray {
         btn.attr('id', se.id.toString() + '_d_btn');
 
         btn.click(function() {
-            console.log("delete clicked!");
-            console.log("inMMS ",inMMS);
+            //console.log("delete clicked!");
+            //console.log("inMMS ",inMMS);
             removeSearchStyle();
             let pos;
             if (!inMMS) {
@@ -187,15 +187,15 @@ class SearchElementArray {
             }
             else {
                 pos = sa.MMSElements.indexOf(se);
-                console.log("delete pos:", pos);
+                //console.log("delete pos:", pos);
             }
             sa.delete(pos, inMMS);
             sa.search();
             sa.updateSidebar();
         });
 
-        console.log(sa.MMSElements);
-        console.log(sa.searchElements);
+        //console.log(sa.MMSElements);
+        //console.log(sa.searchElements);
         
         return btn;
     }
@@ -404,6 +404,7 @@ class SearchElementArray {
         let repo = $('#repo'),
             MMScontainer = $('#MMScontainer'); 
         repo.empty();
+        repo.css('min-height', '500px');
 
         let existEditMode = false;
         repo.on('dragover', this, this.dragOver);
@@ -471,7 +472,7 @@ class SearchElementArray {
 
         this.updateMMScontainer();
         
-        console.log(this.searchElements);
+        //console.log(this.searchElements);
 
         return;
     }
@@ -481,32 +482,33 @@ class SearchElementArray {
         let sa = event.data;
         $(this).addClass("cs_dragging");
         let id = $(this).attr('id');
-        console.log("inMMS: !!", $(this).attr("inMMS"));
+        //console.log("inMMS: !!", $(this).attr("inMMS"));
         if ($(this).attr("inMMS") == 'true') {
+            //console.log("if inMMS=true");
             sa.dragFromMMS = true;
             sa.draggedElementIdx = sa.getIdxFromID(id, true);
         }
         else {
+            //console.log("if inMMS=false");
             sa.dragFromMMS = false;
             sa.draggedElementIdx = sa.getIdxFromID(id, false);
-        }
-        
+        }       
     }
 
 
     dragOver(event){
         event.preventDefault();
-        console.log('dragover');
-
         let sa = event.data;
         
         const container = $(this)[0];
         const afterElement = getDragAfterElement(container, event.clientY);
         
         if ($(this).attr('id') == 'MMScontainer') {
+            //console.log('inside if: true');
             sa.dragToMMS = true;
         }
         else if ($(this).attr('id') == 'repo') {
+            //console.log('inside if: false');
             sa.dragToMMS = false;
             if (afterElement == null) {
                 sa.draggedToIdx = sa.searchElements.length;
@@ -518,17 +520,20 @@ class SearchElementArray {
         else {
             alert('error: dragover');
         }
-        console.log(sa.draggedToIdx);
+        //console.log('over', sa.dragToMMS);
+        // console.log(sa.draggedToIdx);
     }
 
 
     dragEnd(event){
         let sa = event.data;
 
+        //console.log('dragEnd: ', sa.dragToMMS);
+
         if ((!sa.dragFromMMS) && (!sa.dragToMMS)){ //searchElements to searchElements
-            console.log("searchElements to searchElements");
+            //console.log("searchElements to searchElements");
             if (sa.draggedToIdx == -1) {
-                console.log("draggdedToIdx = -1, error!");
+                //console.log("draggdedToIdx = -1, error!");
                 return;
             }
             else {
@@ -537,8 +542,8 @@ class SearchElementArray {
             }
         }
         else if ((!sa.dragFromMMS) && (sa.dragToMMS)) { //searchElements to MMSElements
-            console.log('Drop to MMScontainer');
-            console.log("idx: ",sa.draggedElementIdx);
+            //console.log('Drop to MMScontainer');
+            //console.log("idx: ",sa.draggedElementIdx);
             let se = sa.searchElements[sa.draggedElementIdx];
             se.inMMS = true;
             sa.MMSElements.push(sa.searchElements[sa.draggedElementIdx]);
@@ -546,7 +551,7 @@ class SearchElementArray {
         }
         else if ((sa.dragFromMMS) && (sa.dragToMMS)) { //MMSElements to MMSElements
             if (sa.draggedToIdx == -1) {
-                console.log("draggdedToIdx = -1, error!");
+                //console.log("draggdedToIdx = -1, error!");
                 return;
             }
             else {
@@ -555,8 +560,8 @@ class SearchElementArray {
             }
         }
         else { // MMSElements to searchElements
-            console.log('Drop to searchElements');
-            console.log("idx: ", sa.draggedElementIdx);
+            //console.log('Drop to searchElements');
+            //console.log("idx: ", sa.draggedElementIdx);
             let se = sa.MMSElements[sa.draggedElementIdx];
             se.inMMS = false;
             sa.searchElements.push(sa.MMSElements[sa.draggedElementIdx]);

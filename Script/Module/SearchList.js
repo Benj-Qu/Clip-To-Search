@@ -134,7 +134,16 @@ class SearchList {
     }
 
     make_MMSconfirm_btn(){
+        let sl = this;
+        let btn = $("<button >Confirm</button>");
+        btn.addClass("cs_MMSc_btn");
+        btn.attr('id', 'MMSc_btn');
+        btn.click(function() {
+            sl.addSearchMode();
+            sl.searchArrays[sl.modeNum - 1].searchElements = [...sl.searchArrays[sl.searchMode].MMSElements];
+        });
         
+        return btn;
     }
 
 
