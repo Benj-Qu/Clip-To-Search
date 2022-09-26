@@ -520,7 +520,7 @@ class SearchElementArray {
         else {
             alert('error: dragover');
         }
-        //console.log('over', sa.dragToMMS);
+        // console.log('over', sa.dragToMMS);
         // console.log(sa.draggedToIdx);
     }
 
