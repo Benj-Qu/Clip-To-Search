@@ -18,6 +18,8 @@ class SearchElement {
 
         this.spanned = false;
         this.hasspanned = false;
+
+        this.inMMS = false;
         
         this.parent = null;
 

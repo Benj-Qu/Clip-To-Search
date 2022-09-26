@@ -47,6 +47,19 @@ class ClipSearch {
         return this.searchList.make_strategy_btn();
     }
 
+    make_MMScontainer() {
+        let MMScontainerHeader = $('<div id="MMScontainerHeader">Multimodal Searching Area</div>');
+        let MMScontainer = $('<div id="MMScontainer" class="container"></div>');
+        MMScontainerHeader.append(MMScontainer);
+        MMScontainer.css('min-height', '100px');
+        
+        return MMScontainerHeader;
+    }
+
+    make_MMSconfirm_btn(){
+        return this.searchList.make_MMSconfirm_btn();
+    }
+
 
     sidebar_init() {
         $('body').append(this.sidebar);
@@ -59,7 +72,8 @@ class ClipSearch {
             strategy_btn = this.make_strategy_btn(),
             // strategy_btn = $('<div id="strategy_btn"><div>'),
             add_btn = this.make_add_mode_btn(),
-            clear_btn = this.make_clear_btn();
+            clear_btn = this.make_clear_btn(),
+            MMScontainer = this.make_MMScontainer(); 
 
         this.sidebar.append(title);
         this.sidebar.append($('<hr class="solid">'));
@@ -71,6 +85,8 @@ class ClipSearch {
 
         this.sidebar.append(mode_btn_group);
         this.sidebar.append(strategy_btn);
+        this.sidebar.append($('<hr class="solid">'));
+        this.sidebar.append(MMScontainer);
         this.sidebar.append($('<hr class="solid">'));
         this.sidebar.append(repo);
         

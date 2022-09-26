@@ -133,6 +133,10 @@ class SearchList {
         return btn
     }
 
+    make_MMSconfirm_btn(){
+        
+    }
+
 
     make_strategy_btn() {
         return this.searchArrays[this.searchMode].make_strategy_btn();

@@ -2,9 +2,12 @@ class SearchElementArray {
     
     constructor() {
         this.searchElements = [];
+        this.MMSElements = [];
 
+        this.dragToMMS = false;
         this.draggedElementIdx = -1;
         this.draggedToIdx = -1;
+        this.dragFromMMS = false;
 
         this.searching = new Searching();
     }
@@ -27,9 +30,13 @@ class SearchElementArray {
     }
 
 
-    delete(pos) {
-        this.searchElements.splice(pos, 1);
-
+    delete(pos, inMMS) {
+        if (!inMMS) {
+            this.searchElements.splice(pos, 1);
+        }
+        else {
+            this.MMSElements.splice(pos, 1);
+        }
         return;
     }
 
@@ -44,17 +51,32 @@ class SearchElementArray {
     }
 
 
-    move(from, to) {
-        let moveElement = this.searchElements[from];
+    move(from, to, withinMMS) {
+        if (!withinMMS) {
+            let moveElement = this.searchElements[from];
 
-        if (from > to) {
-            this.searchElements.splice(from, 1);
-            this.searchElements.splice(to, 0, moveElement);
+            if (from > to) {
+                this.searchElements.splice(from, 1);
+                this.searchElements.splice(to, 0, moveElement);
+            }
+            else if (from < to) {
+                this.searchElements.splice(to, 0, moveElement);
+                this.searchElements.splice(from, 1);
+            } 
         }
-        else if (from < to) {
-            this.searchElements.splice(to, 0, moveElement);
-            this.searchElements.splice(from, 1);
-        } 
+        else {
+            let moveElement = this.MMSElements[from];
+
+            if (from > to) {
+                this.MMSElements.splice(from, 1);
+                this.MMSElements.splice(to, 0, moveElement);
+            }
+            else if (from < to) {
+                this.MMSElements.splice(to, 0, moveElement);
+                this.MMSElements.splice(from, 1);
+            } 
+        }
+        
 
         return;
     }
@@ -95,15 +117,27 @@ class SearchElementArray {
     }
 
 
-    getIdxFromID(id) {
+    getIdxFromID(id, inMMS) {
+        // weird JS implementation: inMMS is a string here not bool
+        console.log("inMMS: ", inMMS);
         let idx = -1;
-
-        this.searchElements.forEach(function(item, index) {
-            if (item.id == id) {
-                idx = index;
-            }
-        });
-
+        if (!inMMS) {
+            console.log("!inMMS");
+            this.searchElements.forEach(function(item, index) {
+                console.log("forEach: item.id, index: ", item.id, index);
+                if (item.id == id) {
+                    idx = index;
+                }
+            });
+        }
+        else {
+            console.log("inMMS");
+            this.MMSElements.forEach(function(item, index) {
+                if (item.id == id) {
+                    idx = index;
+                }
+            });
+        }
         return idx;
     }
 
@@ -136,19 +170,32 @@ class SearchElementArray {
     }
 
 
-    make_delete_btn(se){
+    make_delete_btn(se, inMMS){
         let sa = this;
         let btn = $("<button>Delete</button>");
 
         btn.addClass("cs_sb_btn");
         btn.attr('id', se.id.toString() + '_d_btn');
+
         btn.click(function() {
+            console.log("delete clicked!");
+            console.log("inMMS ",inMMS);
             removeSearchStyle();
-            let pos = sa.searchElements.indexOf(se);
-            sa.delete(pos);
+            let pos;
+            if (!inMMS) {
+                pos = sa.searchElements.indexOf(se);
+            }
+            else {
+                pos = sa.MMSElements.indexOf(se);
+                console.log("delete pos:", pos);
+            }
+            sa.delete(pos, inMMS);
             sa.search();
             sa.updateSidebar();
         });
+
+        console.log(sa.MMSElements);
+        console.log(sa.searchElements);
         
         return btn;
     }
@@ -241,10 +288,10 @@ class SearchElementArray {
     }
 
 
-    make_btn_group(se, html_block){
+    make_btn_group(se, html_block, inMMS){
         let edit_btn = this.make_edit_btn(se, html_block),
             switch_btn = this.make_switch_btn(se),
-            delete_btn = this.make_delete_btn(se),
+            delete_btn = this.make_delete_btn(se, inMMS),
             decompose_btn = this.make_decompose_btn(se),
             disable_btn = this.make_enable_btn(se),
             btn_group = $('<div \ >');
@@ -285,12 +332,82 @@ class SearchElementArray {
     }
 
 
+    updateMMScontainer(){
+        const MMScontainer = $('#MMScontainer');
+        MMScontainer.empty();
+        
+        let existEditMode = false;
+        let searchElements = [...this.MMSElements];
+        let index = 0;
+        for (const se of searchElements){
+            index++;
+
+            if (se.spanned) {
+                searchElements.splice(index, 0, ...se.children);
+            }
+
+            if (se.editMode) {
+                existEditMode = true;
+            }
+
+            let li = $('<div draggable="true"></div>'),
+                txt_field = this.make_text_field(se),
+                html_block;          
+            if (se.mode == Mode.Original) {
+                html_block = $('<p />'); 
+            }
+            else{
+                html_block = $('<div />');
+            }
+            li.append(html_block);
+            html_block.append(se.getHTML())
+            html_block.addClass('cs_sb_html_block');
+
+            if (se.editMode == true) {
+                html_block.attr('contenteditable', 'true');
+            }
+            else {
+                html_block.attr('contenteditable', 'false');
+            }
+
+            let btn_group = this.make_btn_group(se, html_block, true);
+            li.append(btn_group);
+            li.append(txt_field);
+            MMScontainer.append(li);
+            
+            li.on('dragstart', this, this.dragStart);
+            li.on('dragend', this, this.dragEnd);
+            
+            btn_group.addClass('cs_sb_btn_group');
+            li.addClass('cs_sb_li');
+            li.addClass('cs_draggable');
+            li.attr('id', se.id);
+            li.attr('inMMS', se.inMMS);
+            if (!se.enabled){
+                li.addClass('cs_sb_disabled');
+            } 
+        }
+
+        if(existEditMode){
+            let draggables = [...document.getElementsByClassName("cs_draggable")];
+            draggables.forEach(function(draggable){
+                draggable.setAttribute("draggable", "false");
+                draggable.classList.remove("cs_draggable");
+            });
+        }
+
+        return;
+    }
+
+
     updateSidebar() {
-        let repo = $('#repo');
+        let repo = $('#repo'),
+            MMScontainer = $('#MMScontainer'); 
         repo.empty();
 
         let existEditMode = false;
         repo.on('dragover', this, this.dragOver);
+        MMScontainer.on('dragover', this, this.dragOver);
 
         let searchElements = [...this.searchElements];
 
@@ -326,7 +443,7 @@ class SearchElementArray {
                 html_block.attr('contenteditable', 'false');
             }
 
-            let btn_group = this.make_btn_group(se, html_block);
+            let btn_group = this.make_btn_group(se, html_block, false);
             li.append(btn_group);
             li.append(txt_field);
             repo.append(li);
@@ -338,6 +455,7 @@ class SearchElementArray {
             li.addClass('cs_sb_li');
             li.addClass('cs_draggable');
             li.attr('id', se.id);
+            li.attr('inMMS', se.inMMS);
             if (!se.enabled){
                 li.addClass('cs_sb_disabled');
             } 
@@ -350,6 +468,8 @@ class SearchElementArray {
                 draggable.classList.remove("cs_draggable");
             });
         }
+
+        this.updateMMScontainer();
         
         console.log(this.searchElements);
 
@@ -361,38 +481,91 @@ class SearchElementArray {
         let sa = event.data;
         $(this).addClass("cs_dragging");
         let id = $(this).attr('id');
-        sa.draggedElementIdx = sa.getIdxFromID(id);
+        console.log("inMMS: !!", $(this).attr("inMMS"));
+        if ($(this).attr("inMMS") == 'true') {
+            sa.dragFromMMS = true;
+            sa.draggedElementIdx = sa.getIdxFromID(id, true);
+        }
+        else {
+            sa.dragFromMMS = false;
+            sa.draggedElementIdx = sa.getIdxFromID(id, false);
+        }
+        
     }
 
 
     dragOver(event){
         event.preventDefault();
+        console.log('dragover');
 
         let sa = event.data;
         
-        const container = document.querySelector('.container');
+        const container = $(this)[0];
         const afterElement = getDragAfterElement(container, event.clientY);
         
-        if (afterElement == null) {
-            sa.draggedToIdx = sa.searchElements.length;
+        if ($(this).attr('id') == 'MMScontainer') {
+            sa.dragToMMS = true;
+        }
+        else if ($(this).attr('id') == 'repo') {
+            sa.dragToMMS = false;
+            if (afterElement == null) {
+                sa.draggedToIdx = sa.searchElements.length;
+            }
+            else {
+                sa.draggedToIdx = sa.getIdxFromID(afterElement.id);
+            }
         }
         else {
-            sa.draggedToIdx = sa.getIdxFromID(afterElement.id);
+            alert('error: dragover');
         }
+        console.log(sa.draggedToIdx);
     }
 
 
     dragEnd(event){
         let sa = event.data;
 
-        if (sa.draggedToIdx == -1) {
-            console.log("draggdedToIdx = -1, error!");
-            return;
+        if ((!sa.dragFromMMS) && (!sa.dragToMMS)){ //searchElements to searchElements
+            console.log("searchElements to searchElements");
+            if (sa.draggedToIdx == -1) {
+                console.log("draggdedToIdx = -1, error!");
+                return;
+            }
+            else {
+                $(this).removeClass("cs_dragging");
+                sa.move(sa.draggedElementIdx, sa.draggedToIdx, false);
+            }
         }
-        else {
-            $(this).removeClass("cs_dragging");
-            sa.move(sa.draggedElementIdx, sa.draggedToIdx)
+        else if ((!sa.dragFromMMS) && (sa.dragToMMS)) { //searchElements to MMSElements
+            console.log('Drop to MMScontainer');
+            console.log("idx: ",sa.draggedElementIdx);
+            let se = sa.searchElements[sa.draggedElementIdx];
+            se.inMMS = true;
+            sa.MMSElements.push(sa.searchElements[sa.draggedElementIdx]);
+            sa.delete(sa.draggedElementIdx, false);
         }
+        else if ((sa.dragFromMMS) && (sa.dragToMMS)) { //MMSElements to MMSElements
+            if (sa.draggedToIdx == -1) {
+                console.log("draggdedToIdx = -1, error!");
+                return;
+            }
+            else {
+                $(this).removeClass("cs_dragging");
+                sa.move(sa.draggedElementIdx, sa.draggedToIdx, true);
+            }
+        }
+        else { // MMSElements to searchElements
+            console.log('Drop to searchElements');
+            console.log("idx: ", sa.draggedElementIdx);
+            let se = sa.MMSElements[sa.draggedElementIdx];
+            se.inMMS = false;
+            sa.searchElements.push(sa.MMSElements[sa.draggedElementIdx]);
+            sa.delete(sa.draggedElementIdx, true);
+        }
+
+        console.log("MMSElements", sa.MMSElements);
+        console.log("searchElements", sa.searchElements);
+        
         sa.updateSidebar();
     }
 
